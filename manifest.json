@@ -1,0 +1,41 @@
+{
+    "manifest_version": 3,
+    "name": "BGU courses",
+    "version": "1.0",
+    "description": "Display BGU courses graphs",
+    "icons": {
+        "16": "images/icon-16.png",
+        "32": "images/icon-32.png",
+        "48": "images/icon-48.png",
+        "128": "images/icon-128.png"
+    },
+    "permissions": ["storage", "tabs", "activeTab"],
+    "optional_permissions": [],
+    "options_page": "options/options.html",
+    "action": {
+        "default_icon": {
+            "16": "images/icon-16.png",
+            "32": "images/icon-32.png",
+            "48": "images/icon-48.png",
+            "128": "images/icon-128.png"
+        },
+        "default_title": "BGU courses",
+        "default_popup": "popup/popup.html"
+    },
+    "host_permissions": [
+        "https://bgu4u22.bgu.ac.il/*",
+        "https://reports4u22.bgu.ac.il/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://bgu4u22.bgu.ac.il/*",
+                "https://reports4u22.bgu.ac.il/*"
+            ],
+            "js": ["scripts/content.js"]
+        }
+    ]
+}
