@@ -6,6 +6,13 @@
     <meta name="color-scheme" content="dark light" />
     <link rel="stylesheet" href="popup.css" />
     <title>BGU Courses</title>
+    <style>
+        .exam_quiz {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 20px; /* Adjust spacing between groups */
+        }
+    </style>
 </head>
 <body style="text-align: center;">
 
@@ -28,19 +35,31 @@
             <input type="radio" id="third_semester" name="semester" value="3">
             <label for="third_semester">Summer</label><br>
         </div>
-        <label for="first_exam">Exam Number:</label><br>
-        <div style="text-align: left;">
-            <input type="radio" id="first_exam" name="exam" value="1">
+        <div style="text-align: left;" class="exam_quiz">
+            <label for="first_exam">Exam Number:</label><br>
+            <input type="radio" id="first_exam" name="exam_quiz" value="1">
             <label for="first_exam">1</label><br>
-            <input type="radio" id="second_exam" name="exam" value="2">
+            <input type="radio" id="second_exam" name="exam_quiz" value="2">
             <label for="second_exam">2</label><br>
-            <input type="radio" id="third_exam" name="exam" value="3">
+            <input type="radio" id="third_exam" name="exam_quiz" value="3">
             <label for="third_exam">3</label><br>
-            <input type="radio" id="forth_exam" name="exam" value="4">
+            <input type="radio" id="forth_exam" name="exam_quiz" value="4">
             <label for="forth_exam">4</label><br>
-            <input type="radio" id="total_exam" name="exam" value="5">
+            <input type="radio" id="total_exam" name="exam_quiz" value="5">
             <label for="total_exam">Total</label><br>
         </div>
+        <div style="text-align: left;" class="exam_quiz">
+            <label for="first_quiz">Quiz Number:</label><br>
+            <input type="radio" id="first_quiz" name="exam_quiz" value="11">
+            <label for="first_quiz">1</label><br>
+            <input type="radio" id="second_quiz" name="exam_quiz" value="12">
+            <label for="second_quiz">2</label><br>
+            <input type="radio" id="third_quiz" name="exam_quiz" value="13">
+            <label for="third_quiz">3</label><br>
+            <input type="radio" id="forth_quiz" name="exam_quiz" value="14">
+            <label for="forth_quiz">4</label><br>
+        </div>
+        <br>
         <label for="course_number">Course Number:</label><br>
         <input type="text" id="course_number" name="course_number">
         <br>
