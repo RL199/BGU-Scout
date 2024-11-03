@@ -12,6 +12,7 @@
     --toast-text: #ffffff;
     --button-start-color: #f7941e;
     --button-end-color: #ffd38064;
+    --select-arrow: url('/images/select_icon_light_mode.png');
 }
 
 [data_theme="dark"] {
@@ -28,6 +29,7 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
+    --select-arrow: url('/images/select_icon_dark_mode.png');
 }
 
 body {
@@ -78,7 +80,19 @@ label {
     margin-bottom: 0.5rem;
 }
 
-input, select {
+input {
+    font-size: medium;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    height: 36px;
+}
+
+select {
     font-size: medium;
     width: 100%;
     padding: 0.5rem;
@@ -100,7 +114,7 @@ input:hover, select:hover {
     filter: brightness(99%);
 }
 
-button {
+[type="submit"] {
     width: 100%;
     padding: 0.75rem;
     background-color: var(--button-bg);
@@ -112,7 +126,26 @@ button {
     transition: opacity 0.3s;
 }
 
-button:hover {
+[type="submit"]:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+}
+
+[id="forgot_password"] {
+    text-align: left;
+    color: var(--h1-color);
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin-top: 0.5rem;
+
+}
+
+[id="forgot_password"]:hover {
+    text-decoration: underline;
+}
+
+[type="submit"]:hover {
     opacity: 0.9;
 }
 

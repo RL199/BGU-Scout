@@ -85,6 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.getElementById("forgot_password").addEventListener("click", function() {
+    const url = "https://bgu4u.bgu.ac.il/remind/login.php";
+    chrome.tabs.create({ url: url });
+});
 
 
 
