@@ -122,7 +122,7 @@ document.getElementById("popup_form").addEventListener("submit", function() {
     if(!p_key && !year && !semester && !exam_quiz && !department && !degree && !course_number) {
         savedMessage.textContent = "Saved Nothing";
     }
-    else if(savedCount >= 10){
+    else if(savedCount >= 50){
         savedMessage.textContent = "Saved! (I gave up counting)";
     }
     else {
@@ -130,7 +130,7 @@ document.getElementById("popup_form").addEventListener("submit", function() {
         savedCount++;
     }
     document.body.appendChild(savedMessage);
-    document.getElementById("popup_form").reset();
+
 });
 
 document.getElementById("generate_p_key").addEventListener("click", function() {
