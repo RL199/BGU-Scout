@@ -147,3 +147,7 @@ year_input.addEventListener('wheel', (event) => {
         year_input.stepDown(); // Scroll down to decrease
     }
 });
+
+document.getElementById("open_options").addEventListener("click", function() {
+    chrome.runtime.openOptionsPage();
+});
