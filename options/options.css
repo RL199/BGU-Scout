@@ -30,6 +30,9 @@
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
     --select-arrow: url('/images/select_icon_dark_mode.png');
+    ::-ms-reveal{
+        filter: invert(100%);
+    }
 }
 
 body {
