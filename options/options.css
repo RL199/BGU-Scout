@@ -35,6 +35,28 @@
     }
 }
 
+[data_lang="he"] {
+    direction: rtl;
+    text-align: right;
+    .container_he {
+        display: initial;
+    }
+    .container_en {
+        display: none;
+    }
+}
+
+[data_lang="en"] {
+    direction: ltr;
+    text-align: left;
+    .container_he {
+        display: none;
+    }
+    .container_en {
+        display: initial;
+    }
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: var(--bg-color);
@@ -66,12 +88,13 @@ h1 {
     margin-bottom: 1.5rem;
 }
 
-h1:active {
-    transform: rotate(360deg);
-    transition: transform 1s;
+h1:hover {
+    filter: hue-rotate(360deg);
+    transition: filter 1s;
+    transition-delay: 0.5s;
 }
 
-.form-group {
+.form_group {
     font-size: small;
     margin-bottom: 1rem;
     width: 100%;

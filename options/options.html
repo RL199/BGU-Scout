@@ -5,37 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BGU Courses Options">
     <link rel="stylesheet" href="options.css" />
-    <title>BGU Courses Options</title>
+    <title id="title">BGU Courses Options</title>
 </head>
 <body>
     <div class="container">
-        <h1>Options</h1>
+        <h1 data-i18n="header1">Options</h1>
         <form id="options_form">
-            <div class="form-group">
-                <label for="user_name">User Name:</label>
+            <div class="form_group">
+                <label for="user_name" data-i18n="user_name">User Name:</label>
                 <input type="text" id="user_name" name="user_name" autofocus>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
+            <div class="form_group">
+                <label for="password" data-i18n="password">Password:</label>
                 <input type="password" id="password" name="password" >
             </div>
-            <div class="form-group">
-                <label for="id">ID:</label>
+            <div class="form_group">
+                <label for="id" data-i18n="id">ID:</label>
                 <input type="text" id="id" name="id" >
             </div>
-            <div class="form-group">
-                <label for="theme">Color Theme:</label>
+            <div class="form_group">
+                <label for="theme" data-i18n="theme">Color Theme:</label>
                 <select id="theme" name="theme">
-                    <option value="system">System</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
+                    <option value="system" data-i18n="system">System</option>
+                    <option value="light" data-i18n="light">Light</option>
+                    <option value="dark" data-i18n="dark">Dark</option>
                 </select>
             </div>
-            <button type="submit">Save</button>
+            <div class="form_group">
+                <label for="language" data-i18n="language">Language:</label>
+                <select id="language" name="language">
+                    <option value="system" data-i18n="system">System</option>
+                    <option value="he">עברית</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <div class="form_group">
+                <label for="course_numbers" data-i18n="course_numbers">Course Numbers:</label>
+                <input type="text" id="course_numbers" name="course_numbers">
+            </div>
+            <button type="submit" data-i18n="save">Save</button>
         </form>
-        <button id="forgot_password">Forgot Password</button>
+        <button id="forgot_password" data-i18n="forgot_password">Forgot Password</button>
     </div>
-    <div id="toast" class="toast">Options Saved</div>
+    <div id="toast" class="toast" data-i18n="options_saved">Options Saved</div>
     <script src="options.js"></script>
 </body>
 </html>
