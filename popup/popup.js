@@ -1,3 +1,5 @@
+"use strict";
+
 document.getElementById("open_login").addEventListener("click", function() {
     chrome.tabs.create({url: 'https://bgu4u22.bgu.ac.il/apex/f?p=104:LOGIN_DESKTOP'});
 });

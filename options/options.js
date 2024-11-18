@@ -1,3 +1,5 @@
+"use strict";
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('options_form');
     const theme_select = document.getElementById('theme');
@@ -18,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             save: "Save",
             forgot_password: "Forgot Password",
             options_saved: "Options Saved",
-            course_numbers: "Course Numbers:",
+            course_numbers: "Saved Course Numbers:",
             header1: "Options"
         },
         he: {
