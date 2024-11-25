@@ -140,7 +140,7 @@ document.getElementById("generate_p_key").addEventListener("click", function() {
     chrome.scripting.executeScript({file: "scripts/generate_p_key.js"});
 });
 
-year_input = document.getElementById("year");
+const year_input = document.getElementById("year");
 year_input.addEventListener('wheel', (event) => {
     event.preventDefault(); // Prevent the page from scrolling
     if (event.deltaY < 0) {
