@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
             forgot_password: "Forgot Password",
             options_saved: "Options Saved",
             course_numbers: "Saved Course Numbers:",
-            header1: "Options"
+            header1: "Options",
+            add_course: "Add"
         },
         he: {
             options: "אפשרויות",
@@ -37,7 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
             forgot_password: "שכחתי סיסמה",
             options_saved: "האפשרויות נשמרו",
             course_numbers: "מספרי קורסים:",
-            header1: "אפשרויות"
+            header1: "אפשרויות",
+            add_course: "הוסף"
         }
     };
 
@@ -134,9 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Mouse-tracking gradient effect
-    const button = document.querySelector('button');
-    button.addEventListener('mousemove', (e) => {
-        const rect = button.getBoundingClientRect();
+    const saveButton = document.getElementById('save_button');
+    saveButton.addEventListener('mousemove', (e) => {
+        const rect = saveButton.getBoundingClientRect();
         const x = e.clientX - rect.left; // x position within the element
         const y = e.clientY - rect.top;  // y position within the element
 
@@ -147,11 +149,41 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update the gradient based on mouse position
         const startColor = getComputedStyle(document.documentElement).getPropertyValue('--button-start-color').trim();
         const endColor = getComputedStyle(document.documentElement).getPropertyValue('--button-end-color').trim();
-        button.style.backgroundImage = `radial-gradient(circle at ${percentX * 100}% ${percentY * 100}%, ${endColor}, ${startColor})`;
+        saveButton.style.backgroundImage = `radial-gradient(circle at ${percentX * 100}% ${percentY * 100}%, ${endColor}, ${startColor})`;
     });
 
-    button.addEventListener('mouseleave', () => {
-        button.style.backgroundImage = '';
+    saveButton.addEventListener('mouseleave', () => {
+        saveButton.style.backgroundImage = '';
+    });
+
+    // Course numbers input handling
+    const courseNumbersInput = document.getElementById('course_numbers');
+    const addCourseButton = document.getElementById('add_course');
+
+    // Set initial button state
+    addCourseButton.disabled = true;
+    let addButtonText = addCourseButton.textContent;
+
+    courseNumbersInput.addEventListener('input', function() {
+        const hasValue = this.value.trim() !== '';
+
+        if (hasValue) {
+            courseNumbersInput.style.width = 'calc(100% - 110px)';
+            courseNumbersInput.style.transition = 'width 0.07s ease-in-out';
+            addCourseButton.textContent = addButtonText;
+            addCourseButton.style.width = '26.55%';
+            setTimeout(() => { addCourseButton.style.display = 'inline-block'; addCourseButton.disabled = false; }, 70);
+        } else {
+            addCourseButton.style.display = 'none';
+            addCourseButton.disabled = true;
+            addCourseButton.textContent = '';
+            setTimeout(() => {
+                addCourseButton.style.display = 'none';
+                addCourseButton.disabled = true;
+                addCourseButton.textContent = '';
+                courseNumbersInput.style.width = '100%';
+            }, 70);
+        }
     });
 });
 
