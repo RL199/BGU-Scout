@@ -212,3 +212,12 @@ input:hover, select:hover {
     border: none;
     font-size: 0;
 }
+
+#add_course:hover {
+    opacity: 0.9;
+}
+
+#add_course:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+}
