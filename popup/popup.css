@@ -1,0 +1,129 @@
+:root {
+    --h1-color: #f7941e;
+    --bg-color: #ffffff;
+    --container-bg: #ffffff;
+    --box-border: #e0e0e0;
+    --text-color: #333333;
+    --input-bg: #ffffff;
+    --input-border: #e0e0e0;
+    --button-bg: #f7941e;
+    --button-text: #ffffff;
+}
+
+[data-theme="dark"] {
+    --h1-color: #f7941e;
+    --bg-color: #1f2122;
+    --container-bg: #282b2d;
+    --box-border: #3d4144;
+    --text-color: #ffffff;
+    --input-bg: #1f2122;
+    --input-border: #3d4144;
+    --button-bg: #f7941e;
+    --button-text: #ffffff;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 16px;
+    min-width: 280px;
+    max-width: 320px;
+}
+
+.container {
+    background-color: var(--container-bg);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+h1 {
+    color: var(--h1-color);
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 24px;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    flex: 1;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--box-border);
+    margin: 16px 0;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+input[type="radio"] {
+    margin: 0;
+}
+
+input[type="radio"] + label {
+    margin: 0;
+    font-size: 14px;
+}
+
+#generate_p_key {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+#savedMessage {
+    text-align: center;
+    color: var(--h1-color);
+    margin-top: 8px;
+    font-size: 14px;
+}
