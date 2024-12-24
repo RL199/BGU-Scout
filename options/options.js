@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
             save: "Save",
             forgot_password: "Forgot Password",
             options_saved: "Options Saved",
-            course_numbers: "Saved Course Numbers:",
+            add_course_number: "Add Course Number:",
             header1: "Options",
-            add_course: "Add"
+            add_course_button: "Add"
         },
         he: {
             options: "אפשרויות",
@@ -37,13 +37,29 @@ document.addEventListener('DOMContentLoaded', function() {
             save: "שמור",
             forgot_password: "שכחתי סיסמה",
             options_saved: "האפשרויות נשמרו",
-            course_numbers: "מספרי קורסים:",
+            add_course_number: "הוסף מספר קורס:",
             header1: "אפשרויות",
-            add_course: "הוסף"
+            add_course_button: "הוסף"
         }
     };
 
-    // Function to apply theme
+    function showToast(message) {
+        if (message === 'Options saved') {
+            translations['en']['options_saved'] = message;
+            translations['he']['options_saved'] = 'האפשרויות נשמרו';
+        } else if (message === 'Course number added') {
+            translations['en']['options_saved'] = message;
+            translations['he']['options_saved'] = 'מספר הקורס נוסף';
+        } else {
+            return;
+        }
+        apply_lang(document.documentElement.getAttribute('data_lang'));
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
     function apply_theme(theme) {
         if (theme === 'system') {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -58,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
         }
+        if(lang==='he') addButtonText = 'הוסף'; else addButtonText = 'Add';
         document.documentElement.setAttribute('data_lang', lang);
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
@@ -84,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Theme change event listener
     theme_select.addEventListener('change', function() {
         const selectedTheme = this.value;
         apply_theme(selectedTheme);
@@ -107,18 +123,13 @@ document.addEventListener('DOMContentLoaded', function() {
             password: document.getElementById('password').value,
             id: document.getElementById('id').value,
             theme: theme_select.value,
-            lang: lang_select.value
+            lang: lang_select.value,
         };
 
         // Save data to Chrome storage
         chrome.storage.sync.set(formData, function() {
             console.log('Options saved');
-
-            // Show toast notification
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            showToast('Options saved');
         });
     });
 
@@ -157,19 +168,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Course numbers input handling
-    const courseNumbersInput = document.getElementById('course_numbers');
-    const addCourseButton = document.getElementById('add_course');
+    const NewCourseNumberInput = document.getElementById('add_course_number');
+    const addCourseButton = document.getElementById('add_course_button');
 
     // Set initial button state
     addCourseButton.disabled = true;
-    let addButtonText = addCourseButton.textContent;
+    let addButtonText = '';
 
-    courseNumbersInput.addEventListener('input', function() {
+    NewCourseNumberInput.addEventListener('input', function() {
         const hasValue = this.value.trim() !== '';
 
         if (hasValue) {
-            courseNumbersInput.style.width = 'calc(100% - 110px)';
-            courseNumbersInput.style.transition = 'width 0.07s ease-in-out';
+            NewCourseNumberInput.style.width = 'calc(100% - 110px)';
+            NewCourseNumberInput.style.transition = 'width 0.07s ease-in-out';
             addCourseButton.textContent = addButtonText;
             addCourseButton.style.width = '26.55%';
             setTimeout(() => { addCourseButton.style.display = 'inline-block'; addCourseButton.disabled = false; }, 70);
@@ -181,10 +192,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 addCourseButton.style.display = 'none';
                 addCourseButton.disabled = true;
                 addCourseButton.textContent = '';
-                courseNumbersInput.style.width = '100%';
+                NewCourseNumberInput.style.width = '100%';
             }, 70);
         }
     });
+
+    addCourseButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        chrome.storage.sync.get(['saved_course_numbers'], function(result) {
+            if (result.course_number) {
+                const courseNumbers = result.course_number.split(',');
+                if (courseNumbers.includes(NewCourseNumberInput.value)) {
+                    showToast('Course number already exists');
+                    return;
+                }
+            }
+        });
+
+        // Gather form data
+        const formData = {
+            course_number: document.getElementById('add_course_number').value
+        };
+
+        // Save data to Chrome storage
+        chrome.storage.sync.set(formData, function() {
+            console.log('Course number added');
+            showToast('Course number added');
+        });
+    });
+
+    function addCourseNumberLine(course_number) {
+        // Create a new disabled input element with the course number
+        const courseNumberLine = document.getElementById("courses_form").getElementsByClassName("form_group").createElement("input");
+        courseNumberLine.setAttribute("type", "text");
+        courseNumberLine.setAttribute("value", course_number);
+        courseNumberLine.setAttribute("disabled", "true");
+        courseNumberLine.textContent = course_number;
+        //add remove button
+        
+    }
 });
 
 document.getElementById("forgot_password").addEventListener("click", function() {

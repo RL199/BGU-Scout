@@ -164,7 +164,8 @@ input:hover, select:hover {
     background-color: transparent;
     cursor: pointer;
     margin-top: 0.5rem;
-
+    margin-left: -0.4rem;
+    margin-right: -0.4rem;
 }
 
 #forgot_password:hover {
@@ -192,7 +193,7 @@ input:hover, select:hover {
     opacity: 1;
 }
 
-#add_course {
+#add_course_button {
     padding: 0.5rem;
     background-color: var(--button-bg);
     color: var(--button-text);
@@ -205,7 +206,7 @@ input:hover, select:hover {
     font-size: medium;
 }
 
-#add_course:disabled {
+#add_course_button:disabled {
     display: none;
     width: 0;
     padding: 0;
@@ -213,11 +214,11 @@ input:hover, select:hover {
     font-size: 0;
 }
 
-#add_course:hover {
+#add_course_button:hover {
     opacity: 0.9;
 }
 
-#add_course:active {
+#add_course_button:active {
     transform: scale(0.95);
     transition: transform 0.1s;
 }
