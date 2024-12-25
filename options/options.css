@@ -44,6 +44,10 @@
     .container_en {
         display: none;
     }
+    #remove_course_button {
+        margin-left: 0rem;
+        margin-right: 0.2rem;
+    }
 }
 
 [data_lang="en"] {
@@ -54,6 +58,10 @@
     }
     .container_en {
         display: initial;
+    }
+    #remove_course_button {
+        margin-left: 0.2rem;
+        margin-right: 0rem;
     }
 }
 
@@ -193,7 +201,7 @@ input:hover, select:hover {
     opacity: 1;
 }
 
-#add_course_button {
+#remove_course_button, #add_course_button {
     padding: 0.5rem;
     background-color: var(--button-bg);
     color: var(--button-text);
@@ -214,11 +222,34 @@ input:hover, select:hover {
     font-size: 0;
 }
 
-#add_course_button:hover {
+#remove_course_button:hover, #add_course_button:hover {
     opacity: 0.9;
 }
 
-#add_course_button:active {
+#remove_course_button:active, #add_course_button:active {
     transform: scale(0.95);
     transition: transform 0.1s;
+}
+
+#saved_courses_label {
+    font-size: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 0rem;
+}
+
+#courses_form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.course_line {
+    display: flex;
+    width: calc(50% - 0.25rem);
+}
+
+#saved_courses_label {
+    width: 100%;
+    margin-bottom: 0.5rem;
 }

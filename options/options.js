@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
             options_saved: "Options Saved",
             add_course_number: "Add Course Number:",
             header1: "Options",
-            add_course_button: "Add"
+            add_course_button: "Add",
+            remove_course_button: "Remove",
+            saved_courses: "Saved Course Numbers:"
         },
         he: {
             options: "אפשרויות",
@@ -39,20 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
             options_saved: "האפשרויות נשמרו",
             add_course_number: "הוסף מספר קורס:",
             header1: "אפשרויות",
-            add_course_button: "הוסף"
+            add_course_button: "הוסף",
+            remove_course_button: "הסר",
+            saved_courses: "מספרי קורסים שנשמרו:"
         }
     };
 
-    function showToast(message) {
-        if (message === 'Options saved') {
-            translations['en']['options_saved'] = message;
-            translations['he']['options_saved'] = 'האפשרויות נשמרו';
-        } else if (message === 'Course number added') {
-            translations['en']['options_saved'] = message;
-            translations['he']['options_saved'] = 'מספר הקורס נוסף';
-        } else {
-            return;
-        }
+    function showToast(enMessage, hebMessage) {
+        translations['en']['options_saved'] = enMessage;
+        translations['he']['options_saved'] = hebMessage;
         apply_lang(document.documentElement.getAttribute('data_lang'));
         toast.classList.add('show');
         setTimeout(() => {
@@ -74,7 +71,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
         }
-        if(lang==='he') addButtonText = 'הוסף'; else addButtonText = 'Add';
+        if(lang==='he'){
+            addButtonText = 'הוסף';
+            removeButtonText = 'הסר';
+        } else {
+            addButtonText = 'Add';
+            removeButtonText = 'Remove';
+        }
         document.documentElement.setAttribute('data_lang', lang);
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
@@ -84,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Load saved options
-    chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang'], function(result) {
+    chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_course_numbers'], function(result) {
         if (result.user_name) document.getElementById('user_name').value = result.user_name;
         if (result.id) document.getElementById('id').value = result.id;
         if (result.theme) {
@@ -98,6 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
             apply_lang(result.lang);
         } else {
             apply_lang('system');
+        }
+        if (result.saved_course_numbers) {
+            const courseNumbers = result.saved_course_numbers.split(',');
+            courseNumbers.forEach(course_number => {
+                addCourseNumberLine(course_number);
+            });
         }
     });
 
@@ -129,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Save data to Chrome storage
         chrome.storage.sync.set(formData, function() {
             console.log('Options saved');
-            showToast('Options saved');
+            showToast('Options saved', 'האפשרויות נשמרו');
         });
     });
 
@@ -174,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial button state
     addCourseButton.disabled = true;
     let addButtonText = '';
+    let removeButtonText = '';
 
     NewCourseNumberInput.addEventListener('input', function() {
         const hasValue = this.value.trim() !== '';
@@ -197,39 +207,103 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    addCourseButton.addEventListener('click', function(e) {
+    async function handleNewCourseSubmission(e) {
         e.preventDefault();
-        chrome.storage.sync.get(['saved_course_numbers'], function(result) {
-            if (result.course_number) {
-                const courseNumbers = result.course_number.split(',');
-                if (courseNumbers.includes(NewCourseNumberInput.value)) {
-                    showToast('Course number already exists');
-                    return;
-                }
+        const formData = {};
+        // check if course number is onlydigits and 2 points
+        if (!NewCourseNumberInput.value.match(/^\d{3}\.\d{1}\.\d{4}$/)) {
+            showToast('Invalid course number', 'מספר קורס לא תקין');
+            return;
+        }
+
+        try {
+            const result = await chrome.storage.sync.get(['saved_course_numbers']);
+            const courseNumbers = result.saved_course_numbers ? result.saved_course_numbers.split(',') : [];
+
+            if (courseNumbers.includes(NewCourseNumberInput.value)) {
+                showToast('Course number already exists', 'מספר הקורס כבר קיים');
+                return;
             }
-        });
 
-        // Gather form data
-        const formData = {
-            course_number: document.getElementById('add_course_number').value
-        };
+            formData.saved_course_numbers = courseNumbers.length > 0
+                ? `${result.saved_course_numbers},${NewCourseNumberInput.value}`
+                : NewCourseNumberInput.value;
 
-        // Save data to Chrome storage
-        chrome.storage.sync.set(formData, function() {
-            console.log('Course number added');
-            showToast('Course number added');
-        });
+            await chrome.storage.sync.set(formData);
+            NewCourseNumberInput.value = '';
+
+            const event = new Event('input', {
+                bubbles: true,
+                cancelable: true,
+            });
+            NewCourseNumberInput.dispatchEvent(event);
+
+            addCourseNumberLine(formData.saved_course_numbers.split(',').pop());
+            showToast('Course number added', 'מספר הקורס נוסף');
+
+        } catch (error) {
+            console.error('Error handling course submission:', error);
+            showToast('Error saving course', 'שגיאה בשמירת הקורס');
+        }
+    }
+
+    addCourseButton.addEventListener('click', function(e) {
+        handleNewCourseSubmission(e);
     });
 
     function addCourseNumberLine(course_number) {
-        // Create a new disabled input element with the course number
-        const courseNumberLine = document.getElementById("courses_form").getElementsByClassName("form_group").createElement("input");
-        courseNumberLine.setAttribute("type", "text");
-        courseNumberLine.setAttribute("value", course_number);
-        courseNumberLine.setAttribute("disabled", "true");
-        courseNumberLine.textContent = course_number;
-        //add remove button
-        
+        // Get or create courses form
+        let coursesForm = document.getElementById("courses_form");
+        if (!coursesForm) {
+            coursesForm = document.createElement("div");
+            coursesForm.id = "courses_form";
+            document.querySelector(".container").appendChild(coursesForm);
+            const savedCoursesLabel = document.createElement("label");
+            savedCoursesLabel.id = "saved_courses_label";
+            savedCoursesLabel.setAttribute('data-i18n', 'saved_courses');
+            savedCoursesLabel.textContent = translations[document.documentElement.getAttribute('data_lang')]['saved_courses'];
+            coursesForm.appendChild(savedCoursesLabel);
+        }
+
+        // Create line container
+        const lineContainer = document.createElement("div");
+        lineContainer.className = "course_line";
+
+        // Create course number input
+        const courseNumberInput = document.createElement("input");
+        courseNumberInput.type = "text";
+        courseNumberInput.value = course_number;
+        courseNumberInput.disabled = true;
+        courseNumberInput.className = "course_number_input";
+
+        // Create remove button
+        const removeCourseButton = document.createElement("button");
+        removeCourseButton.setAttribute('data-i18n', 'remove_course_button');
+        removeCourseButton.textContent = removeButtonText;
+        removeCourseButton.className = "remove_course_button";
+        removeCourseButton.id = "remove_course_button";
+
+        // Add remove functionality
+        removeCourseButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            chrome.storage.sync.get(['saved_course_numbers'], function(result) {
+                if (result.saved_course_numbers) {
+                    const courseNumbers = result.saved_course_numbers.split(',');
+                    const updatedNumbers = courseNumbers.filter(num => num !== course_number);
+                    chrome.storage.sync.set({ saved_course_numbers: updatedNumbers.join(',') });
+                    lineContainer.remove();
+                }
+                // Remove courses form and label if no courses are left
+                if (document.getElementById("courses_form").childElementCount === 1) {
+                    document.getElementById("courses_form").remove();
+                }
+            });
+        });
+
+        // Append elements
+        lineContainer.appendChild(courseNumberInput);
+        lineContainer.appendChild(removeCourseButton);
+        coursesForm.appendChild(lineContainer);
     }
 });
 
