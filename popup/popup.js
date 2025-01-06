@@ -8,16 +8,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById("popup_form");
     const yearInput = document.getElementById("year");
 
+    // Add this at the beginning of the DOMContentLoaded event listener
+    chrome.storage.sync.get(['theme', 'lang'], function(result) {
+        if (result.theme) {
+            if (result.theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data_theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data_theme', result.theme);
+            }
+        }
+
+        if (result.lang) {
+            document.documentElement.setAttribute('data-lang', result.lang);
+        }
+    });
+
     // Load saved values
     chrome.storage.sync.get(['p_key', 'year', 'semester', 'exam_quiz', 'department', 'degree', 'course_number'], function(result) {
         if (result.p_key) document.getElementById('p_key').value = result.p_key;
         if (result.year) yearInput.value = result.year;
         if (result.semester) document.querySelector(`input[name="semester"][value="${result.semester}"]`).checked = true;
         if (result.exam_quiz) document.querySelector(`input[name="exam_quiz"][value="${result.exam_quiz}"]`).checked = true;
-        if (result.department && result.degree && result.course_number) {
-            document.getElementById('course_number').value = `${result.department}.${result.degree}.${result.course_number}`;
+    });
+
+    chrome.storage.sync.get(['saved_course_numbers'], function(result) {
+        const courseSelect = document.getElementById('course_number');
+        if (result.saved_course_numbers) {
+            const courseNumbers = result.saved_course_numbers.split(',');
+            courseNumbers.forEach(number => {
+                const option = document.createElement('option');
+                option.value = number;
+                option.textContent = number;
+                courseSelect.appendChild(option);
+            });
         }
     });
+
 
     openLoginBtn.addEventListener("click", function() {
         chrome.tabs.create({url: 'https://bgu4u22.bgu.ac.il/apex/f?p=104:LOGIN_DESKTOP'});

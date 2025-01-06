@@ -1,25 +1,38 @@
 :root {
-    --h1-color: #f7941e;
-    --bg-color: #ffffff;
-    --container-bg: #ffffff;
-    --box-border: #e0e0e0;
+    --h1-color: #b85c20;
+    --bg-color: #e0e0e0;
+    --container-bg: #f0f0f0;
+    --box-border: #bcbcbc;
     --text-color: #333333;
-    --input-bg: #ffffff;
-    --input-border: #e0e0e0;
+    --input-bg: #f4f4f4;
+    --input-border: #cccccc;
     --button-bg: #f7941e;
     --button-text: #ffffff;
+    --toast-bg: #333333;
+    --toast-text: #ffffff;
+    --button-start-color: #f7941e;
+    --button-end-color: #ffd38064;
+    --select-arrow: url('/images/select_icon_light_mode.png');
 }
 
-[data-theme="dark"] {
-    --h1-color: #f7941e;
-    --bg-color: #1f2122;
-    --container-bg: #282b2d;
-    --box-border: #3d4144;
+[data_theme="dark"] {
+    --h1-color: #f49b55;
+    --bg-color: #2a2d2f;
+    --container-bg: #1f2122;
+    --box-border: #282b2d;
     --text-color: #ffffff;
-    --input-bg: #1f2122;
+    --input-bg: #282b2d;
     --input-border: #3d4144;
     --button-bg: #f7941e;
-    --button-text: #ffffff;
+    --button-text: #333333;
+    --toast-bg: #f0f0f0;
+    --toast-text: #333333;
+    --button-start-color: #f7941e;
+    --button-end-color: #b86600;
+    --select-arrow: url('/images/select_icon_dark_mode.png');
+    ::-ms-reveal{
+        filter: invert(100%);
+    }
 }
 
 body {
@@ -97,14 +110,62 @@ input[type="number"] {
 
 .radio-group {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
 .radio-option {
-    display: flex;
+    position: relative;
+}
+
+.radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-option label {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    border: 2px solid var(--input-border);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.radio-option input[type="radio"]:checked + label {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+    color: var(--button-text);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.radio-option input[type="radio"]:focus + label {
+    box-shadow: 0 0 0 2px var(--button-bg);
+}
+
+.radio-option:hover label {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
 input[type="radio"] {
