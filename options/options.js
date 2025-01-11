@@ -210,7 +210,13 @@ document.addEventListener('DOMContentLoaded', function() {
     async function handleNewCourseSubmission(e) {
         e.preventDefault();
         const formData = {};
-        // check if course number is onlydigits and 2 points
+        NewCourseNumberInput.value = NewCourseNumberInput.value.trim();
+        // check if course number is in the format of digits and 2 dashes
+        if (NewCourseNumberInput.value.match(/^\d{3}-\d{1}-\d{4}$/)) {
+            NewCourseNumberInput.value = NewCourseNumberInput.value.replace(/-/g, '.');
+        }
+
+        // check if course number is only digits and 2 points
         if (!NewCourseNumberInput.value.match(/^\d{3}\.\d{1}\.\d{4}$/)) {
             showToast('Invalid course number', 'מספר קורס לא תקין');
             return;
