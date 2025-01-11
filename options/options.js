@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let coursesForm = document.getElementById("courses_form");
         if (!coursesForm) {
             coursesForm = document.createElement("div");
-            coursesForm.id = "courses_form"; 
+            coursesForm.id = "courses_form";  
             form.insertBefore(coursesForm, form.children[-1]);
             const savedCoursesLabel = document.createElement("label");
             savedCoursesLabel.id = "saved_courses_label";
