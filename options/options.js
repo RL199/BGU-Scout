@@ -24,7 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
             header1: "Options",
             add_course_button: "Add",
             remove_course_button: "Remove",
-            saved_courses: "Saved Course Numbers:"
+            saved_courses: "Saved Course Numbers:",
+            disclaimer: `*Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
+            Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
         he: {
             options: "אפשרויות",
@@ -43,7 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
             header1: "אפשרויות",
             add_course_button: "הוסף",
             remove_course_button: "הסר",
-            saved_courses: "מספרי קורסים שנשמרו:"
+            saved_courses: "מספרי קורסים שנשמרו:",
+            disclaimer: `*לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
+            הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
         }
     };
 
@@ -263,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!coursesForm) {
             coursesForm = document.createElement("div");
             coursesForm.id = "courses_form";
-            document.querySelector(".container").appendChild(coursesForm);
+            form.insertBefore(coursesForm, form.children[-1]);
             const savedCoursesLabel = document.createElement("label");
             savedCoursesLabel.id = "saved_courses_label";
             savedCoursesLabel.setAttribute('data-i18n', 'saved_courses');
