@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById("popup_form");
     const yearInput = document.getElementById("year");
 
-    // Add this at the beginning of the DOMContentLoaded event listener
     chrome.storage.sync.get(['theme', 'lang'], function(result) {
         if (result.theme && result.theme !== 'system') {
             document.documentElement.setAttribute('data-theme', result.theme);
@@ -20,6 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (result.lang) {
             document.documentElement.setAttribute('data-lang', result.lang);
+        }
+        else {
+            const lang = navigator.language.split('-')[0];
+            document.documentElement.setAttribute('data-lang', lang);
         }
     });
 
