@@ -10,13 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add this at the beginning of the DOMContentLoaded event listener
     chrome.storage.sync.get(['theme', 'lang'], function(result) {
-        if (result.theme) {
-            if (result.theme === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                document.documentElement.setAttribute('data_theme', prefersDark ? 'dark' : 'light');
-            } else {
-                document.documentElement.setAttribute('data_theme', result.theme);
-            }
+        if (result.theme && result.theme !== 'system') {
+            document.documentElement.setAttribute('data-theme', result.theme);
+        }
+        else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
         }
 
         if (result.lang) {

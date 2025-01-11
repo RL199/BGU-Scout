@@ -15,7 +15,7 @@
     --select-arrow: url('/images/select_icon_light_mode.png');
 }
 
-[data_theme="dark"] {
+[data-theme="dark"] {
     --h1-color: #f49b55;
     --bg-color: #2a2d2f;
     --container-bg: #1f2122;
