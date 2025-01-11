@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showToast(enMessage, hebMessage) {
         translations['en']['options_saved'] = enMessage;
         translations['he']['options_saved'] = hebMessage;
-        apply_lang(document.documentElement.getAttribute('data_lang'));
+        apply_lang(document.documentElement.getAttribute('data-lang'));
         toast.classList.add('show');
         setTimeout(() => {
             toast.classList.remove('show');
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addButtonText = 'Add';
             removeButtonText = 'Remove';
         }
-        document.documentElement.setAttribute('data_lang', lang);
+        document.documentElement.setAttribute('data-lang', lang);
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const savedCoursesLabel = document.createElement("label");
             savedCoursesLabel.id = "saved_courses_label";
             savedCoursesLabel.setAttribute('data-i18n', 'saved_courses');
-            savedCoursesLabel.textContent = translations[document.documentElement.getAttribute('data_lang')]['saved_courses'];
+            savedCoursesLabel.textContent = translations[document.documentElement.getAttribute('data-lang')]['saved_courses'];
             coursesForm.appendChild(savedCoursesLabel);
         }
 

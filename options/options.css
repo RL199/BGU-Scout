@@ -35,7 +35,7 @@
     }
 }
 
-[data_lang="he"] {
+[data-lang="he"] {
     direction: rtl;
     text-align: right;
     .container_he {
@@ -50,7 +50,7 @@
     }
 }
 
-[data_lang="en"] {
+[data-lang="en"] {
     direction: ltr;
     text-align: left;
     .container_he {
