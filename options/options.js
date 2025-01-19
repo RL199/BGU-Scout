@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             language: "Language:",
             save: "Save",
             forgot_password: "Forgot Password",
-            options_saved: "Options Saved",
+            toast_message: "",
             add_course_number: "Add Course Number:",
             header1: "Options",
             add_course_button: "Add",
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             language: "שפה:",
             save: "שמור",
             forgot_password: "שכחתי סיסמה",
-            options_saved: "האפשרויות נשמרו",
+            toast_message: "",
             add_course_number: "הוסף מספר קורס:",
             header1: "אפשרויות",
             add_course_button: "הוסף",
@@ -51,10 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    function showToast(enMessage, hebMessage) {
-        translations['en']['options_saved'] = enMessage;
-        translations['he']['options_saved'] = hebMessage;
+    function showToast(enMessage, hebMessage, type) {
+        translations['en']['toast_message'] = enMessage;
+        translations['he']['toast_message'] = hebMessage;
         apply_lang(document.documentElement.getAttribute('data-lang'));
+        let toastType = type === 'success' ? 'success' : type === 'error' ? 'error' : 'other';
+        // Set toast shadow color
+        document.documentElement.style.setProperty('--toast-shadow-color', `var(--${toastType}-shadow-color)`);
         toast.classList.add('show');
         setTimeout(() => {
             toast.classList.remove('show');
@@ -142,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Save data to Chrome storage
         chrome.storage.sync.set(formData, function() {
             console.log('Options saved');
-            showToast('Options saved', 'האפשרויות נשמרו');
+            showToast('Options saved', 'האפשרויות נשמרו', 'success');
         });
     });
 
@@ -222,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // check if course number is only digits and 2 points
         if (!NewCourseNumberInput.value.match(/^\d{3}\.\d{1}\.\d{4}$/)) {
-            showToast('Invalid course number', 'מספר קורס לא תקין');
+            showToast('Invalid course number', 'מספר קורס לא תקין', 'error');
             return;
         }
 
@@ -231,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const courseNumbers = result.saved_course_numbers ? result.saved_course_numbers.split(',') : [];
 
             if (courseNumbers.includes(NewCourseNumberInput.value)) {
-                showToast('Course number already exists', 'מספר הקורס כבר קיים');
+                showToast('Course number already exists', 'מספר הקורס כבר קיים', 'error');
                 return;
             }
 
@@ -249,11 +252,11 @@ document.addEventListener('DOMContentLoaded', function() {
             NewCourseNumberInput.dispatchEvent(event);
 
             addCourseNumberLine(formData.saved_course_numbers.split(',').pop());
-            showToast('Course number added', 'מספר הקורס נוסף');
+            showToast('Course number added', 'מספר הקורס נוסף', 'success');
 
         } catch (error) {
             console.error('Error handling course submission:', error);
-            showToast('Error saving course', 'שגיאה בשמירת הקורס');
+            showToast('Error saving course', 'שגיאה בשמירת הקורס', 'error');
         }
     }
 
@@ -266,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let coursesForm = document.getElementById("courses_form");
         if (!coursesForm) {
             coursesForm = document.createElement("div");
-            coursesForm.id = "courses_form";   
+            coursesForm.id = "courses_form";
             form.insertBefore(coursesForm, form.children[-1]);
             const savedCoursesLabel = document.createElement("label");
             savedCoursesLabel.id = "saved_courses_label";

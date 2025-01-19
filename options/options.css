@@ -12,6 +12,10 @@
     --toast-text: #ffffff;
     --button-start-color: #f7941e;
     --button-end-color: #ffd38064;
+    --toast-shadow-color: #333333;
+    --success-shadow-color: #4caf50;
+    --error-shadow-color: #f44336;
+    --other-shadow-color: #f49b55;
     --select-arrow: url('/images/select_icon_light_mode.png');
 }
 
@@ -177,6 +181,7 @@ input:hover, select:hover {
     margin-top: 0.5rem;
     margin-left: -0.4rem;
     margin-right: -0.4rem;
+    margin-bottom: 1.5rem;
 }
 
 #forgot_password:hover {
@@ -192,12 +197,21 @@ input:hover, select:hover {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--toast-bg);
-    color: var(--toast-text);
+    background-color: var(--container-bg);
+    border: 1px solid var(--box-border);
+    color: var(--text-color);
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: all 0.3s ease;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08),
+        0 0 5px var(--toast-shadow-color),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px);
+    transform-origin: bottom center;
+    transform: translateX(-50%) translateY(10px);
 }
 
 .toast.show {
@@ -235,15 +249,14 @@ input:hover, select:hover {
 }
 
 #saved_courses_label {
-    font-size: 1rem;
-    margin-top: 1rem;
+    font-size: medium;
+    margin-top: 0rem;
     margin-bottom: 0rem;
 }
 
 #courses_form {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
     margin-top: 1rem;
 }
 
