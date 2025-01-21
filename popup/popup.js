@@ -111,11 +111,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     yearInput.addEventListener('wheel', (event) => {
-        event.preventDefault();
-        if (event.deltaY < 0) {
-            yearInput.stepUp();
-        } else {
-            yearInput.stepDown();
+        if (document.activeElement === yearInput) {
+            event.preventDefault();
+            if (event.deltaY < 0) {
+                yearInput.stepUp();
+            } else {
+                yearInput.stepDown();
+            }
         }
     });
 
