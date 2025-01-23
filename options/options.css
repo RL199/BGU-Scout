@@ -16,7 +16,7 @@
     --success-shadow-color: #4caf50;
     --error-shadow-color: #f44336;
     --other-shadow-color: #f49b55;
-    --select-arrow: url('/images/select_icon_light_mode.png');
+    --select-arrow: url("/images/select_icon_light_mode.png");
 }
 
 [data-theme="dark"] {
@@ -33,8 +33,9 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
-    --select-arrow: url('/images/select_icon_dark_mode.png');
-    ::-ms-reveal{
+    --select-arrow: url("/images/select_icon_dark_mode.png");
+
+    ::-ms-reveal {
         filter: invert(100%);
     }
 }
@@ -42,12 +43,15 @@
 [data-lang="he"] {
     direction: rtl;
     text-align: right;
+
     .container_he {
         display: initial;
     }
+
     .container_en {
         display: none;
     }
+
     #remove_course_button {
         margin-left: 0rem;
         margin-right: 0.2rem;
@@ -57,12 +61,15 @@
 [data-lang="en"] {
     direction: ltr;
     text-align: left;
+
     .container_he {
         display: none;
     }
+
     .container_en {
         display: initial;
     }
+
     #remove_course_button {
         margin-left: 0.2rem;
         margin-right: 0rem;
@@ -145,12 +152,14 @@ select {
     height: 36px;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     outline: none;
     border-color: var(--button-bg);
 }
 
-input:hover, select:hover {
+input:hover,
+select:hover {
     opacity: 0.9;
     filter: brightness(99%);
 }
@@ -204,11 +213,9 @@ input:hover, select:hover {
     border-radius: 8px;
     opacity: 0;
     transition: all 0.3s ease;
-    box-shadow:
-        0 4px 6px rgba(0, 0, 0, 0.1),
-        0 1px 3px rgba(0, 0, 0, 0.08),
-        0 0 5px var(--toast-shadow-color),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08),
+        0 0 5px var(--toast-shadow-color), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
     transform-origin: bottom center;
     transform: translateX(-50%) translateY(10px);
@@ -218,7 +225,8 @@ input:hover, select:hover {
     opacity: 1;
 }
 
-#remove_course_button, #add_course_button {
+#remove_course_button,
+#add_course_button {
     padding: 0.5rem;
     background-color: var(--button-bg);
     color: var(--button-text);
@@ -239,11 +247,13 @@ input:hover, select:hover {
     font-size: 0;
 }
 
-#remove_course_button:hover, #add_course_button:hover {
+#remove_course_button:hover,
+#add_course_button:hover {
     opacity: 0.9;
 }
 
-#remove_course_button:active, #add_course_button:active {
+#remove_course_button:active,
+#add_course_button:active {
     transform: scale(0.95);
     transition: transform 0.1s;
 }

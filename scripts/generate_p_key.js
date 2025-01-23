@@ -1,22 +1,55 @@
-//open the site https://bgu4u22.bgu.ac.il/apex/10g/r/f_login1004/login_desktop?p_lang=
-//and fill the form with the user_name and password and id
-//then click on the login button
+/*
+1.connect to the page of the university
+2.login to the page
+3.collect the primary key.
 
-//open silent tab
-chrome.tabs.create({
-    url: 'https://bgu4u22.bgu.ac.il/apex/10g/r/f_login1004/login_desktop?p_lang=',
-    active: false
-}, function(tab) {
-    // Tab opened silently, you can now interact with it if needed
-    console.log('Tab opened silently with ID:', tab.id);
+*/
 
-    // Optionally, you can execute a script in the newly opened tab
-    chrome.tabs.executeScript(tab.id, {
-        code: `
-            document.getElementById('user_name').value = 'your_username';
-            document.getElementById('password').value = 'your_password';
-            document.getElementById('id').value = 'your_id';
-            document.getElementById('login_button').click();
-        `
+function loginUniversity(){
+    chrome.storage.sync.get(['user_name', 'id', 'password'], function (result) {
+        //extract result credentials from storage
+        const credentials = {
+            username: result.user_name,
+            password: result.password,
+            userId: result.id
+        };
+        fillLoginForm(credentials);
     });
-});
+}
+
+async function fillLoginForm(credentials) {
+    console.log('Starting to fill form with:', credentials);
+
+    // Set the values directly
+    const setFieldValue = (fieldName, value) => {
+        const field = document.querySelector(`input[name="${fieldName}"]`);
+        if (field) {
+            field.value = value;
+            // Trigger events to ensure form updates
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log(`Set ${fieldName} value`);
+        } else {
+            console.log(`Field ${fieldName} not found`);
+        }
+    };
+
+    // Fill each field
+    setFieldValue('P101_X1', credentials.username);
+    setFieldValue('P101_X2', credentials.password);
+    setFieldValue('P101_X3', credentials.userId);
+
+    // Click login button
+    setTimeout(() => {
+        const loginButton = document.querySelector('button[id="P101_LOGIN"]');
+        if (loginButton) {
+            loginButton.click();
+            console.log('Clicked login button');
+        } else {
+            console.log('Login button not found');
+        }
+    }, 500);
+    await chrome.storage.local.set({ allowRedirect: true });
+}
+
+loginUniversity();
