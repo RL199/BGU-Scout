@@ -24,12 +24,12 @@ function checkForRedirect() {
         const html = document.documentElement.innerHTML;
         const pKeyMatch = html.match(/p_key=([A-Z0-9]+)/);
         if (pKeyMatch) {
+            chrome.storage.local.set({ allowRedirect: false });
             const pKey = pKeyMatch[1];
             chrome.runtime.sendMessage({
                 type: 'P_KEY_FOUND',
                 pKey
             });
-            chrome.storage.local.set({ allowRedirect: false });
         }
     }
 }
@@ -38,23 +38,10 @@ function checkForRedirect() {
 document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.local.get(['allowRedirect'], function (result) {
         if (result.allowRedirect) {
-            debugger;
             setTimeout(() => {
                 chrome.storage.local.set({ allowRedirect: false });
-            }, 100000);
+            }, 10000);
             checkForRedirect();
         }
     });
 });
-
-// Also check immediately in case DOM is already loaded
-if (document.readyState === 'complete') {
-    chrome.storage.local.get(['allowRedirect'], function (result) {
-        if (result.allowRedirect) {
-            setTimeout(() => {
-                chrome.storage.local.set({ allowRedirect: false });
-            }, 100000);
-            checkForRedirect();
-        }
-    });
-}

@@ -35,10 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "p_key",
             "year",
             "semester",
-            "exam_quiz",
-            "department",
-            "degree",
-            "course_number",
+            "exam_quiz"
         ],
         function (result) {
             if (result.p_key) document.getElementById("p_key").value = result.p_key;
@@ -54,18 +51,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     );
 
-    chrome.storage.sync.get(["saved_course_numbers"], function (result) {
-        const courseSelect = document.getElementById("course_number");
-        if (result.saved_course_numbers) {
-            const courseNumbers = result.saved_course_numbers.split(",");
-            courseNumbers.forEach((number) => {
-                const option = document.createElement("option");
-                option.value = number;
-                option.textContent = number;
-                courseSelect.appendChild(option);
-            });
-        }
-    });
+    chrome.storage.sync.get(
+        [
+            "saved_course_numbers",
+            "course_number"
+        ],
+        function (result) {
+            const courseSelect = document.getElementById("course_number");
+            if (result.saved_course_numbers) {
+                const courseNumbers = result.saved_course_numbers.split(",");
+                courseNumbers.forEach((number) => {
+                    const option = document.createElement("option");
+                    option.value = number;
+                    option.textContent = number;
+                    courseSelect.appendChild(option);
+                });
+            }
+            if (result.course_number) {
+                courseSelect.value = result.course_number;
+            }
+        });
 
     openLoginBtn.addEventListener("click", function () {
         chrome.tabs.create({
@@ -124,13 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
             semester: document.querySelector('input[name="semester"]:checked')?.value,
             exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')
                 ?.value,
-            ...document
-                .getElementById("course_number")
-                .value.split(".")
-                .reduce((acc, val, index) => {
-                    acc[["department", "degree", "course_number"][index]] = val;
-                    return acc;
-                }, {}),
+            course_number: document.getElementById("course_number").value
         };
 
         chrome.storage.sync.set(formData, function () {
@@ -164,13 +163,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     files: ["scripts/generate_p_key.js"],
                 });
             } catch (error) {
-                console.error("Failed to send message:", error);
+                console.error(error);
                 chrome.tabs.remove(tabId);
             }
         } catch (error) {
             console.error("Error:", error);
-        } finally {
-            console.log("Finally finished");
+        }
+    });
+
+    chrome.runtime.onMessage.addListener(function (message) {
+        if (message.type === "P_KEY_FOUND") {
+            document.getElementById("p_key").value = message.pKey;
             setGenerateStyle(false);
         }
     });
