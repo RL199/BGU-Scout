@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.sync.get(
         [
             "saved_course_numbers",
-            "course_number"
+            "full_course_number"
         ],
         function (result) {
             const courseSelect = document.getElementById("course_number");
@@ -67,8 +67,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     courseSelect.appendChild(option);
                 });
             }
-            if (result.course_number) {
-                courseSelect.value = result.course_number;
+            if (result.full_course_number) {
+                courseSelect.value = result.full_course_number;
             }
         });
 
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             getStorageData("exam_quiz"),
             getStorageData("department"),
             getStorageData("degree"),
-            getStorageData("course_number"),
+            getStorageData("course"),
         ]).then((results) => {
             const [
                 p_key,
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 exam_quiz,
                 department,
                 degree,
-                course_number,
+                course
             ] = results.map((r) => Object.values(r)[0]);
 
             const url =
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 `/grade=${exam_quiz}` +
                 `/list_department=*${department}@` +
                 `/list_degree_level=*${degree}@` +
-                `/list_course=*${course_number}@` +
+                `/list_course=*${course}@` +
                 `/LIST_GROUP=*@` +
                 `/P_FOR_STUDENT=1`;
 
@@ -129,7 +129,14 @@ document.addEventListener("DOMContentLoaded", function () {
             semester: document.querySelector('input[name="semester"]:checked')?.value,
             exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')
                 ?.value,
-            course_number: document.getElementById("course_number").value
+            ...document
+                .getElementById("course_number")
+                .value.split(".")
+                .reduce((acc, val, index) => {
+                    acc[["department", "degree", "course"][index]] = val;
+                    return acc;
+                }, {}),
+            full_course_number: document.getElementById("course_number").value,
         };
 
         chrome.storage.sync.set(formData, function () {
