@@ -1,6 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Get elements
     const openLoginBtn = document.getElementById("open_login");
     const openGraphBtn = document.getElementById("open_graph");
     const generatePKeyBtn = document.getElementById("generate_p_key");
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("popup_form");
     const yearInput = document.getElementById("year");
 
+    // Set theme and language
     chrome.storage.sync.get(["theme", "lang"], function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
@@ -72,12 +74,14 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
+    // Open login page
     openLoginBtn.addEventListener("click", function () {
         chrome.tabs.create({
             url: "https://bgu4u22.bgu.ac.il/apex/f?p=104:LOGIN_DESKTOP",
         });
     });
 
+    // Open graph
     openGraphBtn.addEventListener("click", function () {
         const getStorageData = (key) =>
             new Promise((resolve) => chrome.storage.sync.get(key, resolve));
@@ -120,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Save form data
     let savedCount = 0;
     form.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -160,7 +165,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Generate primary key
     generatePKeyBtn.addEventListener("click", async function () {
+        chrome.storage.sync.get(["user_name", "id", "password"], function (result) {
+            if (!result.user_name || !result.id || !result.password) {
+                alert("Please fill in your credentials in the options page.");
+                chrome.runtime.openOptionsPage();
+                return;
+            }
+        });
         try {
             setGenerateStyle(true);
             const tabId = await openBGUTab();
@@ -178,13 +191,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Listen for primary key generation
     chrome.runtime.onMessage.addListener(function (message) {
         if (message.type === "P_KEY_FOUND") {
             document.getElementById("p_key").value = message.pKey;
             setGenerateStyle(false);
         }
+        else if (message.type === "P_KEY_NOT_FOUND") {
+            alert("Failed to generate primary key. Please try again.");
+            setGenerateStyle(false);
+        }
     });
 
+    // Set loading style for generate primary key button
     const setGenerateStyle = (loading) => {
         if (loading) {
             generatePKeyBtn.classList.add("generating");
@@ -195,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+    // Year input wheel event
     yearInput.addEventListener("wheel", (event) => {
         if (document.activeElement === yearInput) {
             event.preventDefault();
@@ -206,11 +226,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Open options page
     openOptionsBtn.addEventListener("click", function () {
         chrome.runtime.openOptionsPage();
     });
 });
 
+// Open BGU tab
 async function openBGUTab() {
     try {
         // Create new tab

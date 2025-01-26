@@ -5,9 +5,10 @@
 
 */
 
-function loginUniversity(){
+function loginUniversity() {
     chrome.storage.sync.get(['user_name', 'id', 'password'], function (result) {
         //extract result credentials from storage
+
         const credentials = {
             username: result.user_name,
             password: result.password,
@@ -40,16 +41,35 @@ async function fillLoginForm(credentials) {
     setFieldValue('P101_X3', credentials.userId);
 
     // Click login button
-    setTimeout(() => {
-        const loginButton = document.querySelector('button[id="P101_LOGIN"]');
-        if (loginButton) {
-            loginButton.click();
-            console.log('Clicked login button');
-        } else {
-            console.log('Login button not found');
-        }
-    }, 500);
+    const loginButton = document.querySelector('button[id="P101_LOGIN"]');
+    if (loginButton) {
+        loginButton.click();
+        console.log('Clicked login button');
+    } else {
+        console.error('Login button not found');
+        chrome.runtime.sendMessage({
+            type: 'P_KEY_NOT_FOUND'
+        });
+    }
     await chrome.storage.local.set({ allowRedirect: true });
 }
 
-loginUniversity();
+//check if the fields are present and then login.
+const intervalId = setInterval(() => {
+    if (document.querySelector('input[name="P101_X1"]')
+        && document.querySelector('input[name="P101_X2"]')
+        && document.querySelector('input[name="P101_X3"]')
+        && document.querySelector('button[id="P101_LOGIN"]')) {
+        loginUniversity();
+        clearInterval(intervalId);
+    }
+}, 500);
+
+// Timeout after 100 seconds
+setTimeout(() => {
+    clearInterval(intervalId);
+    console.error('Form fields not found');
+    chrome.runtime.sendMessage({
+        type: 'P_KEY_NOT_FOUND'
+    });
+}, 100000);
