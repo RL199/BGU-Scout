@@ -94,9 +94,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Load saved options
-    chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_course_numbers'], function(result) {
+    chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_course_numbers', 'password'], function(result) {
         if (result.user_name) document.getElementById('user_name').value = result.user_name;
         if (result.id) document.getElementById('id').value = result.id;
+        if (result.password) document.getElementById('password').value = result.password;
         if (result.theme) {
             theme_select.value = result.theme;
             apply_theme(result.theme);
@@ -133,14 +134,13 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Gather form data
-        const formData = {
-            user_name: document.getElementById('user_name').value,
-            password: document.getElementById('password').value,
-            id: document.getElementById('id').value,
-            theme: theme_select.value,
-            lang: lang_select.value,
-        };
+        const formData = {};
+
+        if(!(document.getElementById('user_name').value.trim() === '')) formData.user_name = document.getElementById('user_name').value;
+        if(!(document.getElementById('id').value.trim() === '')) formData.id = document.getElementById('id').value;
+        if(!(document.getElementById('password').value.trim() === '')) formData.password = document.getElementById('password').value;
+
+        console.log('Form data:', formData);
 
         // Save data to Chrome storage
         chrome.storage.sync.set(formData, function() {

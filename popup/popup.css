@@ -12,7 +12,7 @@
     --toast-text: #ffffff;
     --button-start-color: #f7941e;
     --button-end-color: #ffd38064;
-    --select-arrow: url('/images/select_icon_light_mode.png');
+    /*--select-arrow: url('/images/select_icon_light_mode.png');*/
 }
 
 [data-theme="dark"] {
@@ -29,8 +29,9 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
-    --select-arrow: url('/images/select_icon_dark_mode.png');
-    ::-ms-reveal{
+
+    /*--select-arrow: url('/images/select_icon_dark_mode.png');*/
+    ::-ms-reveal {
         filter: invert(100%);
     }
 }
@@ -140,7 +141,7 @@ input[type="number"] {
     transition: all 0.3s ease;
 }
 
-.radio-option input[type="radio"]:checked + label {
+.radio-option input[type="radio"]:checked+label {
     background-color: var(--button-bg);
     border-color: var(--button-bg);
     color: var(--button-text);
@@ -148,7 +149,7 @@ input[type="number"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.radio-option input[type="radio"]:focus + label {
+.radio-option input[type="radio"]:focus+label {
     box-shadow: 0 0 0 2px var(--button-bg);
 }
 
@@ -172,7 +173,7 @@ input[type="radio"] {
     margin: 0;
 }
 
-input[type="radio"] + label {
+input[type="radio"]+label {
     margin: 0;
     font-size: 14px;
 }
@@ -187,4 +188,11 @@ input[type="radio"] + label {
     color: var(--h1-color);
     margin-top: 8px;
     font-size: 14px;
+}
+
+.generating {
+    cursor: wait;
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
 }

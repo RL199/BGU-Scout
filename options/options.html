@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,25 +8,26 @@
     <link rel="stylesheet" href="options.css" />
     <title id="title">BGU Courses Options</title>
 </head>
+
 <body>
     <div class="container">
         <h1 data-i18n="header1"></h1>
         <form id="options_form">
             <div class="form_group">
                 <label for="user_name" data-i18n="user_name"></label>
-                <input type="text" id="user_name" name="user_name" autofocus>
+                <input type="text" id="user_name" name="user_name" aria-label="Username" autofocus>
             </div>
             <div class="form_group">
                 <label for="password" data-i18n="password"></label>
-                <input type="password" id="password" name="password" >
+                <input type="password" id="password" name="password" aria-label="Password">
             </div>
             <div class="form_group">
                 <label for="id" data-i18n="id"></label>
-                <input type="text" id="id" name="id" >
+                <input type="text" id="id" name="id" aria-label="ID">
             </div>
             <div class="form_group">
                 <label for="theme" data-i18n="theme"></label>
-                <select id="theme" name="theme">
+                <select id="theme" name="theme" aria-label="Theme">
                     <option value="system" data-i18n="system"></option>
                     <option value="light" data-i18n="light"></option>
                     <option value="dark" data-i18n="dark"></option>
@@ -33,18 +35,18 @@
             </div>
             <div class="form_group">
                 <label for="language" data-i18n="language"></label>
-                <select id="language" name="language">
+                <select id="language" name="language" aria-label="Language">
                     <option value="system" data-i18n="system"></option>
                     <option value="he">עברית</option>
                     <option value="en">English</option>
                 </select>
             </div>
-            <button type="submit" data-i18n="save" id="save_button"></button>
-            <button id="forgot_password" data-i18n="forgot_password"></button>
+            <button type="submit" data-i18n="save" id="save_button" aria-label="Save" ></button>
+            <button type="button" id="forgot_password" data-i18n="forgot_password" aria-label="Forgot password"></button>
             <div class="form_group">
                 <label for="add_course_number" data-i18n="add_course_number"></label>
-                <input type="text" id="add_course_number" name="add_course_number">
-                <button id="add_course_button" data-i18n="add_course_button"></button>
+                <input type="text" id="add_course_number" name="add_course_number" aria-label="Course Number">
+                <button type="button" id="add_course_button" data-i18n="add_course_button" aria-label="Add course"></button>
             </div>
             <form id="courses_form">
             </form>
@@ -54,4 +56,5 @@
     <div id="toast" class="toast" data-i18n="toast_message"></div>
     <script src="options.js"></script>
 </body>
+
 </html>

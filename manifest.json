@@ -9,7 +9,7 @@
         "48": "images/icon-48.png",
         "128": "images/icon-128.png"
     },
-    "permissions": ["storage", "tabs", "activeTab"],
+    "permissions": ["storage", "tabs", "activeTab", "scripting"],
     "optional_permissions": [],
     "options_page": "options/options.html",
     "action": {
@@ -35,7 +35,8 @@
                 "https://bgu4u22.bgu.ac.il/*",
                 "https://reports4u22.bgu.ac.il/*"
             ],
-            "js": ["scripts/content.js"]
+            "js": ["scripts/content.js"],
+            "run_at": "document_start"
         }
     ]
 }
