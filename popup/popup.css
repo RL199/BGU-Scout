@@ -35,7 +35,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
-    padding: 16px;
+    padding: 8px;
     min-width: 280px;
     max-width: 320px;
 }
@@ -43,20 +43,20 @@ body {
 .container {
     background-color: var(--container-bg);
     border-radius: 8px;
-    padding: 16px;
+    padding: 12px;
 }
 
 h1 {
     color: var(--h1-color);
     text-align: center;
-    margin: 0 0 20px 0;
-    font-size: 24px;
+    margin: 0 0 8px 0;
+    font-size: 32px;
 }
 
 .button-group {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 button {
@@ -86,7 +86,7 @@ hr {
 
 label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text-color);
     font-size: 14px;
 }
@@ -124,12 +124,12 @@ input[type="number"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 0;
+    min-width: 25px;
+    height: 25px;
+    padding: 4px;
     border-radius: 8px;
     background-color: var(--input-bg);
-    border: 2px solid var(--input-border);
+    border: 1px solid var(--input-border);
     color: var(--text-color);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -139,17 +139,6 @@ input[type="number"] {
     background-color: var(--button-bg);
     border-color: var(--button-bg);
     color: var(--button-text);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.radio-option input[type="radio"]:focus+label {
-    box-shadow: 0 0 0 2px var(--button-bg);
-}
-
-.radio-option:hover label {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 select {
@@ -189,4 +178,23 @@ input[type="radio"]+label {
     opacity: 0.7;
     pointer-events: none;
     position: relative;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--button-bg);
+}
+
+input:hover,
+select:hover,
+button:hover,
+.radio-option label:hover {
+    opacity: 0.9;
+    filter: brightness(98%);
+    transition: all 0.3s ease;
 }
