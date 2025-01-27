@@ -135,10 +135,18 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         const formData = {};
+        const id = document.getElementById('id').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const user_name = document.getElementById('user_name').value.trim();
 
-        if(!(document.getElementById('user_name').value.trim() === '')) formData.user_name = document.getElementById('user_name').value;
-        if(!(document.getElementById('id').value.trim() === '')) formData.id = document.getElementById('id').value;
-        if(!(document.getElementById('password').value.trim() === '')) formData.password = document.getElementById('password').value;
+        if(!IDValidator(id) && id.trim() !== '') {
+            showToast('Invalid ID', 'מספר זהות לא תקין', 'error');
+            return;
+        }
+
+        if (user_name !== '') formData.user_name = user_name;
+        if (id !== '') formData.id = id;
+        if (password !== '') formData.password = password;
 
         console.log('Form data:', formData);
 
@@ -324,3 +332,15 @@ document.getElementById("forgot_password").addEventListener("click", function() 
     const url = "https://bgu4u.bgu.ac.il/remind/login.php";
     chrome.tabs.create({ url: url });
 });
+
+function IDValidator(id) {
+    if (!id || !Number(id) || id.length !== 9 || isNaN(id)) {  // Make sure ID is formatted properly
+        return false;
+    }
+    let sum = 0;
+    for (let i = 0; i < id.length; i++) {
+        const incNum = Number(id[i]) * ((i % 2) + 1);  // Multiply number by 1 or 2
+        sum += (incNum > 9) ? incNum - 9 : incNum;  // Sum the digits up and add to total
+    }
+    return (sum % 10 === 0);
+}
