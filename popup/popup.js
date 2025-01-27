@@ -169,7 +169,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     courseNumberInput.addEventListener("change", function () {
         const full_course_number = courseNumberInput.value;
-        chrome.storage.sync.set({ full_course_number: full_course_number }, function () {
+        const course_number = full_course_number.split(".");
+        const department = course_number[0];
+        const degree = course_number[1];
+        const course = course_number[2];
+        chrome.storage.sync.set({
+            full_course_number,
+            department,
+            degree,
+            course,
+        }, function () {
             console.log("Course number saved:", full_course_number);
         });
     });
@@ -180,8 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
             p_key: document.getElementById("p_key").value,
             year: yearInput.value,
             semester: document.querySelector('input[name="semester"]:checked')?.value,
-            exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')
-                ?.value,
+            exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')?.value,
             ...document
                 .getElementById("course_number")
                 .value.split(".")
