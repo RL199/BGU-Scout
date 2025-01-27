@@ -326,12 +326,28 @@ document.addEventListener('DOMContentLoaded', function() {
         lineContainer.appendChild(removeCourseButton);
         coursesForm.appendChild(lineContainer);
     }
+
+    // Handle enter key press on course number input
+    NewCourseNumberInput.addEventListener('keyup', function (event) {
+        if (event.key === 'Enter' && !addCourseButton.disabled) {
+            event.preventDefault();
+            handleNewCourseSubmission(event);
+        }
+    });
+
+    // Prevent form submission on enter key press in course number input
+    form.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && document.activeElement === NewCourseNumberInput) {
+            event.preventDefault(); // Prevent form submission
+        }
+    });
 });
 
 document.getElementById("forgot_password").addEventListener("click", function() {
     const url = "https://bgu4u.bgu.ac.il/remind/login.php";
     chrome.tabs.create({ url: url });
 });
+
 
 function IDValidator(id) {
     if (!id || !Number(id) || id.length !== 9 || isNaN(id)) {  // Make sure ID is formatted properly
