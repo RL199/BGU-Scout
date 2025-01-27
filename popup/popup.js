@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const openOptionsBtn = document.getElementById("open_options");
     const form = document.getElementById("popup_form");
     const yearInput = document.getElementById("year");
+    const semesterInput = document.getElementById("semester");
+    const examInput = document.getElementById("exam");
+    const quizInput = document.getElementById("quiz");
+    const courseNumberInput = document.getElementById("course_number");
 
     // Set theme and language
     chrome.storage.sync.get(["theme", "lang"], function (result) {
@@ -37,7 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
             "p_key",
             "year",
             "semester",
-            "exam_quiz"
+            "exam_quiz",
+            "saved_course_numbers",
+            "full_course_number"
         ],
         function (result) {
             if (result.p_key) document.getElementById("p_key").value = result.p_key;
@@ -50,15 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.querySelector(
                     `input[name="exam_quiz"][value="${result.exam_quiz}"]`
                 ).checked = true;
-        }
-    );
 
-    chrome.storage.sync.get(
-        [
-            "saved_course_numbers",
-            "full_course_number"
-        ],
-        function (result) {
             const courseSelect = document.getElementById("course_number");
             if (result.saved_course_numbers) {
                 const courseNumbers = result.saved_course_numbers.split(",");
@@ -72,7 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (result.full_course_number) {
                 courseSelect.value = result.full_course_number;
             }
-        });
+        }
+    );
 
     // Open login page
     openLoginBtn.addEventListener("click", function () {
@@ -124,8 +123,57 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Save form data
-    let savedCount = 0;
+    // Year input wheel event
+    yearInput.addEventListener("wheel", (event) => {
+        if (document.activeElement === yearInput) {
+            event.preventDefault();
+            if (event.deltaY < 0) {
+                yearInput.stepUp();
+            } else {
+                yearInput.stepDown();
+            }
+            yearInput.dispatchEvent(new Event("change"));
+        }
+    });
+    // Save year input
+    yearInput.addEventListener("change", function () {
+        const year = yearInput.value;
+        if (year < 1970 || year > new Date().getFullYear()) {
+            return;
+        }
+        chrome.storage.sync.set({ year: year }, function () {
+            console.log("Year saved:", year);
+        });
+    });
+
+    semesterInput.addEventListener("change", function () {
+        const semester = document.querySelector('input[name="semester"]:checked').value;
+        chrome.storage.sync.set({ semester: semester }, function () {
+            console.log("Semester saved:", semester);
+        });
+    });
+
+    examInput.addEventListener("change", function () {
+        const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
+        chrome.storage.sync.set({ exam_quiz: exam_quiz }, function () {
+            console.log("Exam saved:", exam_quiz);
+        });
+    });
+
+    quizInput.addEventListener("change", function () {
+        const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
+        chrome.storage.sync.set({ exam_quiz: exam_quiz }, function () {
+            console.log("Quiz saved:", exam_quiz);
+        });
+    });
+
+    courseNumberInput.addEventListener("change", function () {
+        const full_course_number = courseNumberInput.value;
+        chrome.storage.sync.set({ full_course_number: full_course_number }, function () {
+            console.log("Course number saved:", full_course_number);
+        });
+    });
+
     form.addEventListener("submit", function (event) {
         event.preventDefault();
         const formData = {
@@ -213,18 +261,6 @@ document.addEventListener("DOMContentLoaded", function () {
             generatePKeyBtn.textContent = "Generate Primary Key";
         }
     };
-
-    // Year input wheel event
-    yearInput.addEventListener("wheel", (event) => {
-        if (document.activeElement === yearInput) {
-            event.preventDefault();
-            if (event.deltaY < 0) {
-                yearInput.stepUp();
-            } else {
-                yearInput.stepDown();
-            }
-        }
-    });
 
     // Open options page
     openOptionsBtn.addEventListener("click", function () {

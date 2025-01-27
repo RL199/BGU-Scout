@@ -12,7 +12,6 @@
     --toast-text: #ffffff;
     --button-start-color: #f7941e;
     --button-end-color: #ffd38064;
-    /*--select-arrow: url('/images/select_icon_light_mode.png');*/
 }
 
 [data-theme="dark"] {
@@ -29,11 +28,6 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
-
-    /*--select-arrow: url('/images/select_icon_dark_mode.png');*/
-    ::-ms-reveal {
-        filter: invert(100%);
-    }
 }
 
 body {

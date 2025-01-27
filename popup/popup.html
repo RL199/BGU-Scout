@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="popup.css" />
     <title>BGU Courses</title>
 </head>
+
 <body>
     <div class="container">
         <h1>BGU Courses</h1>
@@ -20,7 +22,7 @@
             <button type="button" id="generate_p_key">Generate Primary Key</button>
             <div class="form-group">
                 <label for="p_key">Primary key:</label>
-                <input type="text" id="p_key" name="p_key">
+                <input type="text" id="p_key" name="p_key" readonly>
             </div>
             <div class="form-group">
                 <label for="year">Year:</label>
@@ -28,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label>Semester:</label>
-                <div class="radio-group">
+                <div class="radio-group" id="semester">
                     <div class="radio-option">
                         <input type="radio" id="first_semester" name="semester" value="1">
                         <label for="first_semester">Fall</label>
@@ -45,7 +47,7 @@
             </div>
             <div class="form-group">
                 <label>Exam Number:</label>
-                <div class="radio-group">
+                <div class="radio-group" id="exam">
                     <div class="radio-option">
                         <input type="radio" id="first_exam" name="exam_quiz" value="1">
                         <label for="first_exam">1</label>
@@ -70,7 +72,7 @@
             </div>
             <div class="form-group">
                 <label>Quiz Number:</label>
-                <div class="radio-group">
+                <div class="radio-group" id="quiz">
                     <div class="radio-option">
                         <input type="radio" id="first_quiz" name="exam_quiz" value="11">
                         <label for="first_quiz">1</label>
@@ -95,9 +97,9 @@
                     <option value="">Select a course</option>
                 </select>
             </div>
-            <button type="submit">Save</button>
         </form>
     </div>
     <script src="popup.js"></script>
 </body>
+
 </html>
