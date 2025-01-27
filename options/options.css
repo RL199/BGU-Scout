@@ -262,22 +262,20 @@ select:hover {
     font-size: medium;
     margin-top: 0rem;
     margin-bottom: 0rem;
+    width: 100%;
 }
 
 #courses_form {
     display: flex;
     flex-wrap: wrap;
     margin-top: 1rem;
+    justify-content: space-between;
+    gap: 0.5rem;
 }
 
 .course_line {
     display: flex;
     width: calc(50% - 0.25rem);
-}
-
-#saved_courses_label {
-    width: 100%;
-    margin-bottom: 0.5rem;
 }
 
 .disclaimer {
