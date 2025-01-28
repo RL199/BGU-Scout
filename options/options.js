@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             system: "System",
             language: "Language:",
             save: "Save",
+            saving: "Saving...",
             forgot_password: "Forgot Password",
             toast_message: "",
             add_course_number: "Add Course Number:",
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             system: "מערכת",
             language: "שפה:",
             save: "שמור",
+            saving: "שומר...",
             forgot_password: "שכחתי סיסמה",
             toast_message: "",
             add_course_number: "הוסף מספר קורס:",
@@ -94,29 +96,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Load saved options
-    chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_course_numbers', 'password'], function(result) {
-        if (result.user_name) document.getElementById('user_name').value = result.user_name;
-        if (result.id) document.getElementById('id').value = result.id;
-        if (result.password) document.getElementById('password').value = result.password;
-        if (result.theme) {
-            theme_select.value = result.theme;
-            apply_theme(result.theme);
-        } else {
-            apply_theme('system');
-        }
-        if (result.lang) {
-            lang_select.value = result.lang;
-            apply_lang(result.lang);
-        } else {
-            apply_lang('system');
-        }
-        if (result.saved_course_numbers) {
-            const courseNumbers = result.saved_course_numbers.split(',');
-            courseNumbers.forEach(course_number => {
-                addCourseNumberLine(course_number);
-            });
-        }
-    });
+    function loadOptions() {
+        chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_course_numbers', 'password'], function(result) {
+            if (result.user_name) document.getElementById('user_name').value = result.user_name;
+            if (result.id) document.getElementById('id').value = result.id;
+            if (result.password) document.getElementById('password').value = result.password;
+            if (result.theme) {
+                theme_select.value = result.theme;
+                apply_theme(result.theme);
+            } else {
+                apply_theme('system');
+            }
+            if (result.lang) {
+                lang_select.value = result.lang;
+                apply_lang(result.lang);
+            } else {
+                apply_lang('system');
+            }
+            if (result.saved_course_numbers) {
+                const courseNumbers = result.saved_course_numbers.split(',');
+                courseNumbers.forEach(course_number => {
+                    addCourseNumberLine(course_number);
+                });
+            }
+        });
+    }
+
+    loadOptions();
 
     theme_select.addEventListener('change', function() {
         const selectedTheme = this.value;
@@ -162,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('Error executing scripts:', error);
                 showToast('Error executing scripts', 'שגיאה בהרצת הסקריפטים', 'error');
+                chrome.tabs.remove(tabId);
                 setLoading(false);
             }
 
@@ -200,8 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function setLoading(loading) {
         const saveButton = document.getElementById('save_button');
         if (loading) {
-            translations['en']['saving'] = 'Saving...';
-            translations['he']['saving'] = 'שומר...';
             saveButton.disabled = true;
             saveButton.style.opacity = '0.7';
             saveButton.style.pointerEvents = 'none';
