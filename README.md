@@ -1,8 +1,8 @@
-# <div align="center">BGU Courses Extension</div>
+# <div align="center">BGU Scout Extension</div>
 
 <div align="center">
-  <a href="https://github.com/RL199/BGU-courses">
-    <img src="https://img.shields.io/github/license/RL199/BGU-courses?style=flat-square" alt="license">
+  <a href="https://github.com/RL199/BGU-Scout">
+    <img src="https://img.shields.io/github/license/RL199/BGU-Scout?style=flat-square" alt="license">
   </a>
 </div>
 
@@ -63,6 +63,7 @@ The extension requires the following permissions:
 - `storage`: For saving user preferences and course numbers
 - `tabs`: For opening BGU websites
 - `activeTab`: For interacting with the current tab
+- `scripting`: For injecting scripts into BGU websites
 - Host permissions for BGU domains:
   - `https://bgu4u22.bgu.ac.il/*`
   - `https://reports4u22.bgu.ac.il/*`

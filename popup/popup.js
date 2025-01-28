@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const translations = {
         en: {
-            header1: "BGU Courses",
             year: "Year",
             semester: "Semester",
             generate_key: "Generate Primary Key",
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
             select_course: "Select Course"
         },
         he: {
-            header1: "קורסי בן גוריון",
             year: "שנה:",
             semester: "סמסטר:",
             generate_key: "צור מפתח",

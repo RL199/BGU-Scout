@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "BGU courses",
+    "name": "BGU Scout",
     "version": "1.0",
     "description": "Display BGU courses graphs",
     "icons": {
@@ -19,7 +19,7 @@
             "48": "images/icon-48.png",
             "128": "images/icon-128.png"
         },
-        "default_title": "BGU courses",
+        "default_title": "BGU Scout",
         "default_popup": "popup/popup.html"
     },
     "host_permissions": [
