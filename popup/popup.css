@@ -56,6 +56,12 @@ h1 {
     text-align: center;
     margin: 0 0 8px 0;
     font-size: 32px;
+    transition: filter 1.5s;
+}
+
+h1:hover {
+    filter: hue-rotate(360deg);
+    transition-delay: 0.5s;
 }
 
 .button-group {
