@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get elements
     const openLoginBtn = document.getElementById("open_login");
     const openGraphBtn = document.getElementById("open_graph");
-    const generatePKeyBtn = document.getElementById("generate_p_key");
+    const generatePKeyBtn = document.getElementById("generate_key");
     const openOptionsBtn = document.getElementById("open_options");
     const form = document.getElementById("popup_form");
     const yearInput = document.getElementById("year");
@@ -12,6 +12,45 @@ document.addEventListener("DOMContentLoaded", function () {
     const examInput = document.getElementById("exam");
     const quizInput = document.getElementById("quiz");
     const courseNumberInput = document.getElementById("course_number");
+
+    const translations = {
+        en: {
+            header1: "BGU Courses",
+            year: "Year",
+            semester: "Semester",
+            generate_key: "Generate Primary Key",
+            options: "Options",
+            login: "Login",
+            graph: "Graph",
+            key: "Key",
+            first_semester: "Fall",
+            second_semester: "Spring",
+            third_semester: "Summer",
+            exam_number: "Exam Number",
+            total_exam: "Total",
+            quiz_number: "Quiz Number",
+            course_number: "Course Number",
+            select_course: "Select Course"
+        },
+        he: {
+            header1: "קורסי בן גוריון",
+            year: "שנה:",
+            semester: "סמסטר:",
+            generate_key: "צור מפתח",
+            options: "אפשרויות",
+            login: "כניסה",
+            graph: "גרף",
+            key: "מפתח:",
+            first_semester: "סתיו",
+            second_semester: "אביב",
+            third_semester: "קיץ",
+            exam_number: "מספר מבחן:",
+            total_exam: "סה\"כ",
+            quiz_number: "מספר בוחן:",
+            course_number: "מספר קורס:",
+            select_course: "בחר קורס"
+        },
+    };
 
     // Set theme and language
     chrome.storage.sync.get(["theme", "lang"], function (result) {
@@ -27,12 +66,19 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
 
-        if (result.lang) {
-            document.documentElement.setAttribute("data-lang", result.lang);
-        } else {
-            const lang = navigator.language.split("-")[0];
-            document.documentElement.setAttribute("data-lang", lang);
+        const lang = result.lang;
+        if (!lang || lang === 'system') {
+            const prefersHebrew = window.matchMedia('(prefers-language-scheme: hebrew)').matches;
+            if (lang === 'system') {
+                lang = prefersHebrew ? 'he' : 'en';
+            }
         }
+        document.documentElement.setAttribute("lang", lang);
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.textContent = translations[lang][key];
+        });
     });
 
     // Load saved values
@@ -46,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "full_course_number"
         ],
         function (result) {
-            if (result.p_key) document.getElementById("p_key").value = result.p_key;
+            if (result.p_key) document.getElementById("key").value = result.p_key;
             if (result.year) yearInput.value = result.year;
             if (result.semester)
                 document.querySelector(
@@ -186,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function (event) {
         event.preventDefault();
         const formData = {
-            p_key: document.getElementById("p_key").value,
+            p_key: document.getElementById("key").value,
             year: yearInput.value,
             semester: document.querySelector('input[name="semester"]:checked')?.value,
             exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')?.value,
@@ -250,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Listen for primary key generation
     chrome.runtime.onMessage.addListener(function (message) {
         if (message.type === "P_KEY_FOUND") {
-            document.getElementById("p_key").value = message.pKey;
+            document.getElementById("key").value = message.pKey;
             setGenerateStyle(false);
         }
         else if (message.type === "P_KEY_NOT_FOUND") {

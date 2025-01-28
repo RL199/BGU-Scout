@@ -30,6 +30,11 @@
     --button-end-color: #b86600;
 }
 
+[lang="he"] {
+    direction: rtl;
+    text-align: right;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: var(--bg-color);
@@ -161,7 +166,7 @@ input[type="radio"]+label {
     font-size: 14px;
 }
 
-#generate_p_key {
+#generate_key {
     width: 100%;
     margin-bottom: 16px;
 }

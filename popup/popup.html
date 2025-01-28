@@ -11,41 +11,41 @@
 
 <body>
     <div class="container">
-        <h1>BGU Courses</h1>
+        <h1 data-i18n="header1">BGU Courses</h1>
         <div class="button-group">
-            <button type="button" id="open_options">Options</button>
-            <button type="button" id="open_login">Login</button>
-            <button type="button" id="open_graph">Graph</button>
+            <button type="button" id="open_options" data-i18n="options">Options</button>
+            <button type="button" id="open_login" data-i18n="login">Login</button>
+            <button type="button" id="open_graph" data-i18n="graph">Graph</button>
         </div>
         <form id="popup_form">
-            <button type="button" id="generate_p_key">Generate Primary Key</button>
+            <button type="button" id="generate_key" data-i18n="generate_key">Generate Key</button>
             <div class="form-group">
-                <label for="p_key">Primary key:</label>
-                <input type="text" id="p_key" name="p_key" readonly>
+                <label for="key" data-i18n="key">Key:</label>
+                <input type="text" id="key" name="key" readonly>
             </div>
             <div class="form-group">
-                <label for="year">Year:</label>
+                <label for="year" data-i18n="year">Year:</label>
                 <input type="number" min="1970" max="2025" id="year">
             </div>
             <div class="form-group">
-                <label>Semester:</label>
+                <label data-i18n="semester">Semester:</label>
                 <div class="radio-group" id="semester">
                     <div class="radio-option">
                         <input type="radio" id="first_semester" name="semester" value="1">
-                        <label for="first_semester">Fall</label>
+                        <label for="first_semester" data-i18n="first_semester">Fall</label>
                     </div>
                     <div class="radio-option">
                         <input type="radio" id="second_semester" name="semester" value="2">
-                        <label for="second_semester">Spring</label>
+                        <label for="second_semester" data-i18n="second_semester">Spring</label>
                     </div>
                     <div class="radio-option">
                         <input type="radio" id="third_semester" name="semester" value="3">
-                        <label for="third_semester">Summer</label>
+                        <label for="third_semester" data-i18n="third_semester">Summer</label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label>Exam Number:</label>
+                <label data-i18n="exam_number">Exam Number:</label>
                 <div class="radio-group" id="exam">
                     <div class="radio-option">
                         <input type="radio" id="first_exam" name="exam_quiz" value="1">
@@ -65,12 +65,12 @@
                     </div>
                     <div class="radio-option">
                         <input type="radio" id="total_exam" name="exam_quiz" value="5">
-                        <label for="total_exam">Total</label>
+                        <label for="total_exam" data-i18n="total_exam">Total</label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label>Quiz Number:</label>
+                <label data-i18n="quiz_number">Quiz Number:</label>
                 <div class="radio-group" id="quiz">
                     <div class="radio-option">
                         <input type="radio" id="first_quiz" name="exam_quiz" value="11">
@@ -91,9 +91,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="course_number">Course Number:</label>
+                <label for="course_number" data-i18n="course_number">Course Number:</label>
                 <select id="course_number" name="course_number">
-                    <option value="">Select a course</option>
+                    <option value="" data-i18n="select_course">Select a course</option>
                 </select>
             </div>
         </form>
