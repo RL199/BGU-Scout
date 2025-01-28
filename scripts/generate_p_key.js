@@ -63,13 +63,13 @@ const intervalId = setInterval(() => {
         loginUniversity();
         clearInterval(intervalId);
     }
-}, 500);
+}, 100);
 
-// Timeout after 100 seconds
+// Timeout after 30 seconds
 setTimeout(() => {
     clearInterval(intervalId);
     console.error('Form fields not found');
     chrome.runtime.sendMessage({
         type: 'P_KEY_NOT_FOUND'
     });
-}, 100000);
+}, 30000);

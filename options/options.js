@@ -25,14 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
             add_course_button: "Add",
             remove_course_button: "Remove",
             saved_courses: "Saved Course Numbers:",
-            disclaimer: `*Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
+            disclaimer: `Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
             Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
         he: {
             options: "אפשרויות",
             user_name: "שם משתמש:",
             password: "סיסמה:",
-            id: "מספר זהות:",
+            id: "מספר תעודת זהות:",
             theme: "ערכת נושא:",
             light: "בהיר",
             dark: "כהה",
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             add_course_button: "הוסף",
             remove_course_button: "הסר",
             saved_courses: "מספרי קורסים שנשמרו:",
-            disclaimer: `*לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
+            disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
             הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
         }
     };
@@ -131,31 +131,90 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Form submission
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const formData = {};
         const id = document.getElementById('id').value.trim();
         const password = document.getElementById('password').value.trim();
         const user_name = document.getElementById('user_name').value.trim();
+        formData.id = id;
+        formData.password = password;
+        formData.user_name = user_name;
 
-        if(!IDValidator(id) && id.trim() !== '') {
-            showToast('Invalid ID', 'מספר זהות לא תקין', 'error');
-            return;
+        setLoading(true);
+
+        try {
+            const tabId = await openBGUTab();
+            try {
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabId, allFrames: true },
+                    func: (id, password, user_name) => {
+                        window.userDetails = { id, password, user_name };
+                    },
+                    args: [id, password, user_name]
+                });
+
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabId, allFrames: true },
+                    files: ["scripts/validate_user_details.js"]
+                });
+            } catch (error) {
+                console.error('Error executing scripts:', error);
+                showToast('Error executing scripts', 'שגיאה בהרצת הסקריפטים', 'error');
+                setLoading(false);
+            }
+
+            chrome.runtime.onMessage.addListener(function (message) {
+                //Error handling
+                if (message.type === 'LOGIN_FAILED') {
+                    handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error');
+                }
+                else if (message.type === 'FORM_FIELDS_NOT_FOUND') {
+                    handleMessages('Website not loaded', 'האתר לא נטען', 'error');
+                }
+                //Success handling
+                else if (message.type === 'LOGIN_SUCCESS') {
+                    handleMessages('User details saved', 'פרטי המשתמש נשמרו', 'success');
+                    chrome.storage.sync.set(formData);
+                }
+            });
+
+            const handleMessages = (enMessage, hebMessage, type) => {
+                chrome.tabs.remove(tabId);
+                setLoading(false);
+                if (type === 'error') {
+                    console.error(enMessage);
+                } else {
+                    console.log(enMessage);
+                }
+                showToast(enMessage, hebMessage, type);
+            };
+        } catch (error) {
+            console.error(error);
+            showToast('Error opening BGU tab', 'שגיאה בפתיחת הטאב', 'error');
+            setLoading(false);
         }
-
-        if (user_name !== '') formData.user_name = user_name;
-        if (id !== '') formData.id = id;
-        if (password !== '') formData.password = password;
-
-        console.log('Form data:', formData);
-
-        // Save data to Chrome storage
-        chrome.storage.sync.set(formData, function() {
-            console.log('Options saved');
-            showToast('Options saved', 'האפשרויות נשמרו', 'success');
-        });
     });
+
+    function setLoading(loading) {
+        const saveButton = document.getElementById('save_button');
+        if (loading) {
+            translations['en']['saving'] = 'Saving...';
+            translations['he']['saving'] = 'שומר...';
+            saveButton.disabled = true;
+            saveButton.style.opacity = '0.7';
+            saveButton.style.pointerEvents = 'none';
+            saveButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['saving'];
+        } else {
+            translations['en']['save'] = 'Save';
+            translations['he']['save'] = 'שמור';
+            saveButton.disabled = false;
+            saveButton.style.opacity = '1';
+            saveButton.style.pointerEvents = 'auto';
+            saveButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['save'];
+        }
+    }
 
     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addListener(function() {
@@ -348,15 +407,18 @@ document.getElementById("forgot_password").addEventListener("click", function() 
     chrome.tabs.create({ url: url });
 });
 
-
-function IDValidator(id) {
-    if (!id || !Number(id) || id.length !== 9 || isNaN(id)) {  // Make sure ID is formatted properly
-        return false;
+// Open BGU tab
+async function openBGUTab() {
+    try {
+        // Create new tab
+        const tab = await chrome.tabs.create({
+            url: "https://bgu4u22.bgu.ac.il/apex/10g/r/f_login1004/login_desktop?p_lang=",
+            active: false,
+        });
+        console.log("Tab loaded and ready:", tab.id);
+        return tab.id;
+    } catch (error) {
+        console.error("Failed to create tab:", error);
+        throw error;
     }
-    let sum = 0;
-    for (let i = 0; i < id.length; i++) {
-        const incNum = Number(id[i]) * ((i % 2) + 1);  // Multiply number by 1 or 2
-        sum += (incNum > 9) ? incNum - 9 : incNum;  // Sum the digits up and add to total
-    }
-    return (sum % 10 === 0);
 }
