@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
 
-        const lang = result.lang;
+        let lang = result.lang;
         if (!lang || lang === 'system') {
             const prefersHebrew = window.matchMedia('(prefers-language-scheme: hebrew)').matches;
             if (lang === 'system') {
