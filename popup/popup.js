@@ -15,20 +15,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const translations = {
         en: {
-            year: "Year",
-            semester: "Semester",
-            generate_key: "Generate Primary Key",
+            year: "Year:",
+            semester: "Semester:",
+            generate_key: "Generate Key",
             options: "Options",
             login: "Login",
             graph: "Graph",
-            key: "Key",
+            key: "Key:",
             first_semester: "Fall",
             second_semester: "Spring",
             third_semester: "Summer",
-            exam_number: "Exam Number",
+            exam_number: "Exam Number:",
             total_exam: "Total",
-            quiz_number: "Quiz Number",
-            course_number: "Course Number",
+            quiz_number: "Quiz Number:",
+            course_number: "Course Number:",
             select_course: "Select Course"
         },
         he: {
@@ -224,44 +224,6 @@ document.addEventListener("DOMContentLoaded", function () {
             course,
         }, function () {
             console.log("Course number saved:", full_course_number);
-        });
-    });
-
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const formData = {
-            p_key: document.getElementById("key").value,
-            year: yearInput.value,
-            semester: document.querySelector('input[name="semester"]:checked')?.value,
-            exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')?.value,
-            ...document
-                .getElementById("course_number")
-                .value.split(".")
-                .reduce((acc, val, index) => {
-                    acc[["department", "degree", "course"][index]] = val;
-                    return acc;
-                }, {}),
-            full_course_number: document.getElementById("course_number").value,
-        };
-
-        chrome.storage.sync.set(formData, function () {
-            let savedMessage =
-                document.getElementById("savedMessage") || document.createElement("p");
-            savedMessage.id = "savedMessage";
-
-            if (Object.values(formData).every((val) => !val)) {
-                savedMessage.textContent = "Saved Nothing";
-            } else if (savedCount >= 50) {
-                savedMessage.textContent = "Saved! (I gave up counting)";
-            } else {
-                savedMessage.textContent = `Saved! ${savedCount ? `(${savedCount})` : ""
-                    }`;
-                savedCount++;
-            }
-
-            if (!document.body.contains(savedMessage)) {
-                document.body.appendChild(savedMessage);
-            }
         });
     });
 

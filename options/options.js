@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             header1: "Options",
             add_course_button: "Add",
             remove_course_button: "Remove",
-            saved_courses: "Saved Course Numbers:",
+            saved_courses: "Saved Course Numbers",
             disclaimer: `Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
             Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             header1: "אפשרויות",
             add_course_button: "הוסף",
             remove_course_button: "הסר",
-            saved_courses: "מספרי קורסים שנשמרו:",
+            saved_courses: "מספרי קורסים שנשמרו",
             disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
             הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
         }
@@ -340,33 +340,46 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get or create courses form
         let coursesForm = document.getElementById("courses_form");
         if (!coursesForm) {
+            // Create fieldset container
+            const coursesFieldset = document.createElement("fieldset");
+            coursesFieldset.id = "courses_fieldset";
+
+            // Create legend
+            const coursesLegend = document.createElement("legend");
+            coursesLegend.setAttribute('data-i18n', 'saved_courses');
+            coursesLegend.textContent = translations[document.documentElement.getAttribute('data-lang')]['saved_courses'];
+
+            // Create form container
             coursesForm = document.createElement("div");
             coursesForm.id = "courses_form";
-            form.insertBefore(coursesForm, form.children[-1]);
-            const savedCoursesLabel = document.createElement("label");
-            savedCoursesLabel.id = "saved_courses_label";
-            savedCoursesLabel.setAttribute('data-i18n', 'saved_courses');
-            savedCoursesLabel.textContent = translations[document.documentElement.getAttribute('data-lang')]['saved_courses'];
-            coursesForm.appendChild(savedCoursesLabel);
+            coursesForm.setAttribute("role", "form");
+            coursesForm.setAttribute("aria-label", "Courses selection form");
+
+            // Assemble structure
+            coursesFieldset.appendChild(coursesLegend);
+            coursesFieldset.appendChild(coursesForm);
+            form.insertBefore(coursesFieldset, form.children[-1]);
         }
 
         // Create line container
         const lineContainer = document.createElement("div");
         lineContainer.className = "course_line";
 
-        // Create course number input
+        // Create course number box
         const courseNumberInput = document.createElement("input");
         courseNumberInput.type = "text";
         courseNumberInput.value = course_number;
         courseNumberInput.disabled = true;
         courseNumberInput.className = "course_number_input";
+        courseNumberInput.style.textAlign = 'center';
+        courseNumberInput.id = "course_number_input" + course_number;
 
         // Create remove button
         const removeCourseButton = document.createElement("button");
         removeCourseButton.setAttribute('data-i18n', 'remove_course_button');
         removeCourseButton.textContent = removeButtonText;
         removeCourseButton.className = "remove_course_button";
-        removeCourseButton.id = "remove_course_button";
+        removeCourseButton.id = "remove_course_button" + course_number;
 
         // Add remove functionality
         removeCourseButton.addEventListener('click', function(e) {

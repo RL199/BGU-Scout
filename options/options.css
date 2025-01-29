@@ -52,7 +52,7 @@
         display: none;
     }
 
-    #remove_course_button {
+        [id^="remove_course_button"] {
         margin-left: 0rem;
         margin-right: 0.2rem;
     }
@@ -70,7 +70,7 @@
         display: initial;
     }
 
-    #remove_course_button {
+        [id^="remove_course_button"] {
         margin-left: 0.2rem;
         margin-right: 0rem;
     }
@@ -223,7 +223,7 @@ select:hover {
     opacity: 1;
 }
 
-#remove_course_button,
+[id^="remove_course_button"],
 #add_course_button {
     padding: 0.5rem;
     background-color: var(--button-bg);
@@ -245,12 +245,12 @@ select:hover {
     font-size: 0;
 }
 
-#remove_course_button:hover,
+[id^="remove_course_button"]:hover,
 #add_course_button:hover {
     opacity: 0.9;
 }
 
-#remove_course_button:active,
+[id^="remove_course_button"]:active,
 #add_course_button:active {
     transform: scale(0.95);
     transition: transform 0.1s;
@@ -266,7 +266,7 @@ select:hover {
 #courses_form {
     display: flex;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 0rem;
     justify-content: space-between;
     gap: 0.5rem;
 }
@@ -284,4 +284,14 @@ select:hover {
     border-top: 1px solid var(--h1-color);
     margin-top: 1rem;
     border-bottom: 1px solid var(--h1-color);
+}
+
+#courses_fieldset {
+    border: var(--input-border) 2px solid;
+    border-radius: 8px;
+}
+
+#courses_fieldset legend {
+    font-size: small;
+    text-align: center;
 }
