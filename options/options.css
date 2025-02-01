@@ -93,7 +93,7 @@ body {
 .container {
     max-width: 400px;
     width: 100%;
-    margin: 2rem auto;
+    margin: 1rem auto;
     padding: 2rem;
     background-color: var(--container-bg);
     border-radius: 8px;
@@ -235,6 +235,9 @@ select:hover {
     height: 36px;
     margin-bottom: 0%;
     font-size: medium;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #add_course_button:disabled {
@@ -268,12 +271,12 @@ select:hover {
     flex-wrap: wrap;
     margin-top: 0rem;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0;
 }
 
 .course_line {
     display: flex;
-    width: calc(50% - 0.25rem);
+    width: 100%;
 }
 
 .disclaimer {
@@ -294,4 +297,87 @@ select:hover {
 #courses_fieldset legend {
     font-size: small;
     text-align: center;
+}
+
+.toggle_switch {
+    position: relative;
+    width: 60px;
+    height: 34px;
+    cursor: pointer;
+}
+
+.toggle_switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--input-border);
+    transition: .4s;
+    border-radius: 34px;
+    box-shadow: 0 0 10px var(--input-border);
+    z-index: 1;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--text-color);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--button-bg);
+    box-shadow: 0 0 10px var(--button-bg);
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.switch_label {
+    flex: 1;
+}
+
+#remove_icon {
+    fill: currentColor;
+    width: 20px;
+    color: var(--button-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.course_label {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+}
+
+.course_label:first-child {
+    margin-top: 0;
 }
