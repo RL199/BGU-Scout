@@ -32,10 +32,25 @@
     "content_scripts": [
         {
             "matches": [
-                "https://bgu4u22.bgu.ac.il/*",
-                "https://reports4u22.bgu.ac.il/*"
+                "https://bgu4u22.bgu.ac.il/*"
             ],
-            "js": ["scripts/content.js"],
+            "js": ["scripts/bgu4u22-content.js"],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "https://moodle.bgu.ac.il/moodle/my/*"
+            ],
+            "js": ["scripts/moodle-content.js"],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "https://bgu4u.bgu.ac.il/pls/scwp/!app.gate?app=ann*"
+            ],
+            "js": ["scripts/bgu4u-content.js"],
             "run_at": "document_start",
             "all_frames": true
         }
