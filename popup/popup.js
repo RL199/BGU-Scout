@@ -73,8 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
-            el.textContent = translations[lang][key];
-            //if this is oprions button, add gear icon from icons folder
             if (key === 'options') {
                 el.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" id="options_icon" viewBox="0 0 16 16">
@@ -97,6 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
                 </svg>
                 ${translations[lang][key]}`;
+            }
+            else {
+                el.textContent = translations[lang][key];
             }
         });
     });
