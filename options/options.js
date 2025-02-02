@@ -376,15 +376,15 @@ document.addEventListener('DOMContentLoaded', function() {
         lineContainer.className = "course_line";
 
         // Create course box
-        const courseName = document.createElement("input");
-        courseElement.type = "text";
-        courseElement.value = course_name;
-        courseElement.disabled = true;
-        courseElement.className = "course_name_input";
-        courseElement.style.textAlign = 'center';
-        courseElement.id = "course_name_input" + course_name;
-        courseElement.setAttribute("aria-label", "Course name");
-        courseElement.setAttribute("aria-readonly", "true");
+        const courseNameElement = document.createElement("input");
+        courseNameElement.type = "text";
+        courseNameElement.value = course_name;
+        courseNameElement.disabled = true;
+        courseNameElement.className = "course_name_input";
+        courseNameElement.style.textAlign = 'center';
+        courseNameElement.id = "course_name_input" + course_name;
+        courseNameElement.setAttribute("aria-label", "Course name");
+        courseNameElement.setAttribute("aria-readonly", "true");
 
         // create label as course number
         const courseLabel = document.createElement("label");
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Append elements
-        lineContainer.appendChild(courseElement);
+        lineContainer.appendChild(courseNameElement);
         lineContainer.appendChild(removeCourseButton);
         coursesForm.appendChild(courseLabel);
         coursesForm.appendChild(lineContainer);
