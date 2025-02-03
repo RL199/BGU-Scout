@@ -32,9 +32,9 @@
   - [🛠️ Technical Details](#️-technical-details)
     - [Technologies Used](#technologies-used)
     - [Features Implementation](#features-implementation)
-    - [Roadmap](#roadmap)
-    - [Privacy and Security](#privacy-and-security)
-  - [🔒 Permissions](#-permissions)
+  - [🗺️ Roadmap](#️-roadmap)
+  - [🔐 Privacy and Security](#-privacy-and-security)
+    - [Permissions](#permissions)
   - [👥 Contributing](#-contributing)
   - [📝 License](#-license)
   - [🔍 Browser Support](#-browser-support)
@@ -125,7 +125,7 @@ Configure your extension settings and customize your experience with ease.
 - **Form Validation**: Client-side validation for course numbers and user input.
 - **Storage Management**: Efficient use of Chrome's storage sync API.
 
-### Roadmap
+## 🗺️ Roadmap
 
 - [ ] Add support for searching courses by name.
 - [ ] Improve user experience and accessibility.
@@ -139,13 +139,13 @@ Configure your extension settings and customize your experience with ease.
 - [ ] Add support for more devices and screen sizes.
 - [ ] Improve documentation and code quality.
 
-### Privacy and Security
+## 🔐 Privacy and Security
 
 - **User Data**: User credentials are stored locally in Chrome's secure storage and are only used for BGU login authentication. No Private data is transmitted to external servers except for BGU's official sites during key extraction.
 - **Data Handling**: Course statistics are fetched directly from BGU's servers and are not stored locally.
 - **Permissions**: The extension only requests the necessary permissions for its functionality.
 
-## 🔒 Permissions
+### Permissions
 
 The extension requires the following permissions:
 
