@@ -26,7 +26,7 @@
   - [🔧 Configuration](#-configuration)
   - [📊 Usage](#-usage)
     - [Generating Course Statistics](#generating-course-statistics)
-    - [Screenshots](#screenshots)
+  - [📸 Screenshots](#-screenshots)
     - [Popup Page](#popup-page)
     - [Options Page](#options-page)
   - [🛠️ Technical Details](#️-technical-details)
@@ -94,7 +94,7 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 6. Click the "Graph" icon.
 7. Enjoy the graphical representation of the course statistics.
 
-### Screenshots
+## 📸 Screenshots
 
 ### Popup Page
 Effortlessly manage your BGU course statistics and grades with a user-friendly interface.
