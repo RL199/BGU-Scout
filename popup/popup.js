@@ -180,6 +180,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 course
             ] = results.map((r) => Object.values(r)[0]);
 
+            if(!p_key || !year || !semester || !exam_quiz || !department || !degree || !course) {
+                alert("Please fill in all the required fields.");
+                return;
+            }
+
             const url =
                 `https://reports4u22.bgu.ac.il/GeneratePDF.php?` +
                 `server=aristo4stu419c` +
@@ -261,28 +266,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Generate primary key
     generatePKeyBtn.addEventListener("click", async function () {
-        chrome.storage.sync.get(["user_name", "id", "password"], function (result) {
+        await chrome.storage.sync.get(["user_name", "id", "password"], async function (result) {
             if (!result.user_name || !result.id || !result.password) {
                 alert("Please fill in your credentials in the options page.");
                 chrome.runtime.openOptionsPage();
                 return;
             }
-        });
-        try {
-            setGenerateStyle(true);
-            const tabId = await openBGUTab();
             try {
-                chrome.scripting.executeScript({
-                    target: { tabId: tabId },
-                    files: ["scripts/generate_p_key.js"],
-                });
+                setGenerateStyle(true);
+                const tabId = await openBGUTab();
+                try {
+                    chrome.scripting.executeScript({
+                        target: { tabId: tabId },
+                        files: ["scripts/generate_p_key.js"],
+                    });
+                } catch (error) {
+                    console.error(error);
+                    chrome.tabs.remove(tabId);
+                }
             } catch (error) {
-                console.error(error);
-                chrome.tabs.remove(tabId);
+                console.error("Error:", error);
             }
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        });
     });
 
     // Listen for primary key generation

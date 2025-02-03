@@ -44,7 +44,10 @@
             <button type="submit" data-i18n="save" id="save_button" aria-label="Save" ></button>
             <button type="button" id="forgot_password" data-i18n="forgot_password" aria-label="Forgot password"></button>
             <div class="form_group switch">
-                <label class="switch_label" for="enable_moodle_courses" data-i18n="enable_moodle_courses"></label>
+                <div class="switch_label">
+                    <label class="switch_label" for="enable_moodle_courses" data-i18n="enable_moodle_courses"></label>
+                    <label data-i18n="enable_moodle_courses_description" id="enable_moodle_courses_description"></label>
+                </div>
                 <div class="toggle_switch">
                     <input type="checkbox" id="enable_moodle_courses" name="enable_moodle_courses"
                         aria-label="Enable Moodle courses synchronization"

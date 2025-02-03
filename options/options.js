@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const translations = {
         en: {
+            enable_moodle_courses_description: "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
             add_course_name: "Add Course Name:",
             options: "Options",
             user_name: "User Name:",
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
         he: {
+            enable_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף קורסים באופן אוטומטי",
             add_course_name: "הוסף שם קורס:",
             options: "אפשרויות",
             user_name: "שם משתמש:",
@@ -94,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
-            el.textContent = translations[lang][key];
+            el.innerHTML = translations[lang][key];
         });
     }
 
