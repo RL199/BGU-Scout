@@ -6,6 +6,16 @@
   </a>
   <a href="https://github.com/RL199/BGU-Scout/issues">
     <img src="https://img.shields.io/github/issues/RL199/BGU-Scout?style=flat-square" alt="issues">
+  </a>
+  <a href="https://github.com/RL199/BGU-Scout/commits">
+    <img src="https://img.shields.io/github/last-commit/RL199/BGU-Scout?style=flat-square" alt="last commit">
+  </a>
+  <a href="https://github.com/RL199/BGU-Scout/releases">
+    <img src="https://img.shields.io/github/v/release/RL199/BGU-Scout?style=flat-square" alt="release">
+  </a>
+  <a href="https://github.com/RL199/BGU-Scout">
+    <img src="https://img.shields.io/github/repo-size/RL199/BGU-Scout?style=flat-square" alt="repo size">
+  </a>
 </div>
 
 <p align="center">
@@ -64,11 +74,12 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 ### Steps
 
-1. Download or clone this repository.
-2. Open Chrome and navigate to `chrome://extensions/`.
-3. Enable "Developer mode" in the top right corner.
-4. Click "Load unpacked" and select the extension directory.
-5. The extension icon should now appear in your Chrome toolbar.
+1. Clone the repository or download the ZIP file from the [latest release](https://github.com/RL199/BGU-Scout/releases/download/v0.8.0-beta/BGU.Scout.v0.8.0-beta.zip)
+2. Extract the ZIP file to a directory on your computer.
+3. Open Chrome and navigate to `chrome://extensions/`.
+4. Enable "Developer mode" in the top right corner.
+5. Click "Load unpacked" and select the extension directory.
+6. The extension icon should now appear in your Chrome toolbar.
 
 ## 🔧 Configuration
 
@@ -98,13 +109,19 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 ### Popup Page
 Effortlessly manage your BGU course statistics and grades with a user-friendly interface.
-<img src="Screenshots/popupScreenshot1.png" alt="Popup Page English Dark" width="300"/>
-<img src="Screenshots/popupScreenshot2.png" alt="Popup Page Hebrew Light" width="300"/>
+
+<div style="display: flex; justify-content: space-between; gap: 10px;">
+    <img src="Screenshots/popupScreenshot1.png" alt="Popup Page English Dark" style="width: 48%;" />
+    <img src="Screenshots/popupScreenshot2.png" alt="Popup Page Hebrew Light" style="width: 48%;" />
+</div>
 
 ### Options Page
 Configure your extension settings and customize your experience with ease.
-<img src="Screenshots/optionsScreenshot1.png" alt="Options Page English Dark" width="300"/>
-<img src="Screenshots/optionsScreenshot2.png" alt="Options Page Hebrew Light" width="300"/>
+
+<div style="display: flex; justify-content: space-between; gap: 10px;">
+  <img src="Screenshots/optionsScreenshot1.png" alt="Options Page English Dark" style="width: 48%;"/>
+  <img src="Screenshots/optionsScreenshot2.png" alt="Options Page Hebrew Light" style="width: 48%;"/>
+</div>
 
 ## 🛠️ Technical Details
 
