@@ -11,8 +11,8 @@
     <img src="https://img.shields.io/github/last-commit/RL199/BGU-Scout?style=flat-square" alt="last commit">
   </a>
   <a href="https://github.com/RL199/BGU-Scout/releases">
-    <img src="https://img.shields.io/github/v/release/RL199/BGU-Scout?style=flat-square" alt="release">
-  </a>
+    <img src="https://img.shields.io/github/v/release/RL199/BGU-Scout?style=flat-square&include_prereleases" alt="release">
+    </a>
   <a href="https://github.com/RL199/BGU-Scout">
     <img src="https://img.shields.io/github/repo-size/RL199/BGU-Scout?style=flat-square" alt="repo size">
   </a>
