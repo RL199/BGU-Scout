@@ -6,9 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const lang_select = document.getElementById('language');
     const auto_add_moodle_courses = document.getElementById('enable_moodle_courses');
     const toast = document.getElementById('toast');
+    const addCourseNameInput = document.getElementById('add_course_name');
+    const addCourseNameLabel = document.getElementById('add_course_name_label');
 
     const translations = {
         en: {
+            add_course_name: "Add Course Name:",
             options: "Options",
             user_name: "User Name:",
             password: "Password:",
@@ -31,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
         he: {
+            add_course_name: "הוסף שם קורס:",
             options: "אפשרויות",
             user_name: "שם משתמש:",
             password: "סיסמה:",
@@ -273,12 +277,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const hasValue = this.value.trim() !== '';
 
         if (hasValue) {
+            addCourseNameInput.style.display = 'inline-block';
+            addCourseNameLabel.style.display = 'inline-block';
             NewCourseNumberInput.style.width = 'calc(100% - 110px)';
             NewCourseNumberInput.style.transition = 'width 0.07s ease-in-out';
             addCourseButton.textContent = addButtonText;
             addCourseButton.style.width = '26.55%';
             setTimeout(() => { addCourseButton.style.display = 'inline-block'; addCourseButton.disabled = false; }, 70);
         } else {
+            addCourseNameInput.value = '';
+            addCourseNameInput.style.display = 'none';
+            addCourseNameLabel.style.display = 'none';
             addCourseButton.style.display = 'none';
             addCourseButton.disabled = true;
             addCourseButton.textContent = '';
@@ -312,6 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const result = await chrome.storage.sync.get(['saved_courses']);
+            let courseName = addCourseNameInput.value.trim();
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
                 showToast('Course number already exists', 'מספר הקורס כבר קיים', 'error');
@@ -319,13 +329,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (!result.saved_courses) {
-                formData.saved_courses = { [courseNumber]: '' };
+                formData.saved_courses = { [courseNumber]: courseName };
             } else {
-                formData.saved_courses = { ...result.saved_courses, [courseNumber]: '' };
+                formData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
             }
 
             await chrome.storage.sync.set(formData);
             NewCourseNumberInput.value = '';
+            addCourseNameInput.value = '';
 
             const event = new Event('input', {
                 bubbles: true,
@@ -333,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             NewCourseNumberInput.dispatchEvent(event);
 
-            addCourseLine(courseNumber, ""); //TODO: add course name from BGU4U website
+            addCourseLine(courseNumber, courseName); //TODO: add course name from BGU4U website
             showToast('Course added', 'הקורס נוסף', 'success');
 
         } catch (error) {

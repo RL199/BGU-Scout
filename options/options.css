@@ -381,3 +381,12 @@ input:checked+.slider:before {
 .course_label:first-child {
     margin-top: 0;
 }
+
+#add_course_name_label{
+    margin-top: 0.5rem;
+    display: none;
+}
+
+#add_course_name{
+    display: none;
+}
