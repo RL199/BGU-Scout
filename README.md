@@ -27,6 +27,8 @@
   - [📊 Usage](#-usage)
     - [Generating Course Statistics](#generating-course-statistics)
     - [Screenshots](#screenshots)
+    - [Popup Page](#popup-page)
+    - [Options Page](#options-page)
   - [🛠️ Technical Details](#️-technical-details)
     - [Technologies Used](#technologies-used)
     - [Features Implementation](#features-implementation)
@@ -94,10 +96,15 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 ### Screenshots
 
-![Popup Page English Dark](Screenshots/popupScreenshot1.png)
-![Popup Page Hebrew Light](Screenshots/popupScreenshot2.png)
-![Options Page English Dark](Screenshots/optionsScreenshot1.png)
-![Options Page Hebrew Light](Screenshots/optionsScreenshot2.png)
+### Popup Page
+Effortlessly manage your BGU course statistics and grades with a user-friendly interface.
+<img src="Screenshots/popupScreenshot1.png" alt="Popup Page English Dark" width="300"/>
+<img src="Screenshots/popupScreenshot2.png" alt="Popup Page Hebrew Light" width="300"/>
+
+### Options Page
+Configure your extension settings and customize your experience with ease.
+<img src="Screenshots/optionsScreenshot1.png" alt="Options Page English Dark" width="300"/>
+<img src="Screenshots/optionsScreenshot2.png" alt="Options Page Hebrew Light" width="300"/>
 
 ## 🛠️ Technical Details
 
