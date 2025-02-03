@@ -7,16 +7,11 @@
 // }
 
 // function validateCourse() {
-//     const frame = document.querySelector('frame[name="main"]');
-
-//     frame.onload = function () {
-//         setTimeout(() => {
-//             const win = frame.contentWindow;
-//             if (win && typeof win.goType === "function") {
-//                 console.log(win.goType(1));
-//             } else {
-//                 console.error("goType is still not available.");
-//             }
-//         }, 1000); // Wait 1 second
-//     };
+//     // Create a script element
+//     const script = document.createElement('script');
+//     script.textContent = `
+//     document.querySelector('frame[name="main"]').contentWindow.goType(1);
+//     `;
+//     // Inject it into the page
+//     (document.head || document.documentElement).appendChild(script);
 // }
