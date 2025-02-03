@@ -1,4 +1,4 @@
-console.log('Content script loaded');
+console.log('BGU4U22 Content script loaded');
 
 function checkForRedirect() {
     console.log('Checking for redirect:', window.location.href);
@@ -48,8 +48,16 @@ function validateUserDetails() {
     }
 }
 
-// Check page state when loaded
-document.addEventListener('DOMContentLoaded', async function () {
+
+if (document.readyState === 'complete' || document.readyState === 'interactive'){
+    checkForRedirectOnLoad();
+} else {
+    document.addEventListener('DOMContentLoaded', async function () {
+        checkForRedirectOnLoad();
+    });
+}
+
+async function checkForRedirectOnLoad() {
     await chrome.storage.local.get(['allowRedirect', 'allowValidation'], function (result) {
         console.log('Checking for redirect and validation');
         if (result.allowRedirect) {
@@ -65,5 +73,4 @@ document.addEventListener('DOMContentLoaded', async function () {
             validateUserDetails();
         }
     });
-});
-
+}

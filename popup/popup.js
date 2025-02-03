@@ -15,26 +15,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const translations = {
         en: {
-            year: "Year",
-            semester: "Semester",
-            generate_key: "Generate Primary Key",
+            year: "Year:",
+            semester: "Semester:",
             options: "Options",
             login: "Login",
             graph: "Graph",
-            key: "Key",
+            key: "Key:",
             first_semester: "Fall",
             second_semester: "Spring",
             third_semester: "Summer",
-            exam_number: "Exam Number",
+            exam_number: "Exam Number:",
             total_exam: "Total",
-            quiz_number: "Quiz Number",
-            course_number: "Course Number",
+            quiz_number: "Quiz Number:",
+            course_number: "Course:",
             select_course: "Select Course"
         },
         he: {
             year: "שנה:",
             semester: "סמסטר:",
-            generate_key: "צור מפתח",
             options: "אפשרויות",
             login: "כניסה",
             graph: "גרף",
@@ -45,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             exam_number: "מספר מבחן:",
             total_exam: "סה\"כ",
             quiz_number: "מספר בוחן:",
-            course_number: "מספר קורס:",
+            course_number: "קורס:",
             select_course: "בחר קורס"
         },
     };
@@ -75,7 +73,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
-            el.textContent = translations[lang][key];
+            if (key === 'options') {
+                el.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="options_icon" viewBox="0 0 16 16">
+                    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+                    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+                </svg>
+                ${translations[lang][key]}`;
+            }
+            else if (key === 'login') {
+                el.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="login_icon" viewBox="0 0 16 16">
+                    <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
+                    <path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z"/>
+                </svg>
+                ${translations[lang][key]}`;
+            }
+            else if (key === 'graph') {
+                el.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="graph_icon" viewBox="0 0 16 16">
+                    <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                </svg>
+                ${translations[lang][key]}`;
+            }
+            else {
+                el.textContent = translations[lang][key];
+            }
         });
     });
 
@@ -86,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "year",
             "semester",
             "exam_quiz",
-            "saved_course_numbers",
+            "saved_courses",
             "full_course_number"
         ],
         function (result) {
@@ -110,6 +133,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     option.textContent = number;
                     courseSelect.appendChild(option);
                 });
+            }
+            if (result.saved_courses) {
+                const courses = result.saved_courses;
+                for (const [key, value] of Object.entries(courses)) {
+                    const option = document.createElement("option");
+                    option.value = key;
+                    option.textContent = value;
+                    courseSelect.appendChild(option);
+                }
             }
             if (result.full_course_number) {
                 courseSelect.value = result.full_course_number;
@@ -227,44 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const formData = {
-            p_key: document.getElementById("key").value,
-            year: yearInput.value,
-            semester: document.querySelector('input[name="semester"]:checked')?.value,
-            exam_quiz: document.querySelector('input[name="exam_quiz"]:checked')?.value,
-            ...document
-                .getElementById("course_number")
-                .value.split(".")
-                .reduce((acc, val, index) => {
-                    acc[["department", "degree", "course"][index]] = val;
-                    return acc;
-                }, {}),
-            full_course_number: document.getElementById("course_number").value,
-        };
-
-        chrome.storage.sync.set(formData, function () {
-            let savedMessage =
-                document.getElementById("savedMessage") || document.createElement("p");
-            savedMessage.id = "savedMessage";
-
-            if (Object.values(formData).every((val) => !val)) {
-                savedMessage.textContent = "Saved Nothing";
-            } else if (savedCount >= 50) {
-                savedMessage.textContent = "Saved! (I gave up counting)";
-            } else {
-                savedMessage.textContent = `Saved! ${savedCount ? `(${savedCount})` : ""
-                    }`;
-                savedCount++;
-            }
-
-            if (!document.body.contains(savedMessage)) {
-                document.body.appendChild(savedMessage);
-            }
-        });
-    });
-
     // Generate primary key
     generatePKeyBtn.addEventListener("click", async function () {
         chrome.storage.sync.get(["user_name", "id", "password"], function (result) {
@@ -307,10 +301,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const setGenerateStyle = (loading) => {
         if (loading) {
             generatePKeyBtn.classList.add("generating");
-            generatePKeyBtn.textContent = "Generating...";
         } else {
             generatePKeyBtn.classList.remove("generating");
-            generatePKeyBtn.textContent = "Generate Primary Key";
         }
     };
 
