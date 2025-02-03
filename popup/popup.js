@@ -62,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
 
-        let lang = result.lang;
+        let lang = result.lang || 'system';
         if (!lang || lang === 'system') {
-            const prefersHebrew = window.matchMedia('(prefers-language-scheme: hebrew)').matches;
+            const prefersHebrew = navigator.language.startsWith('he');
             if (lang === 'system') {
                 lang = prefersHebrew ? 'he' : 'en';
             }
