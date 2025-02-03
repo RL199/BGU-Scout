@@ -94,10 +94,10 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 ### Screenshots
 
-![Popup Page English Dark](Screenshots\popupScreenshot1.png)
-![Popup Page Hebrew Light](Screenshots\popupScreenshot2.png)
-![Options Page English Dark](Screenshots\optionsScreenshot1.png)
-![Options Page Hebrew Light](Screenshots\optionsScreenshot2.png)
+![Popup Page English Dark](Screenshots/popupScreenshot1.png)
+![Popup Page Hebrew Light](Screenshots/popupScreenshot2.png)
+![Options Page English Dark](Screenshots/optionsScreenshot1.png)
+![Options Page Hebrew Light](Screenshots/optionsScreenshot2.png)
 
 ## 🛠️ Technical Details
 
