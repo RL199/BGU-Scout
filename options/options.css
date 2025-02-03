@@ -336,7 +336,7 @@ select:hover {
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: var(--text-color);
+    background-color: #ffffff;
     transition: .4s;
     border-radius: 50%;
 }

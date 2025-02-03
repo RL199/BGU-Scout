@@ -1,5 +1,5 @@
 :root {
-    --h1-color: #b85c20;
+    --h1-color: #f7941e;
     --bg-color: #e0e0e0;
     --container-bg: #f0f0f0;
     --box-border: #bcbcbc;
@@ -15,7 +15,7 @@
 }
 
 [data-theme="dark"] {
-    --h1-color: #f49b55;
+    --h1-color: #f7941e;
     --bg-color: #2a2d2f;
     --container-bg: #1f2122;
     --box-border: #282b2d;
@@ -269,5 +269,3 @@ button:hover,
 .year_container {
     width: 34%;
 }
-
-
