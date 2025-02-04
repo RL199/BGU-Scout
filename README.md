@@ -98,12 +98,11 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 ### Generating Course Statistics
 
 1. Open the extension popup.
-2. click the double arrow icon to generate new key.
-3. Enter the desired year.
-4. Choose the desired semester and Exam/Quiz number.
-5. Select the course name from the dropdown list.
-6. Click the "Graph" icon.
-7. Enjoy the graphical representation of the course statistics.
+2. Enter the desired year.
+3. Choose the desired semester and Exam/Quiz number.
+4. Select the course name from the dropdown list.
+5. Click the "Graph" icon and wait for the data to load.
+6. Enjoy the graphical representation of the course statistics.
 
 ## 📸 Screenshots
 
