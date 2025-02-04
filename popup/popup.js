@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
             total_exam: "Total",
             quiz_number: "Quiz Number:",
             course_number: "Course:",
-            select_course: "Select Course"
+            select_course: "Select Course or add more in options page"
         },
         he: {
             loadingGraph: "טוען גרף",
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
             total_exam: "סה\"כ",
             quiz_number: "מספר בוחן:",
             course_number: "קורס:",
-            select_course: "בחר קורס"
+            select_course: "בחר קורס או הוסף עוד בדף האפשרויות"
         },
     };
 
@@ -121,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Load saved values
     chrome.storage.sync.get(
         [
-            "p_key",
             "year",
             "semester",
             "exam_quiz",
@@ -221,10 +220,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 reject(new Error('Key generation timeout'));
             }, 30000); // 30 second timeout
 
-            chrome.runtime.onMessage.addListener(function listener(message) {
+            chrome.runtime.onMessage.addListener(async function listener(message) {
                 if (message.type === "P_KEY_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
+                    await chrome.storage.sync.set({ p_key: message.pKey });
                     chrome.storage.local.set({ last_key_update: new Date().getTime() });
                     setLoadingGraphStyle(false);
                     resolve(message.pKey);
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 course
             ] = results.map((r) => Object.values(r)[0]);
 
-            if (!p_key || !year || !semester || !exam_quiz || !department || !degree || !course) {
+            if (!year || !semester || !exam_quiz || !department || !degree || !course) {
                 alertPopup("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.");
                 return;
             }
