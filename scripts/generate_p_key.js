@@ -1,9 +1,22 @@
-/*
-1.connect to the page of the university
-2.login to the page
-3.collect the primary key.
+//check if the fields are present and then login.
+const intervalId = setInterval(() => {
+    if (document.querySelector('input[name="P101_X1"]')
+        && document.querySelector('input[name="P101_X2"]')
+        && document.querySelector('input[name="P101_X3"]')
+        && document.querySelector('button[id="P101_LOGIN"]')) {
+        loginUniversity();
+        clearInterval(intervalId);
+    }
+}, 100);
 
-*/
+// Timeout after 30 seconds
+setTimeout(() => {
+    clearInterval(intervalId);
+    console.error('Form fields not found');
+    chrome.runtime.sendMessage({
+        type: 'P_KEY_NOT_FOUND'
+    });
+}, 30000);
 
 function loginUniversity() {
     chrome.storage.sync.get(['user_name', 'id', 'password'], function (result) {
@@ -53,23 +66,3 @@ async function fillLoginForm(credentials) {
     }
     await chrome.storage.local.set({ allowRedirect: true });
 }
-
-//check if the fields are present and then login.
-const intervalId = setInterval(() => {
-    if (document.querySelector('input[name="P101_X1"]')
-        && document.querySelector('input[name="P101_X2"]')
-        && document.querySelector('input[name="P101_X3"]')
-        && document.querySelector('button[id="P101_LOGIN"]')) {
-        loginUniversity();
-        clearInterval(intervalId);
-    }
-}, 100);
-
-// Timeout after 30 seconds
-setTimeout(() => {
-    clearInterval(intervalId);
-    console.error('Form fields not found');
-    chrome.runtime.sendMessage({
-        type: 'P_KEY_NOT_FOUND'
-    });
-}, 30000);
