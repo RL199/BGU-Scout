@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function apply_lang(lang) {
-        const prefersHebrew = window.matchMedia('(prefers-language-scheme: hebrew)').matches;
+        const prefersHebrew = navigator.language.startsWith('he');
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
         }
@@ -158,6 +158,11 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.id = id;
         formData.password = password;
         formData.user_name = user_name;
+
+        if (!id || !password || !user_name) {
+            showToast('Please fill all fields', 'אנא מלא את כל השדות', 'error');
+            return;
+        }
 
         setLoading(true);
 
