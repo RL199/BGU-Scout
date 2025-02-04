@@ -67,7 +67,7 @@ h1:hover {
 .button-group {
     display: flex;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 button {
@@ -177,25 +177,11 @@ input[type="radio"]+label {
     font-size: 14px;
 }
 
-#generate_key {
-    width: 100%;
-    margin-bottom: 16px;
-}
-
 #savedMessage {
     text-align: center;
     color: var(--h1-color);
     margin-top: 8px;
     font-size: 14px;
-}
-
-.generating {
-    cursor: wait;
-    opacity: 0.7;
-    pointer-events: none;
-    #generate_key_icon {
-        animation: spin 2s linear infinite;
-    }
 }
 
 input:focus,
@@ -213,44 +199,16 @@ button:hover,
     transition: all 0.3s ease;
 }
 
-#generate_key {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: auto;
-    padding: 4px;
-    margin: auto;
-    height: 33.14px;
-}
-
 #login_icon,
 #graph_icon,
-#options_icon,
-#generate_key_icon {
-    fill: currentColor;
+#options_icon {
+    fill: var(--button-text);
     width: 25px;
     height: 25px;
     color: var(--button-text);
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.key_container {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    width: 100%;
 }
 
 #open_graph {

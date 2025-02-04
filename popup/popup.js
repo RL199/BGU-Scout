@@ -4,17 +4,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get elements
     const openLoginBtn = document.getElementById("open_login");
     const openGraphBtn = document.getElementById("open_graph");
-    const generatePKeyBtn = document.getElementById("generate_key");
     const openOptionsBtn = document.getElementById("open_options");
-    const form = document.getElementById("popup_form");
     const yearInput = document.getElementById("year");
     const semesterInput = document.getElementById("semester");
     const examInput = document.getElementById("exam");
     const quizInput = document.getElementById("quiz");
     const courseNumberInput = document.getElementById("course_number");
 
+    chrome.storage.local.get("not_first_time", function (result) {
+        if (!result.not_first_time) {
+            chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
+            chrome.storage.sync.set({ lang: 'system', theme: 'system' });
+        }
+    });
+
     const translations = {
         en: {
+            loadingGraph: "Loading Graph",
             year: "Year:",
             semester: "Semester:",
             options: "Options",
@@ -31,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             select_course: "Select Course"
         },
         he: {
+            loadingGraph: "טוען גרף",
             year: "שנה:",
             semester: "סמסטר:",
             options: "אפשרויות",
@@ -49,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // Set theme and language
+    let lang;
     chrome.storage.sync.get(["theme", "lang"], function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
@@ -62,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
 
-        let lang = result.lang || 'system';
+        lang = result.lang || 'system';
         if (!lang || lang === 'system') {
             const prefersHebrew = navigator.language.startsWith('he');
             if (lang === 'system') {
@@ -102,6 +110,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    chrome.storage.sync.get(["user_name", "id", "password"], async function (result) {
+        if (!result.user_name || !result.id || !result.password) {
+            alertPopup("Please fill in your user credentials in the options page.", "אנא מלא את פרטי המשתמש בדף האפשרויות.");
+            chrome.runtime.openOptionsPage();
+            return;
+        }
+    });
+
     // Load saved values
     chrome.storage.sync.get(
         [
@@ -113,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
             "full_course_number"
         ],
         function (result) {
-            if (result.p_key) document.getElementById("key").value = result.p_key;
             if (result.year) yearInput.value = result.year;
             if (result.semester)
                 document.querySelector(
@@ -149,6 +164,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     );
 
+    function alertPopup(enMessage, heMessage) {
+        if (lang === 'he') {
+            alert(heMessage);
+        } else {
+            alert(enMessage);
+        }
+    }
+
+
     // Open login page
     openLoginBtn.addEventListener("click", function () {
         chrome.tabs.create({
@@ -156,8 +180,81 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    async function setLoadingGraphStyle(loading) {
+        if (loading) {
+            openGraphBtn.classList.add("loading");
+
+            const loadingPaths = [
+                '<path d="M4 11H2v3h2z"/>',
+                '<path d="M9 7H7v7h2z"/>',
+                '<path d="M14 2h-2v12h2z"/>'
+            ];
+
+            let currentIndex = 0;
+            const interval = setInterval(() => {
+                openGraphBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="graph_icon" viewBox="0 0 16 16">
+                    <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                    ${loadingPaths[currentIndex]}
+                </svg> ${translations[lang].loadingGraph}`;
+
+                currentIndex = (currentIndex + 1) % loadingPaths.length;
+            }, 200);
+
+            // Store interval ID to clear it later
+            openGraphBtn.dataset.loadingInterval = interval;
+        } else {
+            openGraphBtn.classList.remove("loading");
+            clearInterval(openGraphBtn.dataset.loadingInterval);
+            openGraphBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" id="graph_icon" viewBox="0 0 16 16">
+                <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+            </svg> ${translations[lang].graph}`;
+        }
+    }
+
+    function waitForKey() {
+        return new Promise((resolve, reject) => {
+            setLoadingGraphStyle(true);
+            const timeout = setTimeout(() => {
+                setLoadingGraphStyle(false);
+                reject(new Error('Key generation timeout'));
+            }, 30000); // 30 second timeout
+
+            chrome.runtime.onMessage.addListener(function listener(message) {
+                if (message.type === "P_KEY_FOUND") {
+                    clearTimeout(timeout);
+                    chrome.runtime.onMessage.removeListener(listener);
+                    chrome.storage.local.set({ last_key_update: new Date().getTime() });
+                    setLoadingGraphStyle(false);
+                    resolve(message.pKey);
+                } else if (message.type === "P_KEY_NOT_FOUND") {
+                    clearTimeout(timeout);
+                    chrome.runtime.onMessage.removeListener(listener);
+                    setLoadingGraphStyle(false);
+                    reject(new Error('Key generation failed'));
+                }
+            });
+        });
+    }
+
     // Open graph
-    openGraphBtn.addEventListener("click", function () {
+    openGraphBtn.addEventListener("click", async function () {
+        try {
+            const currentTime = new Date().getTime();
+            const lastKeyUpdate = await new Promise(resolve => {
+                chrome.storage.local.get("last_key_update", result => resolve(result.last_key_update || 0));
+            });
+
+            if (currentTime - lastKeyUpdate > 420000) {
+                generatePKey();
+                await waitForKey();
+            }
+        } catch (error) {
+            alertPopup("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.");
+            console.error(error);
+        }
+
         const getStorageData = (key) =>
             new Promise((resolve) => chrome.storage.sync.get(key, resolve));
 
@@ -180,8 +277,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 course
             ] = results.map((r) => Object.values(r)[0]);
 
-            if(!p_key || !year || !semester || !exam_quiz || !department || !degree || !course) {
-                alert("Please fill in all the required fields.");
+            if (!p_key || !year || !semester || !exam_quiz || !department || !degree || !course) {
+                alertPopup("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.");
                 return;
             }
 
@@ -265,51 +362,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Generate primary key
-    generatePKeyBtn.addEventListener("click", async function () {
-        await chrome.storage.sync.get(["user_name", "id", "password"], async function (result) {
-            if (!result.user_name || !result.id || !result.password) {
-                alert("Please fill in your credentials in the options page.");
-                chrome.runtime.openOptionsPage();
-                return;
-            }
+    async function generatePKey () {
+        try {
+            const tabId = await openBGUTab();
             try {
-                setGenerateStyle(true);
-                const tabId = await openBGUTab();
-                try {
-                    chrome.scripting.executeScript({
-                        target: { tabId: tabId },
-                        files: ["scripts/generate_p_key.js"],
-                    });
-                } catch (error) {
-                    console.error(error);
-                    chrome.tabs.remove(tabId);
-                }
+                chrome.scripting.executeScript({
+                    target: { tabId: tabId },
+                    files: ["scripts/generate_p_key.js"],
+                });
             } catch (error) {
-                console.error("Error:", error);
+                console.error(error);
+                chrome.tabs.remove(tabId);
             }
-        });
-    });
-
-    // Listen for primary key generation
-    chrome.runtime.onMessage.addListener(function (message) {
-        if (message.type === "P_KEY_FOUND") {
-            document.getElementById("key").value = message.pKey;
-            setGenerateStyle(false);
+        } catch (error) {
+            console.error("Error:", error);
         }
-        else if (message.type === "P_KEY_NOT_FOUND") {
-            alert("Failed to generate primary key. Please try again.");
-            setGenerateStyle(false);
-        }
-    });
-
-    // Set loading style for generate primary key button
-    const setGenerateStyle = (loading) => {
-        if (loading) {
-            generatePKeyBtn.classList.add("generating");
-        } else {
-            generatePKeyBtn.classList.remove("generating");
-        }
-    };
+    }
 
     // Open options page
     openOptionsBtn.addEventListener("click", function () {
