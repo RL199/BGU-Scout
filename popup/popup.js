@@ -139,21 +139,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 ).checked = true;
 
             const courseSelect = document.getElementById("course_number");
-            if (result.saved_course_numbers) {
-                const courseNumbers = result.saved_course_numbers.split(",");
-                courseNumbers.forEach((number) => {
-                    const option = document.createElement("option");
-                    option.value = number;
-                    option.textContent = number;
-                    courseSelect.appendChild(option);
-                });
-            }
             if (result.saved_courses) {
                 const courses = result.saved_courses;
-                for (const [key, value] of Object.entries(courses)) {
+                for (const course_number in courses) {
                     const option = document.createElement("option");
-                    option.value = key;
-                    option.textContent = value;
+                    option.value = course_number
+                    option.textContent = courses[course_number];
                     courseSelect.appendChild(option);
                 }
             }
