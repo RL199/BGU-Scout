@@ -383,15 +383,6 @@ input:checked+.slider:before {
     margin-top: 0;
 }
 
-#add_course_name_label{
-    margin-top: 0.5rem;
-    display: none;
-}
-
-#add_course_name{
-    display: none;
-}
-
 .switch_label{
     margin-bottom: 0;
 }
