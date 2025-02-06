@@ -6,13 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const lang_select = document.getElementById('language');
     const auto_add_moodle_courses = document.getElementById('enable_moodle_courses');
     const toast = document.getElementById('toast');
-    const addCourseNameInput = document.getElementById('add_course_name');
-    const addCourseNameLabel = document.getElementById('add_course_name_label');
+
+    const removeIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
+            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+        </svg>`;
 
     const translations = {
         en: {
             enable_moodle_courses_description: "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
-            add_course_name: "Add Course Name:",
             options: "Options",
             user_name: "User Name:",
             password: "Password:",
@@ -36,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         he: {
             enable_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף קורסים באופן אוטומטי",
-            add_course_name: "הוסף שם קורס:",
             options: "אפשרויות",
             user_name: "שם משתמש:",
             password: "סיסמה:",
@@ -167,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setLoading(true);
 
         try {
-            const tabId = await openBGUTab();
+            const tabId = await openBGU4U22Tab();
             try {
                 await chrome.scripting.executeScript({
                     target: { tabId: tabId, allFrames: true },
@@ -278,23 +279,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial button state
     addCourseButton.disabled = true;
     let addButtonText = '';
-    let removeButtonText = '';
 
     NewCourseNumberInput.addEventListener('input', function() {
         const hasValue = this.value.trim() !== '';
 
         if (hasValue) {
-            addCourseNameInput.style.display = 'inline-block';
-            addCourseNameLabel.style.display = 'inline-block';
             NewCourseNumberInput.style.width = 'calc(100% - 110px)';
             NewCourseNumberInput.style.transition = 'width 0.07s ease-in-out';
             addCourseButton.textContent = addButtonText;
             addCourseButton.style.width = '26.55%';
             setTimeout(() => { addCourseButton.style.display = 'inline-block'; addCourseButton.disabled = false; }, 70);
         } else {
-            addCourseNameInput.value = '';
-            addCourseNameInput.style.display = 'none';
-            addCourseNameLabel.style.display = 'none';
             addCourseButton.style.display = 'none';
             addCourseButton.disabled = true;
             addCourseButton.textContent = '';
@@ -328,31 +323,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const result = await chrome.storage.sync.get(['saved_courses']);
-            let courseName = addCourseNameInput.value.trim();
+            let courseName;
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
                 showToast('Course number already exists', 'מספר הקורס כבר קיים', 'error');
                 return;
             }
 
-            if (!result.saved_courses) {
-                formData.saved_courses = { [courseNumber]: courseName };
-            } else {
-                formData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
-            }
 
-            await chrome.storage.sync.set(formData);
-            NewCourseNumberInput.value = '';
-            addCourseNameInput.value = '';
 
-            const event = new Event('input', {
-                bubbles: true,
-                cancelable: true,
+            //validate course number in bgu4u website
+            chrome.scripting.executeScript({
+                target: { tabId: await openBGU4UTab(courseNumber), allFrames: false },
+                files: ["scripts/validate_course.js"]
             });
-            NewCourseNumberInput.dispatchEvent(event);
 
-            addCourseLine(courseNumber, courseName); //TODO: add course name from BGU4U website
-            showToast('Course added', 'הקורס נוסף', 'success');
+            await chrome.runtime.onMessage.addListener(async function (message) {
+                if (message.type === 'VALIDATE_COURSE') {
+                    if (message.courseName) {
+                        console.log('Course number is valid');
+                        courseName = message.courseName;
+                        if (!result.saved_courses) {
+                            formData.saved_courses = { [courseNumber]: courseName };
+                        } else {
+                            formData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
+                        }
+
+                        await chrome.storage.sync.set(formData);
+                        NewCourseNumberInput.value = '';
+
+                        const event = new Event('input', {
+                            bubbles: true,
+                            cancelable: true,
+                        });
+                        NewCourseNumberInput.dispatchEvent(event);
+
+                        addCourseLine(courseNumber, courseName);
+                        showToast('Course added', 'הקורס נוסף', 'success');
+                        return;
+                    } else {
+                        console.log('Course number is invalid');
+                        showToast('Course number is invalid', 'מספר הקורס לא תקין', 'error');
+                        return;
+                    }
+                }
+            });
 
         } catch (error) {
             console.error('Error handling course submission:', error);
@@ -412,10 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Create remove button
         const removeCourseButton = document.createElement("button");
-        removeCourseButton.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
-            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-        </svg>`;
+        removeCourseButton.innerHTML = removeIcon;
         removeCourseButton.className = "remove_course_button";
         removeCourseButton.id = "remove_course_button" + course_name;
 
@@ -458,19 +470,38 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault(); // Prevent form submission
         }
     });
-});
 
-document.getElementById("forgot_password").addEventListener("click", function() {
-    const url = "https://bgu4u.bgu.ac.il/remind/login.php";
-    chrome.tabs.create({ url: url });
+    document.getElementById("forgot_password").addEventListener("click", function () {
+        const url = "https://bgu4u.bgu.ac.il/remind/login.php";
+        chrome.tabs.create({ url: url });
+    });
 });
 
 // Open BGU tab
-async function openBGUTab() {
+async function openBGU4U22Tab() {
     try {
         // Create new tab
         const tab = await chrome.tabs.create({
             url: "https://bgu4u22.bgu.ac.il/apex/10g/r/f_login1004/login_desktop?p_lang=",
+            active: false,
+        });
+        console.log("Tab loaded and ready:", tab.id);
+        return tab.id;
+    } catch (error) {
+        console.error("Failed to create tab:", error);
+        throw error;
+    }
+}
+
+async function openBGU4UTab(courseNumber) {
+    try {
+        const ex_department = courseNumber.substring(0,3);
+        const ex_degree_level = courseNumber[4];
+        const ex_course = courseNumber.substring(6,10);
+        // Create new tab
+        const tab = await chrome.tabs.create({
+            url: "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?step=999&ex_department="
+                + ex_department + "&ex_degree_level=" + ex_degree_level + "&ex_institution=0&ex_course=" + ex_course,
             active: false,
         });
         console.log("Tab loaded and ready:", tab.id);
