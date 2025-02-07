@@ -281,6 +281,14 @@ select:hover {
     transition: transform 0.1s;
 }
 
+.add_course_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+}
+
 #saved_courses_label {
     font-size: medium;
     margin-top: 0rem;
