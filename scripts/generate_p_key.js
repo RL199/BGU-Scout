@@ -9,14 +9,14 @@ const intervalId = setInterval(() => {
     }
 }, 100);
 
-// Timeout after 30 seconds
+// Timeout after 10 seconds
 setTimeout(() => {
     clearInterval(intervalId);
     console.error('Form fields not found');
     chrome.runtime.sendMessage({
         type: 'P_KEY_NOT_FOUND'
     });
-}, 30000);
+}, 10000);
 
 function loginUniversity() {
     chrome.storage.sync.get(['user_name', 'id', 'password'], function (result) {

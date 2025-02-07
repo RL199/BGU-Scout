@@ -208,9 +208,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const timeout = setTimeout(() => {
                 setLoadingGraphStyle(false);
                 reject(new Error('Key generation timeout'));
-            }, 30000); // 30 second timeout
+            }, 20000); // 20 second timeout
 
-            chrome.runtime.onMessage.addListener(async function listener(message) {
+            chrome.runtime.onMessage.addListener(async function listener(message, sender) {
                 if (message.type === "P_KEY_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
@@ -218,10 +218,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     chrome.storage.local.set({ last_key_update: new Date().getTime() });
                     setLoadingGraphStyle(false);
                     resolve(message.pKey);
+                    chrome.tabs.remove(sender.tab.id);
                 } else if (message.type === "P_KEY_NOT_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
                     setLoadingGraphStyle(false);
+                    chrome.tabs.remove(sender.tab.id);
                     reject(new Error('Key generation failed'));
                 }
             });
@@ -230,47 +232,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Open graph
     openGraphBtn.addEventListener("click", async function () {
-        try {
-            const currentTime = new Date().getTime();
-            const lastKeyUpdate = await new Promise(resolve => {
-                chrome.storage.local.get("last_key_update", result => resolve(result.last_key_update || 0));
-            });
 
-            if (currentTime - lastKeyUpdate > 420000) {
-                generatePKey();
-                await waitForKey();
-            }
-        } catch (error) {
-            alertPopup("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.");
-            console.error(error);
-        }
 
-        const getStorageData = (key) =>
+        const getStorageSyncData = (key) =>
             new Promise((resolve) => chrome.storage.sync.get(key, resolve));
 
+        const getStorageLocalData = (key) =>
+            new Promise((resolve) => chrome.storage.local.get(key, resolve));
+
         Promise.all([
-            getStorageData("p_key"),
-            getStorageData("year"),
-            getStorageData("semester"),
-            getStorageData("exam_quiz"),
-            getStorageData("department"),
-            getStorageData("degree"),
-            getStorageData("course"),
-        ]).then((results) => {
+            getStorageSyncData("year"),
+            getStorageSyncData("semester"),
+            getStorageSyncData("exam_quiz"),
+            getStorageSyncData("department"),
+            getStorageSyncData("degree"),
+            getStorageSyncData("course"),
+            getStorageLocalData("last_key_update")
+        ]).then(async (results) => {
             const [
-                p_key,
                 year,
                 semester,
                 exam_quiz,
                 department,
                 degree,
-                course
+                course,
+                lastKeyUpdate
             ] = results.map((r) => Object.values(r)[0]);
 
             if (!year || !semester || !exam_quiz || !department || !degree || !course) {
                 alertPopup("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.");
                 return;
             }
+            try {
+                const currentTime = new Date().getTime();
+                console.log("Current time:", currentTime);
+                if (currentTime - lastKeyUpdate > 420000) {
+                    await generatePKey();
+                    await waitForKey();
+                }
+            } catch (error) {
+                alertPopup("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.");
+                setLoadingGraphStyle(false);
+                console.error(error);
+                return;
+            }
+
+            const { p_key } = await getStorageSyncData("p_key");
 
             const url =
                 `https://reports4u22.bgu.ac.il/GeneratePDF.php?` +
@@ -356,16 +363,25 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const tabId = await openBGUTab();
             try {
-                chrome.scripting.executeScript({
+                //check internet connection
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabId, allFrames: true },
+                    func: () => { },
+                    args: []
+                });
+
+                await chrome.scripting.executeScript({
                     target: { tabId: tabId },
                     files: ["scripts/generate_p_key.js"],
                 });
             } catch (error) {
                 console.error(error);
                 chrome.tabs.remove(tabId);
+                throw error;
             }
         } catch (error) {
             console.error("Error:", error);
+            throw error;
         }
     }
 
