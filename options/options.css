@@ -6,6 +6,7 @@
     --text-color: #333333;
     --input-bg: #f4f4f4;
     --input-border: #cccccc;
+    --sub-label-color: grey;
     --button-bg: #f7941e;
     --button-text: #ffffff;
     --toast-bg: #333333;
@@ -382,11 +383,23 @@ input:checked+.slider:before {
     margin-top: 0;
 }
 
-#add_course_name_label{
-    margin-top: 0.5rem;
-    display: none;
+.switch_label{
+    margin-bottom: 0;
 }
 
-#add_course_name{
-    display: none;
+#enable_moodle_courses_description{
+    color: var(--sub-label-color);
+}
+
+#enable_moodle_courses_description a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+#enable_moodle_courses_description a:visited {
+    color: inherit;
+}
+
+#enable_moodle_courses_description a:hover {
+    color: var(--button-bg);
 }
