@@ -13,10 +13,10 @@
     --toast-text: #ffffff;
     --button-start-color: #f7941e;
     --button-end-color: #ffd38064;
-    --toast-shadow-color: #333333;
-    --success-shadow-color: #4caf50;
-    --error-shadow-color: #f44336;
-    --other-shadow-color: #f49b55;
+    --toast-color: #333333;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+    --other-color: #f49b55;
     --select-arrow: url("/images/select_icon_light_mode.png");
 }
 
@@ -88,13 +88,32 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 0;
     min-height: 100vh;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-.container {
+@media screen and (max-width: 880px) {
+    body {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .user_container,
+    .courses_container {
+        margin: 0.2rem;
+        width: calc(100% - 2rem);
+        max-width: none;
+    }
+}
+
+.user_container,
+.courses_container {
     max-width: 400px;
     width: 100%;
-    margin: 1rem auto;
+    margin: 1rem;
     padding: 2rem;
     background-color: var(--container-bg);
     border-radius: 8px;
@@ -204,20 +223,18 @@ select:hover {
 
 .toast {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 1rem;
+    right: 1rem;
     background-color: var(--container-bg);
     border: 1px solid var(--box-border);
-    color: var(--text-color);
+    color: var(--toast-color);
     padding: 1rem;
+    font-size: medium;
     border-radius: 8px;
     opacity: 0;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08),
-        0 0 5px var(--toast-shadow-color), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    transform-origin: bottom center;
-    transform: translateX(-50%) translateY(10px);
+        0 0 5px var(--toast-color), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .toast.show {
@@ -267,7 +284,7 @@ select:hover {
     width: 100%;
 }
 
-#courses_form {
+#courses_list {
     display: flex;
     flex-wrap: wrap;
     margin-top: 0rem;
@@ -286,7 +303,6 @@ select:hover {
     text-align: center;
     padding: 1rem;
     border-top: 1px solid var(--h1-color);
-    margin-top: 1rem;
     border-bottom: 1px solid var(--h1-color);
 }
 

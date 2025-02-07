@@ -1,7 +1,8 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('options_form');
+    const userForm = document.getElementById('user_form');
+    const coursesForm = document.getElementById('courses_form');
     const theme_select = document.getElementById('theme');
     const lang_select = document.getElementById('language');
     const auto_add_moodle_courses = document.getElementById('enable_moodle_courses');
@@ -71,11 +72,11 @@ document.addEventListener('DOMContentLoaded', function() {
         apply_lang(document.documentElement.getAttribute('data-lang'));
         let toastType = type === 'success' ? 'success' : type === 'error' ? 'error' : 'other';
         // Set toast shadow color
-        document.documentElement.style.setProperty('--toast-shadow-color', `var(--${toastType}-shadow-color)`);
+        document.documentElement.style.setProperty('--toast-color', `var(--${toastType}-color)`);
         toast.classList.add('show');
         setTimeout(() => {
             toast.classList.remove('show');
-        }, 3000);
+        }, 5000);
     }
 
     function apply_theme(theme) {
@@ -152,8 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.sync.set({ enable_moodle_courses: this.checked });
     });
 
-    // Form submission
-    form.addEventListener('submit', async function(e) {
+    // user form submission
+    userForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         setSaveLoading(true);
@@ -322,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const tabId = await openBGU4UTab(courseNumber);
 
                 try {
-                    
+
                     await chrome.scripting.executeScript({
                         target: { tabId: tabId, allFrames: true },
                         func: () => {},
@@ -363,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 NewCourseNumberInput.dispatchEvent(event);
 
                 addCourseLine(courseNumber, courseName);
-                handleMessages('Course added', 'הקורס נוסף', 'success', tabId, false);
+                handleMessages('Course added', 'הקורס נוסף', null, tabId, false);
             } else {
                 handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', tabId, false);
             }
@@ -385,8 +386,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function addCourseLine(course_number, course_name) {
         // Get or create courses form
-        let coursesForm = document.getElementById("courses_form");
-        if (!coursesForm) {
+        let coursesList = document.getElementById("courses_list");
+        if (!coursesList) {
             // Create fieldset container
             const coursesFieldset = document.createElement("fieldset");
             coursesFieldset.id = "courses_fieldset";
@@ -397,15 +398,15 @@ document.addEventListener('DOMContentLoaded', function() {
             coursesLegend.textContent = translations[document.documentElement.getAttribute('data-lang')]['saved_courses'];
 
             // Create form container
-            coursesForm = document.createElement("div");
-            coursesForm.id = "courses_form";
-            coursesForm.setAttribute("role", "form");
-            coursesForm.setAttribute("aria-label", "Courses selection form");
+            coursesList = document.createElement("div");
+            coursesList.id = "courses_list";
+            coursesList.setAttribute("role", "form");
+            coursesList.setAttribute("aria-label", "Courses selection list");
 
             // Assemble structure
             coursesFieldset.appendChild(coursesLegend);
-            coursesFieldset.appendChild(coursesForm);
-            form.insertBefore(coursesFieldset, form.children[-1]);
+            coursesFieldset.appendChild(coursesList);
+            coursesForm.insertBefore(coursesFieldset, coursesForm.children[-1]);
         }
 
         // Create line container
@@ -447,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     courseLabel.remove();
                 }
                 // Remove courses form and label if no courses are left
-                if (document.getElementById("courses_form").childElementCount === 0) {
+                if (document.getElementById("courses_list").childElementCount === 0) {
                     document.getElementById("courses_fieldset").remove();
                 }
             });
@@ -456,8 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Append elements
         lineContainer.appendChild(courseNameElement);
         lineContainer.appendChild(removeCourseButton);
-        coursesForm.appendChild(courseLabel);
-        coursesForm.appendChild(lineContainer);
+        coursesList.appendChild(courseLabel);
+        coursesList.appendChild(lineContainer);
     }
 
     // Handle enter key press on course number input
@@ -469,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Prevent form submission on enter key press in course number input
-    form.addEventListener('keydown', function (event) {
+    coursesForm.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' && document.activeElement === NewCourseNumberInput) {
             event.preventDefault();
         }
@@ -538,7 +539,7 @@ async function openBGU4UTab(courseNumber) {
         const ex_course = courseNumber.substring(6,10);
         // Create new tab
         const tab = await chrome.tabs.create({
-            url: "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?step=999&ex_department="
+            url: "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department="
                 + ex_department + "&ex_degree_level=" + ex_degree_level + "&ex_institution=0&ex_course=" + ex_course,
             active: false,
         });

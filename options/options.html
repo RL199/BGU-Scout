@@ -10,9 +10,9 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="user_container">
         <h1 data-i18n="header1"></h1>
-        <form id="options_form">
+        <form id="user_form">
             <div class="form_group">
                 <label for="user_name" data-i18n="user_name"></label>
                 <input type="text" id="user_name" name="user_name" aria-label="Username" autofocus>
@@ -43,6 +43,11 @@
             </div>
             <button type="submit" data-i18n="save" id="save_button" aria-label="Save" ></button>
             <button type="button" id="forgot_password" data-i18n="forgot_password" aria-label="Forgot password"></button>
+            <div class="disclaimer" data-i18n="disclaimer"></div>
+        </form>
+    </div>
+    <div class="courses_container">
+        <form id="courses_form">
             <div class="form_group switch">
                 <div class="switch_label">
                     <label class="switch_label" for="enable_moodle_courses" data-i18n="enable_moodle_courses"></label>
@@ -60,10 +65,9 @@
                 <input type="text" id="add_course_number" name="add_course_number" aria-label="Course Number">
                 <button type="button" id="add_course_button" data-i18n="add_course_button" aria-label="Add course"></button>
             </div>
-            <form id="courses_form">
+            <form id="courses_list">
             </form>
         </form>
-        <div class="disclaimer" data-i18n="disclaimer"></div>
     </div>
     <div id="toast" class="toast" data-i18n="toast_message"></div>
     <script src="options.js"></script>
