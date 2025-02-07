@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const lang_select = document.getElementById('language');
     const auto_add_moodle_courses = document.getElementById('enable_moodle_courses');
     const toast = document.getElementById('toast');
+    const NewCourseNumberInput = document.getElementById('add_course_number');
+    const addCourseButton = document.getElementById('add_course_button');
 
     const removeIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
@@ -32,12 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
             enable_moodle_courses: "Auto-Add Moodle Courses:",
             header1: "Options",
             add_course_button: "Add",
+            adding_course_button: "Adding...",
             saved_courses: "Saved Courses",
             disclaimer: `Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
             Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
         he: {
-            enable_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף קורסים באופן אוטומטי",
+            enable_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף אוטומטית קורסים מוצגים",
             options: "אפשרויות",
             user_name: "שם משתמש:",
             password: "סיסמה:",
@@ -55,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             enable_moodle_courses: "הוספת קורסים אוטומטית מהמודל:",
             header1: "אפשרויות",
             add_course_button: "הוסף",
+            adding_course_button: "מוסיף...",
             saved_courses: "קורסים שנשמרו",
             disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
             הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
@@ -152,20 +156,25 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const formData = {};
+        setSaveLoading(true);
+
+        if(!navigator.onLine){
+            handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', null, true);
+        }
+
+        userFormData = {};
         const id = document.getElementById('id').value.trim();
         const password = document.getElementById('password').value.trim();
         const user_name = document.getElementById('user_name').value.trim();
-        formData.id = id;
-        formData.password = password;
-        formData.user_name = user_name;
+        userFormData.id = id;
+        userFormData.password = password;
+        userFormData.user_name = user_name;
 
         if (!id || !password || !user_name) {
-            showToast('Please fill all fields', 'אנא מלא את כל השדות', 'error');
+            handleMessages('Please fill all fields', 'אנא מלא את כל השדות', 'error', null, true);
             return;
         }
 
-        setLoading(true);
 
         try {
             const tabId = await openBGU4U22Tab();
@@ -183,45 +192,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     files: ["scripts/validate_user_details.js"]
                 });
             } catch (error) {
-                console.error('Error executing scripts:', error);
-                showToast('Error executing scripts', 'שגיאה בהרצת הסקריפטים', 'error');
-                chrome.tabs.remove(tabId);
-                setLoading(false);
+                handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, true);
             }
-
-            chrome.runtime.onMessage.addListener(function (message) {
-                //Error handling
-                if (message.type === 'LOGIN_FAILED') {
-                    handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error');
-                }
-                else if (message.type === 'FORM_FIELDS_NOT_FOUND') {
-                    handleMessages('Website not loaded', 'האתר לא נטען', 'error');
-                }
-                //Success handling
-                else if (message.type === 'LOGIN_SUCCESS') {
-                    handleMessages('User details saved', 'פרטי המשתמש נשמרו', 'success');
-                    chrome.storage.sync.set(formData);
-                }
-            });
-
-            const handleMessages = (enMessage, hebMessage, type) => {
-                chrome.tabs.remove(tabId);
-                setLoading(false);
-                if (type === 'error') {
-                    console.error(enMessage);
-                } else {
-                    console.log(enMessage);
-                }
-                showToast(enMessage, hebMessage, type);
-            };
         } catch (error) {
-            console.error(error);
-            showToast('Error opening BGU tab', 'שגיאה בפתיחת הטאב', 'error');
-            setLoading(false);
+            handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null, true);
         }
     });
 
-    function setLoading(loading) {
+    function setSaveLoading(loading) {
         const saveButton = document.getElementById('save_button');
         if (loading) {
             saveButton.disabled = true;
@@ -272,13 +250,14 @@ document.addEventListener('DOMContentLoaded', function() {
         saveButton.style.backgroundImage = '';
     });
 
-    // Course numbers input handling
-    const NewCourseNumberInput = document.getElementById('add_course_number');
-    const addCourseButton = document.getElementById('add_course_button');
-
     // Set initial button state
     addCourseButton.disabled = true;
     let addButtonText = '';
+    let courseFormData = {};
+    let userFormData = {};
+    let courseName;
+    let result = {};
+    let courseNumber = '';
 
     NewCourseNumberInput.addEventListener('input', function() {
         const hasValue = this.value.trim() !== '';
@@ -302,81 +281,106 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    async function handleNewCourseSubmission(e) {
+    addCourseButton.addEventListener('click', async function(e) {
         e.preventDefault();
-        const formData = {};
+        AddingCourseButtonstyle(true);
+
+        if(!navigator.onLine){
+            handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', null, false);
+            return;
+        }
+
         NewCourseNumberInput.value = NewCourseNumberInput.value.trim();
-        const courseNumber = NewCourseNumberInput.value;
+        courseNumber = NewCourseNumberInput.value;
         // check if course number is in different format
-        if (courseNumber.match(/^\d{8}$/)){
-            courseNumber = courseNumber.substring(0,3) +
-                '.' + courseNumber[3] + '.' + courseNumber.substring(4,8);
+        if (courseNumber.match(/^\d{8}$/)) {
+            courseNumber = courseNumber.substring(0, 3) +
+                '.' + courseNumber[3] + '.' + courseNumber.substring(4, 8);
         }
         if (courseNumber.match(/^\d{3}-\d{1}-\d{4}$/)) {
             courseNumber = courseNumber.replace(/-/g, '.');
         }
         // check if course number is only digits and 2 points
         if (!courseNumber.match(/^\d{3}\.\d{1}\.\d{4}$/)) {
-            showToast('Invalid course number', 'מספר קורס לא תקין', 'error');
+            handleMessages('Invalid course number', 'מספר קורס לא תקין', 'error', null, false);
             return;
         }
 
         try {
-            const result = await chrome.storage.sync.get(['saved_courses']);
-            let courseName;
+            result = await chrome.storage.sync.get(['saved_courses']);
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
-                showToast('Course number already exists', 'מספר הקורס כבר קיים', 'error');
+                handleMessages('Course number already exists', 'מספר הקורס כבר קיים', 'error', null, false);
                 return;
             }
-
-
-
-            //validate course number in bgu4u website
-            chrome.scripting.executeScript({
-                target: { tabId: await openBGU4UTab(courseNumber), allFrames: false },
-                files: ["scripts/validate_course.js"]
-            });
-
-            await chrome.runtime.onMessage.addListener(async function (message) {
-                if (message.type === 'VALIDATE_COURSE') {
-                    if (message.courseName) {
-                        console.log('Course number is valid');
-                        courseName = message.courseName;
-                        if (!result.saved_courses) {
-                            formData.saved_courses = { [courseNumber]: courseName };
-                        } else {
-                            formData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
-                        }
-
-                        await chrome.storage.sync.set(formData);
-                        NewCourseNumberInput.value = '';
-
-                        const event = new Event('input', {
-                            bubbles: true,
-                            cancelable: true,
-                        });
-                        NewCourseNumberInput.dispatchEvent(event);
-
-                        addCourseLine(courseNumber, courseName);
-                        showToast('Course added', 'הקורס נוסף', 'success');
-                        return;
-                    } else {
-                        console.log('Course number is invalid');
-                        showToast('Course number is invalid', 'מספר הקורס לא תקין', 'error');
-                        return;
-                    }
-                }
-            });
-
         } catch (error) {
-            console.error('Error handling course submission:', error);
-            showToast('Error saving course', 'שגיאה בשמירת הקורס', 'error');
+            handleMessages('Error getting saved courses', 'שגיאה בקבלת הקורסים', error, null, false);
+            return;
         }
-    }
 
-    addCourseButton.addEventListener('click', function(e) {
-        handleNewCourseSubmission(e);
+            try{
+                const tabId = await openBGU4UTab(courseNumber);
+
+                try {
+                    
+                    await chrome.scripting.executeScript({
+                        target: { tabId: tabId, allFrames: true },
+                        func: () => {},
+                        args: []
+                    });
+
+                    //validate course number in bgu4u website
+                    await chrome.scripting.executeScript({
+                        target: { tabId: tabId, allFrames: true },
+                        files: ["scripts/validate_course.js"]
+                    });
+                } catch (error) {
+                    handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, false);
+                }
+            } catch (error) {
+                handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null ,false);
+                return;
+            }
+    });
+
+    chrome.runtime.onMessage.addListener(function (message, sender) {
+        const tabId = sender.tab.id;
+        if (message.type === 'VALIDATE_COURSE') {
+            if (message.courseName) {
+                courseName = message.courseName;
+                if (!result.saved_courses) {
+                    courseFormData.saved_courses = { [courseNumber]: courseName };
+                } else {
+                    courseFormData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
+                }
+                chrome.storage.sync.set(courseFormData);
+                // Clear input
+                NewCourseNumberInput.value = '';
+                const event = new Event('input', {
+                    bubbles: true,
+                    cancelable: true,
+                });
+                NewCourseNumberInput.dispatchEvent(event);
+
+                addCourseLine(courseNumber, courseName);
+                handleMessages('Course added', 'הקורס נוסף', 'success', tabId, false);
+            } else {
+                handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', tabId, false);
+            }
+        }
+        else if (message.type === 'CONNECTION_ERROR') {
+            handleMessages('Connection error', 'שגיאת חיבור', 'error', tabId, false);
+        }
+        else if (message.type === 'LOGIN_FAILED') {
+            handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', tabId, true);
+        }
+        else if (message.type === 'FORM_FIELDS_NOT_FOUND') {
+            handleMessages('Website not loaded', 'האתר לא נטען', 'error', tabId, true);
+        }
+        else if (message.type === 'LOGIN_SUCCESS') {
+            handleMessages('User details saved', 'פרטי המשתמש נשמרו', null, tabId, true);
+            chrome.storage.sync.set(userFormData);
+        }
     });
 
     function addCourseLine(course_number, course_name) {
@@ -460,14 +464,14 @@ document.addEventListener('DOMContentLoaded', function() {
     NewCourseNumberInput.addEventListener('keyup', function (event) {
         if (event.key === 'Enter' && !addCourseButton.disabled) {
             event.preventDefault();
-            handleNewCourseSubmission(event);
+            addCourseButton.click();
         }
     });
 
     // Prevent form submission on enter key press in course number input
     form.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' && document.activeElement === NewCourseNumberInput) {
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault();
         }
     });
 
@@ -475,6 +479,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const url = "https://bgu4u.bgu.ac.il/remind/login.php";
         chrome.tabs.create({ url: url });
     });
+
+    const handleMessages = (enMessage, hebMessage, error, tabId, isSave) => {
+        if (tabId !== null) chrome.tabs.remove(tabId);
+
+        if (isSave) setSaveLoading(false);
+        else AddingCourseButtonstyle(false);
+
+        let type;
+        if (error && error === 'error') {
+            console.error(enMessage);
+            type = 'error';
+        } else if (error){
+            console.error(error);
+            type = 'error';
+        } else{
+            console.log(enMessage);
+            type = 'success';
+        }
+
+        showToast(enMessage, hebMessage, type);
+    };
+
+    const AddingCourseButtonstyle = (adding) => {
+        if (adding) {
+            addCourseButton.style.opacity = '0.7';
+            addCourseButton.style.pointerEvents = 'none';
+            addCourseButton.innerHTML = translations[document.documentElement.getAttribute('data-lang')]['adding_course_button'];
+        } else {
+            addCourseButton.style.opacity = '1';
+            addCourseButton.style.pointerEvents = 'auto';
+            addCourseButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['add_course_button'];
+        }
+    }
+
 });
 
 // Open BGU tab

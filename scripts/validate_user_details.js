@@ -10,14 +10,14 @@ const intervalId = setInterval(() => {
     }
 }, 100);
 
-// Timeout after 30 seconds
+// Timeout after 10 seconds
 setTimeout(() => {
     clearInterval(intervalId);
     console.error('Form fields not found');
     chrome.runtime.sendMessage({
         type: 'FORM_FIELDS_NOT_FOUND'
     });
-}, 30000);
+}, 10000);
 
 async function loginUniversity() {
     const credentials = window.userDetails;
@@ -35,6 +35,9 @@ async function loginUniversity() {
             console.log(`Set ${fieldName} value`);
         } else {
             console.log(`Field ${fieldName} not found`);
+            chrome.runtime.sendMessage({
+                type: 'FORM_FIELDS_NOT_FOUND'
+            });
         }
     };
 

@@ -1,5 +1,13 @@
 console.log('course validation script loaded');
 
+setTimeout(() => {
+    console.error('Course name not found');
+    chrome.runtime.sendMessage({
+        type: 'CONNECTION_ERROR'
+    });
+}, 10000);
+
+
 if(document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', validateCourse);
 } else {
