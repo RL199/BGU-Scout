@@ -120,9 +120,9 @@ Effortlessly manage your BGU course statistics and grades with a user-friendly i
 ### Options Page
 Configure your extension settings and customize your experience with ease.
 
-<div style="display: flex; justify-content: space-between; gap: 10px;">
-  <img src="Screenshots/optionsScreenshot1.png" alt="Options Page English Dark" style="width: 48%;"/>
-  <img src="Screenshots/optionsScreenshot2.png" alt="Options Page Hebrew Light" style="width: 48%;"/>
+<div>
+  <img src="Screenshots/optionsScreenshot1.png" alt="Options Page English Dark"/>
+  <img src="Screenshots/optionsScreenshot2.png" alt="Options Page Hebrew Light"/>
 </div>
 
 ## 🛠️ Technical Details
