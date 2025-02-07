@@ -16,6 +16,9 @@
   <a href="https://github.com/RL199/BGU-Scout">
     <img src="https://img.shields.io/github/repo-size/RL199/BGU-Scout?style=flat-square" alt="repo size">
   </a>
+  <a href="https://github.com/RL199/BGU-Scout/releases/download">
+    <img src="https://img.shields.io/github/downloads/RL199/BGU-Scout/total?style=flat-square" alt="downloads">
+  </a>
 </div>
 
 <p align="center">
