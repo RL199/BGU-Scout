@@ -1,7 +1,7 @@
-{ 
+{
     "manifest_version": 3,
     "name": "BGU Scout",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "description": "Display BGU courses graphs",
     "icons": {
         "16": "images/icon-16.png",

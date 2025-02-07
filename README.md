@@ -77,7 +77,7 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 ### Steps
 
-1. Clone the repository or download the ZIP file from the [latest release](https://github.com/RL199/BGU-Scout/releases/download/v0.9.0-beta/BGU.Scout.v0.9.0-beta.zip)
+1. Clone the repository or download the ZIP file from the [latest release](https://github.com/RL199/BGU-Scout/releases/download/v0.9.1-beta/BGU.Scout.v0.9.1-beta.zip)
 2. Extract the ZIP file to a directory on your computer.
 3. Open Chrome and navigate to `chrome://extensions/`.
 4. Enable "Developer mode" in the top right corner.
@@ -194,7 +194,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ### How do I install the extension?
 
-Follow the [Installation](#installation) section above.
+Follow the [Installation](#️-installation) section above.
 
 ### Can I use this extension on other browsers?
 
