@@ -1,6 +1,6 @@
 "use strict";
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const userForm = document.getElementById('user_form');
     const coursesForm = document.getElementById('courses_form');
     const theme_select = document.getElementById('theme');
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const toast = document.getElementById('toast');
     const NewCourseNumberInput = document.getElementById('add_course_number');
     const addCourseButton = document.getElementById('add_course_button');
+    const saveButton = document.getElementById('save_button');
 
     const removeIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
         }
-        if(lang==='he'){
+        if (lang === 'he') {
             addButtonText = 'הוסף';
         } else {
             addButtonText = 'Add';
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load saved options
     function loadOptions() {
-        chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'enable_moodle_courses'], function(result) {
+        chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'enable_moodle_courses'], function (result) {
             if (result.user_name) document.getElementById('user_name').value = result.user_name;
             if (result.id) document.getElementById('id').value = result.id;
             if (result.password) document.getElementById('password').value = result.password;
@@ -137,29 +138,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadOptions();
 
-    theme_select.addEventListener('change', function() {
+    theme_select.addEventListener('change', function () {
         const selectedTheme = this.value;
         apply_theme(selectedTheme);
         chrome.storage.sync.set({ theme: selectedTheme });
     });
 
-    lang_select.addEventListener('change', function() {
+    lang_select.addEventListener('change', function () {
         const selected_lang = this.value;
         apply_lang(selected_lang);
         chrome.storage.sync.set({ lang: selected_lang });
     });
 
-    auto_add_moodle_courses.addEventListener('change', function() {
+    auto_add_moodle_courses.addEventListener('change', function () {
         chrome.storage.sync.set({ enable_moodle_courses: this.checked });
     });
 
     // user form submission
-    userForm.addEventListener('submit', async function(e) {
+    userForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         setSaveLoading(true);
 
-        if(!navigator.onLine){
+        if (!navigator.onLine) {
             handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', null, true);
         }
 
@@ -218,20 +219,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addListener(function() {
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function () {
         if (theme_select.value === 'system') {
             apply_theme('system');
         }
     });
 
-    window.matchMedia('(prefers-language-scheme: hebrew)').addListener(function() {
+    window.matchMedia('(prefers-language-scheme: hebrew)').addListener(function () {
         if (lang_select.value === 'system') {
             apply_lang('system');
         }
     });
 
     // Mouse-tracking gradient effect
-    const saveButton = document.getElementById('save_button');
     saveButton.addEventListener('mousemove', (e) => {
         const rect = saveButton.getBoundingClientRect();
         const x = e.clientX - rect.left; // x position within the element
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let result = {};
     let courseNumber = '';
 
-    NewCourseNumberInput.addEventListener('input', function() {
+    NewCourseNumberInput.addEventListener('input', function () {
         const hasValue = this.value.trim() !== '';
 
         if (hasValue) {
@@ -282,11 +282,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    addCourseButton.addEventListener('click', async function(e) {
+    addCourseButton.addEventListener('click', async function (e) {
         e.preventDefault();
         AddingCourseButtonstyle(true);
 
-        if(!navigator.onLine){
+        if (!navigator.onLine) {
             handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', null, false);
             return;
         }
@@ -319,29 +319,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-            try{
-                const tabId = await openBGU4UTab(courseNumber);
+        try {
+            const tabId = await openBGU4UTab(courseNumber);
 
-                try {
+            try {
 
-                    await chrome.scripting.executeScript({
-                        target: { tabId: tabId, allFrames: true },
-                        func: () => {},
-                        args: []
-                    });
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabId, allFrames: true },
+                    func: () => { },
+                    args: []
+                });
 
-                    //validate course number in bgu4u website
-                    await chrome.scripting.executeScript({
-                        target: { tabId: tabId, allFrames: true },
-                        files: ["scripts/validate_course.js"]
-                    });
-                } catch (error) {
-                    handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, false);
-                }
+                //validate course number in bgu4u website
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabId, allFrames: true },
+                    files: ["scripts/validate_course.js"]
+                });
             } catch (error) {
-                handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null ,false);
-                return;
+                handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, false);
             }
+        } catch (error) {
+            handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null, false);
+            return;
+        }
     });
 
     chrome.runtime.onMessage.addListener(function (message, sender) {
@@ -437,9 +437,9 @@ document.addEventListener('DOMContentLoaded', function() {
         removeCourseButton.id = "remove_course_button" + course_name;
 
         // Add remove functionality
-        removeCourseButton.addEventListener('click', function(e) {
+        removeCourseButton.addEventListener('click', function (e) {
             e.preventDefault();
-            chrome.storage.sync.get(['saved_courses'], function(result) {
+            chrome.storage.sync.get(['saved_courses'], function (result) {
                 if (result.saved_courses) {
                     // Remove result.saved_courses[course_number] from saved courses
                     delete result.saved_courses[course_number];
@@ -491,10 +491,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (error && error === 'error') {
             console.error(enMessage);
             type = 'error';
-        } else if (error){
+        } else if (error) {
             console.error(error);
             type = 'error';
-        } else{
+        } else {
             console.log(enMessage);
             type = 'success';
         }
@@ -504,12 +504,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const AddingCourseButtonstyle = (adding) => {
         if (adding) {
-            addCourseButton.style.opacity = '0.7';
-            addCourseButton.style.pointerEvents = 'none';
+            addCourseButton.classList.add('adding_course');
             addCourseButton.innerHTML = translations[document.documentElement.getAttribute('data-lang')]['adding_course_button'];
         } else {
-            addCourseButton.style.opacity = '1';
-            addCourseButton.style.pointerEvents = 'auto';
+            addCourseButton.classList.remove('adding_course');
             addCourseButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['add_course_button'];
         }
     }
@@ -534,9 +532,9 @@ async function openBGU4U22Tab() {
 
 async function openBGU4UTab(courseNumber) {
     try {
-        const ex_department = courseNumber.substring(0,3);
+        const ex_department = courseNumber.substring(0, 3);
         const ex_degree_level = courseNumber[4];
-        const ex_course = courseNumber.substring(6,10);
+        const ex_course = courseNumber.substring(6, 10);
         // Create new tab
         const tab = await chrome.tabs.create({
             url: "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department="

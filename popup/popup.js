@@ -359,7 +359,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Generate primary key
-    async function generatePKey () {
+    async function generatePKey() {
         try {
             const tabId = await openBGUTab();
             try {
@@ -388,6 +388,26 @@ document.addEventListener("DOMContentLoaded", function () {
     // Open options page
     openOptionsBtn.addEventListener("click", function () {
         chrome.runtime.openOptionsPage();
+    });
+
+    // Mouse-tracking gradient effect
+    openGraphBtn.addEventListener('mousemove', (e) => {
+        const rect = openGraphBtn.getBoundingClientRect();
+        const x = e.clientX - rect.left; // x position within the element
+        const y = e.clientY - rect.top;  // y position within the element
+
+        // Calculate the percentage of the mouse position
+        const percentX = x / rect.width;
+        const percentY = y / rect.height;
+
+        // Update the gradient based on mouse position
+        const startColor = getComputedStyle(document.documentElement).getPropertyValue('--button-start-color').trim();
+        const endColor = getComputedStyle(document.documentElement).getPropertyValue('--button-end-color').trim();
+        openGraphBtn.style.backgroundImage = `radial-gradient(circle at ${percentX * 100}% ${percentY * 100}%, ${endColor}, ${startColor})`;
+    });
+
+    openGraphBtn.addEventListener('mouseleave', () => {
+        openGraphBtn.style.backgroundImage = '';
     });
 });
 

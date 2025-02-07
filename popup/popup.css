@@ -227,3 +227,7 @@ button:hover,
 .year_container {
     width: 34%;
 }
+
+#open_graph:hover {
+    opacity: 1;
+}
