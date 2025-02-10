@@ -231,3 +231,7 @@ button:hover,
 #open_graph:hover {
     opacity: 1;
 }
+
+.loading:active {
+    transform: scale(1);
+}

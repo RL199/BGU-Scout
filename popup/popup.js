@@ -179,11 +179,12 @@ document.addEventListener("DOMContentLoaded", function () {
     async function setLoadingGraphStyle(loading) {
         if (loading) {
             openGraphBtn.classList.add("loading");
+            openGraphBtn.disabled = true;
 
             const loadingPaths = [
-                '<path d="M4 11H2v3h2z"/>',
-                '<path d="M9 7H7v7h2z"/>',
-                '<path d="M14 2h-2v12h2z"/>'
+                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
+                '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
+                '<path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>'
             ];
 
             let currentIndex = 0;
@@ -197,6 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
             openGraphBtn.dataset.loadingInterval = interval;
         } else {
             openGraphBtn.classList.remove("loading");
+            openGraphBtn.disabled = false;
             clearInterval(openGraphBtn.dataset.loadingInterval);
             openGraphBtn.innerHTML = graphIcon + translations[lang].graph;
         }
@@ -232,6 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Open graph
     openGraphBtn.addEventListener("click", async function () {
+        setLoadingGraphStyle(true);
 
 
         const getStorageSyncData = (key) =>
@@ -261,12 +264,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!year || !semester || !exam_quiz || !department || !degree || !course) {
                 alertPopup("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.");
+                setLoadingGraphStyle(false);
                 return;
             }
             try {
                 const currentTime = new Date().getTime();
                 console.log("Current time:", currentTime);
-                if (currentTime - lastKeyUpdate > 420000) {
+                if (currentTime - lastKeyUpdate > 42) {
                     await generatePKey();
                     await waitForKey();
                 }
