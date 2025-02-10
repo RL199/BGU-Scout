@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const currentTime = new Date().getTime();
                 console.log("Current time:", currentTime);
-                if (currentTime - lastKeyUpdate > 42) {
+                if (currentTime - lastKeyUpdate > 420000) {
                     await generatePKey();
                     await waitForKey();
                 }
