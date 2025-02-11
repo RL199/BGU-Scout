@@ -53,6 +53,11 @@ function checkForCourseList(courseList, obs) {
         console.log('Courses to save:', coursesToSave);
         chrome.storage.sync.get(['saved_courses'], function(result) {
             const savedCourses = result.saved_courses || {};
+            for (const courseNumber in coursesToSave) {
+                if (savedCourses[courseNumber]) {
+                    delete coursesToSave[courseNumber];
+                }
+            }
             const newSavedCourses = { ...savedCourses, ...coursesToSave };
             chrome.storage.sync.set({ 'saved_courses': newSavedCourses }, function() {
                 console.log('Courses saved:', newSavedCourses);
