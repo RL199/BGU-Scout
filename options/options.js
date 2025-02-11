@@ -16,13 +16,19 @@ document.addEventListener('DOMContentLoaded', function () {
             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
         </svg>`;
 
+    const editIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" id="edit_course_name_icon" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+        </svg>`;
+
     const translations = {
         en: {
             enable_moodle_courses_description: "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
             options: "Options",
             user_name: "User Name:",
             password: "Password:",
-            id: "ID:",
+            id: "ID Number:",
             theme: "Color Theme:",
             light: "Light",
             dark: "Dark",
@@ -417,12 +423,39 @@ document.addEventListener('DOMContentLoaded', function () {
         const courseNameElement = document.createElement("input");
         courseNameElement.type = "text";
         courseNameElement.value = course_name;
-        courseNameElement.disabled = true;
         courseNameElement.className = "course_name_input";
         courseNameElement.style.textAlign = 'center';
-        courseNameElement.id = "course_name_input" + course_name;
+        courseNameElement.id = "course_name_input" + course_number;
         courseNameElement.setAttribute("aria-label", "Course name");
-        courseNameElement.setAttribute("aria-readonly", "true");
+
+        courseNameElement.addEventListener('input', function () {
+            const hasValue = this.value.trim() !== '';
+            const courseNumber = this.id.replace('course_name_input', '');
+            const editCourseNameButton = document.getElementById("edit_course_name_button" + courseNumber);
+            if (hasValue) {
+                editCourseNameButton.style.display = 'inline-block';
+            } else {
+                editCourseNameButton.style.display = 'none';
+            }
+        });
+
+        // Create edit button
+        const editCourseNameButton = document.createElement("button");
+        editCourseNameButton.innerHTML = editIcon;
+        editCourseNameButton.className = "edit_course_name_button";
+        editCourseNameButton.id = "edit_course_name_button" + course_number;
+        editCourseNameButton.style.display = 'none';
+        editCourseNameButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            // save course name
+            const course_name = document.getElementById("course_name_input" + course_number).value.trim();
+            chrome.storage.sync.get(['saved_courses'], function (result) {
+                result.saved_courses[course_number] = course_name;
+                chrome.storage.sync.set({ saved_courses: result.saved_courses });
+            });
+            handleMessages('Course name saved', 'שם הקורס נשמר', null, null, false);
+            this.style.display = 'none';
+        });
 
         // create label as course number
         const courseLabel = document.createElement("label");
@@ -456,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Append elements
         lineContainer.appendChild(courseNameElement);
+        lineContainer.appendChild(editCourseNameButton);
         lineContainer.appendChild(removeCourseButton);
         coursesList.appendChild(courseLabel);
         coursesList.appendChild(lineContainer);

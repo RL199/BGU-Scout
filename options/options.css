@@ -52,11 +52,6 @@
     .container_en {
         display: none;
     }
-
-    [id^="remove_course_button"] {
-        margin-left: 0rem;
-        margin-right: 0.2rem;
-    }
 }
 
 [data-lang="en"] {
@@ -69,11 +64,6 @@
 
     .container_en {
         display: initial;
-    }
-
-    [id^="remove_course_button"] {
-        margin-left: 0.2rem;
-        margin-right: 0rem;
     }
 }
 
@@ -246,6 +236,7 @@ select:hover {
 }
 
 [id^="remove_course_button"],
+[id^="edit_course_name_button"],
 #add_course_button {
     padding: 0.5rem;
     background-color: var(--button-bg);
@@ -271,11 +262,13 @@ select:hover {
 }
 
 [id^="remove_course_button"]:hover,
+[id^="edit_course_name_button"]:hover,
 #add_course_button:hover {
     opacity: 0.9;
 }
 
 [id^="remove_course_button"]:active,
+[id^="edit_course_name_button"]:active,
 #add_course_button:active {
     transform: scale(0.95);
     transition: transform 0.1s;
@@ -307,6 +300,9 @@ select:hover {
 .course_line {
     display: flex;
     width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.2rem;
 }
 
 .disclaimer {
@@ -389,7 +385,8 @@ input:checked+.slider:before {
     flex: 1;
 }
 
-#remove_icon {
+#remove_icon,
+#edit_course_name_icon {
     fill: currentColor;
     width: 20px;
     color: var(--button-text);
