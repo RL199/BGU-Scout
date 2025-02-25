@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             year: "שנה:",
             semester: "סמסטר:",
             options: "אפשרויות",
-            login: "אתר BGU",
+            login: "אתר בנ\"ג",
             graph: "גרף",
             key: "מפתח:",
             first_semester: "סתיו",
