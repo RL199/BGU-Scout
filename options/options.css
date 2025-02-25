@@ -17,7 +17,6 @@
     --success-color: #4caf50;
     --error-color: #f44336;
     --other-color: #f49b55;
-    --select-arrow: url("/images/select_icon_light_mode.png");
 }
 
 [data-theme="dark"] {
@@ -34,7 +33,6 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
-    --select-arrow: url("/images/select_icon_dark_mode.png");
 
     ::-ms-reveal {
         filter: invert(100%);
@@ -122,6 +120,7 @@ h1 {
     text-align: center;
     margin-bottom: 1.5rem;
     transition: transform 1s;
+    cursor: default;
 }
 
 h1:hover {
@@ -176,6 +175,10 @@ input:hover,
 select:hover {
     opacity: 0.9;
     filter: brightness(99%);
+}
+
+select:hover {
+    cursor: pointer;
 }
 
 [type="submit"] {
@@ -312,6 +315,7 @@ select:hover {
     padding: 1rem;
     border-top: 1px solid var(--h1-color);
     border-bottom: 1px solid var(--h1-color);
+    cursor: default;
 }
 
 #courses_fieldset {
@@ -322,6 +326,7 @@ select:hover {
 #courses_fieldset legend {
     font-size: small;
     text-align: center;
+    cursor: default;
 }
 
 .toggle_switch {
