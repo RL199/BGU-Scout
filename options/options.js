@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
             header1: "אפשרויות",
             add_course_button: "הוסף",
             adding_course_button: "מוסיף...",
-            saved_courses: "קורסים שנשמרו",
+            saved_courses: "קורסים שמורים",
             disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
             הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
         }
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load saved options
     function loadOptions() {
-        chrome.storage.sync.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'enable_moodle_courses'], function (result) {
+        chrome.storage.local.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'enable_moodle_courses'], function (result) {
             if (result.user_name) document.getElementById('user_name').value = result.user_name;
             if (result.id) document.getElementById('id').value = result.id;
             if (result.password) document.getElementById('password').value = result.password;
@@ -147,17 +147,17 @@ document.addEventListener('DOMContentLoaded', function () {
     theme_select.addEventListener('change', function () {
         const selectedTheme = this.value;
         apply_theme(selectedTheme);
-        chrome.storage.sync.set({ theme: selectedTheme });
+        chrome.storage.local.set({ theme: selectedTheme });
     });
 
     lang_select.addEventListener('change', function () {
         const selected_lang = this.value;
         apply_lang(selected_lang);
-        chrome.storage.sync.set({ lang: selected_lang });
+        chrome.storage.local.set({ lang: selected_lang });
     });
 
     auto_add_moodle_courses.addEventListener('change', function () {
-        chrome.storage.sync.set({ enable_moodle_courses: this.checked });
+        chrome.storage.local.set({ enable_moodle_courses: this.checked });
     });
 
     // user form submission
@@ -183,6 +183,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const userDetails = await chrome.storage.local.get(['id', 'password', 'user_name']);
+        if (userDetails.id === id && userDetails.password === password && userDetails.user_name === user_name) {
+            handleMessages('User details already saved', 'פרטי המשתמש כבר נשמרו', null, null, true);
+            return;
+        }
 
         try {
             const tabId = await openBGU4U22Tab();
@@ -314,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            result = await chrome.storage.sync.get(['saved_courses']);
+            result = await chrome.storage.local.get(['saved_courses']);
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
                 handleMessages('Course number already exists', 'מספר הקורס כבר קיים', 'error', null, false);
@@ -360,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     courseFormData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
                 }
-                chrome.storage.sync.set(courseFormData);
+                chrome.storage.local.set(courseFormData);
                 // Clear input
                 NewCourseNumberInput.value = '';
                 const event = new Event('input', {
@@ -386,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else if (message.type === 'LOGIN_SUCCESS') {
             handleMessages('User details saved', 'פרטי המשתמש נשמרו', null, tabId, true);
-            chrome.storage.sync.set(userFormData);
+            chrome.storage.local.set(userFormData);
         }
     });
 
@@ -449,9 +454,9 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             // save course name
             const course_name = document.getElementById("course_name_input" + course_number).value.trim();
-            chrome.storage.sync.get(['saved_courses'], function (result) {
+            chrome.storage.local.get(['saved_courses'], function (result) {
                 result.saved_courses[course_number] = course_name;
-                chrome.storage.sync.set({ saved_courses: result.saved_courses });
+                chrome.storage.local.set({ saved_courses: result.saved_courses });
             });
             handleMessages('Course name saved', 'שם הקורס נשמר', null, null, false);
             this.style.display = 'none';
@@ -472,11 +477,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add remove functionality
         removeCourseButton.addEventListener('click', function (e) {
             e.preventDefault();
-            chrome.storage.sync.get(['saved_courses'], function (result) {
+            chrome.storage.local.get(['saved_courses'], function (result) {
                 if (result.saved_courses) {
                     // Remove result.saved_courses[course_number] from saved courses
                     delete result.saved_courses[course_number];
-                    chrome.storage.sync.set({ saved_courses: result.saved_courses });
+                    chrome.storage.local.set({ saved_courses: result.saved_courses });
                     lineContainer.remove();
                     courseLabel.remove();
                 }

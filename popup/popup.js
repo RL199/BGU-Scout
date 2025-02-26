@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.local.get("not_first_time", function (result) {
         if (!result.not_first_time) {
             chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
-            chrome.storage.sync.set({ lang: 'system', theme: 'system' });
+            chrome.storage.local.set({ lang: 'system', theme: 'system' });
         }
     });
 
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Set theme and language
     let lang;
-    chrome.storage.sync.get(["theme", "lang"], function (result) {
+    chrome.storage.local.get(["theme", "lang"], function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
         } else {
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    chrome.storage.sync.get(["user_name", "id", "password"], async function (result) {
+    chrome.storage.local.get(["user_name", "id", "password"], async function (result) {
         if (!result.user_name || !result.id || !result.password) {
             alertPopup("Please fill in your user credentials in the options page.", "אנא מלא את פרטי המשתמש בדף האפשרויות.");
             chrome.runtime.openOptionsPage();
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load saved values
-    chrome.storage.sync.get(
+    chrome.storage.local.get(
         [
             "year",
             "semester",
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (message.type === "P_KEY_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
-                    await chrome.storage.sync.set({ p_key: message.pKey });
+                    await chrome.storage.local.set({ p_key: message.pKey });
                     chrome.storage.local.set({ last_key_update: new Date().getTime() });
                     setLoadingGraphStyle(false);
                     resolve(message.pKey);
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         const getStorageSyncData = (key) =>
-            new Promise((resolve) => chrome.storage.sync.get(key, resolve));
+            new Promise((resolve) => chrome.storage.local.get(key, resolve));
 
         const getStorageLocalData = (key) =>
             new Promise((resolve) => chrome.storage.local.get(key, resolve));
@@ -320,28 +320,28 @@ document.addEventListener("DOMContentLoaded", function () {
         if (year < 1970 || year > new Date().getFullYear()) {
             return;
         }
-        chrome.storage.sync.set({ year: year }, function () {
+        chrome.storage.local.set({ year: year }, function () {
             console.log("Year saved:", year);
         });
     });
 
     semesterInput.addEventListener("change", function () {
         const semester = document.querySelector('input[name="semester"]:checked').value;
-        chrome.storage.sync.set({ semester: semester }, function () {
+        chrome.storage.local.set({ semester: semester }, function () {
             console.log("Semester saved:", semester);
         });
     });
 
     examInput.addEventListener("change", function () {
         const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
-        chrome.storage.sync.set({ exam_quiz: exam_quiz }, function () {
+        chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
             console.log("Exam saved:", exam_quiz);
         });
     });
 
     quizInput.addEventListener("change", function () {
         const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
-        chrome.storage.sync.set({ exam_quiz: exam_quiz }, function () {
+        chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
             console.log("Quiz saved:", exam_quiz);
         });
     });
@@ -352,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const department = course_number[0];
         const degree = course_number[1];
         const course = course_number[2];
-        chrome.storage.sync.set({
+        chrome.storage.local.set({
             full_course_number,
             department,
             degree,
