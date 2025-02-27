@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 openGraphBtn.innerHTML = loadingGraphIcon + loadingPaths[currentIndex] + `</svg> ` + translations[lang].loadingGraph;
 
                 currentIndex = (currentIndex + 1) % loadingPaths.length;
-            }, 200);
+            }, 410);
 
             // Store interval ID to clear it later
             openGraphBtn.dataset.loadingInterval = interval;
@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const currentTime = new Date().getTime();
                 console.log("Current time:", currentTime);
-                if (currentTime - lastKeyUpdate > 420000) {
+                if (currentTime - lastKeyUpdate > 42) {
                     await generatePKey();
                     await waitForKey();
                 }
