@@ -17,6 +17,7 @@
     --success-color: #4caf50;
     --error-color: #f44336;
     --other-color: #f49b55;
+    --select-arrow: url("/images/select_icon_light_mode.png");
 }
 
 [data-theme="dark"] {
@@ -33,6 +34,7 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
+    --select-arrow: url("/images/select_icon_dark_mode.png");
 
     ::-ms-reveal {
         filter: invert(100%);
@@ -50,6 +52,11 @@
     .container_en {
         display: none;
     }
+
+    [id^="remove_course_button"] {
+        margin-left: 0rem;
+        margin-right: 0.2rem;
+    }
 }
 
 [data-lang="en"] {
@@ -62,6 +69,11 @@
 
     .container_en {
         display: initial;
+    }
+
+    [id^="remove_course_button"] {
+        margin-left: 0.2rem;
+        margin-right: 0rem;
     }
 }
 
@@ -120,7 +132,6 @@ h1 {
     text-align: center;
     margin-bottom: 1.5rem;
     transition: transform 1s;
-    cursor: default;
 }
 
 h1:hover {
@@ -175,10 +186,6 @@ input:hover,
 select:hover {
     opacity: 0.9;
     filter: brightness(99%);
-}
-
-select:hover {
-    cursor: pointer;
 }
 
 [type="submit"] {
@@ -239,7 +246,6 @@ select:hover {
 }
 
 [id^="remove_course_button"],
-[id^="edit_course_name_button"],
 #add_course_button {
     padding: 0.5rem;
     background-color: var(--button-bg);
@@ -265,13 +271,11 @@ select:hover {
 }
 
 [id^="remove_course_button"]:hover,
-[id^="edit_course_name_button"]:hover,
 #add_course_button:hover {
     opacity: 0.9;
 }
 
 [id^="remove_course_button"]:active,
-[id^="edit_course_name_button"]:active,
 #add_course_button:active {
     transform: scale(0.95);
     transition: transform 0.1s;
@@ -303,9 +307,6 @@ select:hover {
 .course_line {
     display: flex;
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.2rem;
 }
 
 .disclaimer {
@@ -315,7 +316,6 @@ select:hover {
     padding: 1rem;
     border-top: 1px solid var(--h1-color);
     border-bottom: 1px solid var(--h1-color);
-    cursor: default;
 }
 
 #courses_fieldset {
@@ -326,7 +326,6 @@ select:hover {
 #courses_fieldset legend {
     font-size: small;
     text-align: center;
-    cursor: default;
 }
 
 .toggle_switch {
@@ -390,8 +389,7 @@ input:checked+.slider:before {
     flex: 1;
 }
 
-#remove_icon,
-#edit_course_name_icon {
+#remove_icon {
     fill: currentColor;
     width: 20px;
     color: var(--button-text);
