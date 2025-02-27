@@ -65,7 +65,7 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 - **Course Statistics Visualization**: Generate graphical representations of course statistics and grades.
 - **Dark/Light Mode Support**: Automatic theme switching based on system preferences or manual selection.
 - **Bilingual Support**: Full Hebrew and English language support.
-- **Course Management**: Save and manage multiple courses for quick access.
+- **Course Management**: Save and manage multiple course numbers for quick access.
 - **Quick Access**: Direct links to BGU's login portal and grade system.
 - **User Data Management**: Securely store and manage user credentials.
 
@@ -77,7 +77,7 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 ### Steps
 
-1. Clone the repository or download the ZIP file from the [latest release](https://github.com/RL199/BGU-Scout/releases/download/v1.0.0/BGU.Scout.v1.0.0.zip)
+1. Clone the repository or download the ZIP file from the [latest release](https://github.com/RL199/BGU-Scout/releases/download/v0.9.1-beta/BGU.Scout.v0.9.1-beta.zip)
 2. Extract the ZIP file to a directory on your computer.
 3. Open Chrome and navigate to `chrome://extensions/`.
 4. Enable "Developer mode" in the top right corner.
@@ -113,7 +113,8 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 Effortlessly manage your BGU course statistics and grades with a user-friendly interface.
 
 <div style="display: flex; justify-content: space-between; gap: 10px;">
-    <img src="Screenshots/popupScreenshot.png" alt="Popup Page"/>
+    <img src="Screenshots/popupScreenshot1.png" alt="Popup Page English Dark" style="width: 48%;" />
+    <img src="Screenshots/popupScreenshot2.png" alt="Popup Page Hebrew Light" style="width: 48%;" />
 </div>
 
 ### Options Page
@@ -140,8 +141,7 @@ Configure your extension settings and customize your experience with ease.
 
 - **Theme System**: Uses CSS variables for consistent theming across all components.
 - **Localization**: Built-in translation system for Hebrew and English.
-- **Form Validation**: Server-side validation for user credentials.
-- **Error Handling**: Proper error messages and user feedback.
+- **Form Validation**: Client-side validation for course numbers and user input.
 - **Storage Management**: Efficient use of Chrome's storage sync API.
 
 ## 🗺️ Roadmap
@@ -170,9 +170,12 @@ The extension requires the following permissions:
 
 - `storage`: For saving user preferences and course numbers.
 - `tabs`: For opening BGU websites.
+- `activeTab`: For interacting with the current tab.
 - `scripting`: For injecting scripts into BGU websites.
 - Host permissions for BGU domains:
   - `https://bgu4u22.bgu.ac.il/*`
+  - `https://reports4u22.bgu.ac.il/*`
+  - `https://bgu4u.bgu.ac.il/*`
 
 ## 👥 Contributing
 

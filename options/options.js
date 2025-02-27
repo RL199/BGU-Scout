@@ -489,10 +489,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let type;
         if (error && error === 'error') {
-            console.log(enMessage);
+            console.error(enMessage);
             type = 'error';
         } else if (error) {
-            console.log(error);
+            console.error(error);
             type = 'error';
         } else {
             console.log(enMessage);
