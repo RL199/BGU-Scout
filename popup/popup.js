@@ -154,7 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     courseSelect.appendChild(option);
                 }
             }
-            if (result.full_course_number) {
+            // check if course number is saved and if saved courses contain the course number
+            if (result.full_course_number && result.saved_courses && result.saved_courses[result.full_course_number]) {
                 courseSelect.value = result.full_course_number;
             }
         }
@@ -191,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 openGraphBtn.innerHTML = loadingGraphIcon + loadingPaths[currentIndex] + `</svg> ` + translations[lang].loadingGraph;
 
                 currentIndex = (currentIndex + 1) % loadingPaths.length;
-            }, 200);
+            }, 500);
 
             // Store interval ID to clear it later
             openGraphBtn.dataset.loadingInterval = interval;
