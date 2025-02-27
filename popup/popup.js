@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.local.get("not_first_time", function (result) {
         if (!result.not_first_time) {
             chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
-            chrome.storage.local.set({ lang: 'system', theme: 'system' });
+            chrome.storage.sync.set({ lang: 'system', theme: 'system' });
         }
     });
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             year: "Year:",
             semester: "Semester:",
             options: "Options",
-            login: "BGU Site",
+            login: "Login",
             graph: "Graph",
             key: "Key:",
             first_semester: "Fall",
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             year: "שנה:",
             semester: "סמסטר:",
             options: "אפשרויות",
-            login: "אתר בנ\"ג",
+            login: "כניסה",
             graph: "גרף",
             key: "מפתח:",
             first_semester: "סתיו",
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Set theme and language
     let lang;
-    chrome.storage.local.get(["theme", "lang"], function (result) {
+    chrome.storage.sync.get(["theme", "lang"], function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
         } else {
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    chrome.storage.local.get(["user_name", "id", "password"], async function (result) {
+    chrome.storage.sync.get(["user_name", "id", "password"], async function (result) {
         if (!result.user_name || !result.id || !result.password) {
             alertPopup("Please fill in your user credentials in the options page.", "אנא מלא את פרטי המשתמש בדף האפשרויות.");
             chrome.runtime.openOptionsPage();
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load saved values
-    chrome.storage.local.get(
+    chrome.storage.sync.get(
         [
             "year",
             "semester",
@@ -180,12 +180,11 @@ document.addEventListener("DOMContentLoaded", function () {
     async function setLoadingGraphStyle(loading) {
         if (loading) {
             openGraphBtn.classList.add("loading");
-            openGraphBtn.disabled = true;
 
             const loadingPaths = [
-                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
-                '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
-                '<path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>'
+                '<path d="M4 11H2v3h2z"/>',
+                '<path d="M9 7H7v7h2z"/>',
+                '<path d="M14 2h-2v12h2z"/>'
             ];
 
             let currentIndex = 0;
@@ -199,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
             openGraphBtn.dataset.loadingInterval = interval;
         } else {
             openGraphBtn.classList.remove("loading");
-            openGraphBtn.disabled = false;
             clearInterval(openGraphBtn.dataset.loadingInterval);
             openGraphBtn.innerHTML = graphIcon + translations[lang].graph;
         }
@@ -217,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (message.type === "P_KEY_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
-                    await chrome.storage.local.set({ p_key: message.pKey });
+                    await chrome.storage.sync.set({ p_key: message.pKey });
                     chrome.storage.local.set({ last_key_update: new Date().getTime() });
                     setLoadingGraphStyle(false);
                     resolve(message.pKey);
@@ -235,11 +233,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Open graph
     openGraphBtn.addEventListener("click", async function () {
-        setLoadingGraphStyle(true);
 
 
         const getStorageSyncData = (key) =>
-            new Promise((resolve) => chrome.storage.local.get(key, resolve));
+            new Promise((resolve) => chrome.storage.sync.get(key, resolve));
 
         const getStorageLocalData = (key) =>
             new Promise((resolve) => chrome.storage.local.get(key, resolve));
@@ -265,13 +262,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!year || !semester || !exam_quiz || !department || !degree || !course) {
                 alertPopup("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.");
-                setLoadingGraphStyle(false);
                 return;
             }
             try {
                 const currentTime = new Date().getTime();
                 console.log("Current time:", currentTime);
-                if (currentTime - lastKeyUpdate > 42) {
+                if (currentTime - lastKeyUpdate > 420000) {
                     await generatePKey();
                     await waitForKey();
                 }
@@ -321,28 +317,28 @@ document.addEventListener("DOMContentLoaded", function () {
         if (year < 1970 || year > new Date().getFullYear()) {
             return;
         }
-        chrome.storage.local.set({ year: year }, function () {
+        chrome.storage.sync.set({ year: year }, function () {
             console.log("Year saved:", year);
         });
     });
 
     semesterInput.addEventListener("change", function () {
         const semester = document.querySelector('input[name="semester"]:checked').value;
-        chrome.storage.local.set({ semester: semester }, function () {
+        chrome.storage.sync.set({ semester: semester }, function () {
             console.log("Semester saved:", semester);
         });
     });
 
     examInput.addEventListener("change", function () {
         const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
-        chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
+        chrome.storage.sync.set({ exam_quiz: exam_quiz }, function () {
             console.log("Exam saved:", exam_quiz);
         });
     });
 
     quizInput.addEventListener("change", function () {
         const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
-        chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
+        chrome.storage.sync.set({ exam_quiz: exam_quiz }, function () {
             console.log("Quiz saved:", exam_quiz);
         });
     });
@@ -353,7 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const department = course_number[0];
         const degree = course_number[1];
         const course = course_number[2];
-        chrome.storage.local.set({
+        chrome.storage.sync.set({
             full_course_number,
             department,
             degree,

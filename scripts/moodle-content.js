@@ -1,7 +1,7 @@
 console.log('###Moodle content script loaded###');
 
 // Initialize based on document state
-chrome.storage.local.get(['enable_moodle_courses'], function (result) {
+chrome.storage.sync.get(['enable_moodle_courses'], function(result) {
     if (result.enable_moodle_courses) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeCourseList);
@@ -51,15 +51,10 @@ function checkForCourseList(courseList, obs) {
             coursesToSave[courseNumber] = courseName;
         });
         console.log('Courses to save:', coursesToSave);
-        chrome.storage.local.get(['saved_courses'], function (result) {
+        chrome.storage.sync.get(['saved_courses'], function(result) {
             const savedCourses = result.saved_courses || {};
-            for (const courseNumber in coursesToSave) {
-                if (savedCourses[courseNumber]) {
-                    delete coursesToSave[courseNumber];
-                }
-            }
             const newSavedCourses = { ...savedCourses, ...coursesToSave };
-            chrome.storage.local.set({ 'saved_courses': newSavedCourses }, function () {
+            chrome.storage.sync.set({ 'saved_courses': newSavedCourses }, function() {
                 console.log('Courses saved:', newSavedCourses);
             });
         });

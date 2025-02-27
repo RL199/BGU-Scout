@@ -19,7 +19,7 @@ setTimeout(() => {
 }, 10000);
 
 function loginUniversity() {
-    chrome.storage.local.get(['user_name', 'id', 'password'], function (result) {
+    chrome.storage.sync.get(['user_name', 'id', 'password'], function (result) {
         //extract result credentials from storage
 
         const credentials = {
