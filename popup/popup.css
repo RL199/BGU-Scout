@@ -57,6 +57,7 @@ h1 {
     margin: 0 0 8px 0;
     font-size: 32px;
     transition: filter 1.5s;
+    cursor: default;
 }
 
 h1:hover {
@@ -199,6 +200,10 @@ button:hover,
     transition: all 0.3s ease;
 }
 
+select:hover {
+    cursor: pointer;
+}
+
 #login_icon,
 #graph_icon,
 #options_icon {
@@ -230,4 +235,8 @@ button:hover,
 
 #open_graph:hover {
     opacity: 1;
+}
+
+.loading:active {
+    transform: scale(1);
 }
