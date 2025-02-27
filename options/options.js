@@ -528,10 +528,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let type;
         if (error && error === 'error') {
-            console.error(enMessage);
+            console.log(enMessage);
             type = 'error';
         } else if (error) {
-            console.error(error);
+            console.log(error);
             type = 'error';
         } else {
             console.log(enMessage);
