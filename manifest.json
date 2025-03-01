@@ -23,7 +23,8 @@
         "default_popup": "popup/popup.html"
     },
     "host_permissions": [
-        "https://bgu4u22.bgu.ac.il/*"
+        "https://bgu4u22.bgu.ac.il/*",
+        "https://bgu4u.bgu.ac.il/*"
     ],
     "background": {
         "service_worker": "background.js"
