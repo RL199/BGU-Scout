@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
             openGraphBtn.disabled = true;
 
             const loadingPaths = [
-                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
+                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>',
                 '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
                 '<path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>'
             ];
@@ -196,11 +196,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 500);
 
             // Store interval ID to clear it later
-            openGraphBtn.dataset.loadingInterval = interval;
+            openGraphBtn.loadingInterval = interval;
         } else {
             openGraphBtn.classList.remove("loading");
             openGraphBtn.disabled = false;
-            clearInterval(openGraphBtn.dataset.loadingInterval);
+            clearInterval(openGraphBtn.loadingInterval);
             openGraphBtn.innerHTML = graphIcon + translations[lang].graph;
         }
     }
