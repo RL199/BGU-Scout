@@ -196,11 +196,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 500);
 
             // Store interval ID to clear it later
-            openGraphBtn.dataset.loadingInterval = interval;
+            openGraphBtn.loadingInterval = interval;
         } else {
             openGraphBtn.classList.remove("loading");
             openGraphBtn.disabled = false;
-            clearInterval(openGraphBtn.dataset.loadingInterval);
+            clearInterval(openGraphBtn.loadingInterval);
             openGraphBtn.innerHTML = graphIcon + translations[lang].graph;
         }
     }
