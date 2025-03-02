@@ -37,10 +37,14 @@ function checkForCourseList(courseList, obs) {
         console.log('Course items:', courseItems);
         const coursesToSave = {};
         courseItems.forEach(courseItem => {
-            const courseName = courseItem.innerText
+            const courseName = (courseItem.innerText
                 .trim()
                 .match(/(.*)\n/)?.[0]
-                ?.replace(/\n/g, '') || courseItem.innerText.trim();
+                ?.replace(/\n/g, '') || courseItem.innerText.trim())
+                .replace(/(\S)\s*סמ\s*[0-9]+\s*(\S)/g, '$1 $2')  // Keep space between words
+                .replace(/\s*סמ\s*[0-9]+\s*/g, ' ')              // Handle edge cases
+                .replace(/\s+/g, ' ')                            // Normalize spaces
+                .trim();                                         // Remove trailing spaces
             console.log('Course name:', courseName);
             const courseLink = courseItem.querySelector('a').href;
             const courseCode = courseLink.match(/id=(\d+)/)[1];
