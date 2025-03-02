@@ -411,8 +411,10 @@ input:checked+.slider:before {
     margin-top: 0.5rem;
 }
 
-.course_label:first-child {
-    margin-top: 0;
+.course_line:first-child {
+    .course_label {
+        margin-top: 0;
+    }
 }
 
 .switch_label {
