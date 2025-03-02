@@ -73,7 +73,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    let toastTimeout = null;
     function showToast(enMessage, hebMessage, type) {
+        if (toastTimeout) {
+            clearTimeout(toastTimeout);
+        }
+
         translations['en']['toast_message'] = enMessage;
         translations['he']['toast_message'] = hebMessage;
         apply_lang(document.documentElement.getAttribute('data-lang'));
@@ -81,8 +86,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set toast shadow color
         document.documentElement.style.setProperty('--toast-color', `var(--${toastType}-color)`);
         toast.classList.add('show');
-        setTimeout(() => {
+        toastTimeout = setTimeout(() => {
             toast.classList.remove('show');
+            toastTimeout = null;
         }, 5000);
     }
 
