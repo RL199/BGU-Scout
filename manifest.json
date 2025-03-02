@@ -23,12 +23,8 @@
         "default_popup": "popup/popup.html"
     },
     "host_permissions": [
-        "https://bgu4u22.bgu.ac.il/*",
-        "https://bgu4u.bgu.ac.il/*"
+        "https://bgu4u22.bgu.ac.il/*"
     ],
-    "background": {
-        "service_worker": "background.js"
-    },
     "content_scripts": [
         {
             "matches": [
@@ -43,6 +39,14 @@
                 "https://moodle.bgu.ac.il/moodle/my/*"
             ],
             "js": ["scripts/moodle-content.js"],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department=*"
+            ],
+            "js": ["scripts/bgu4u-content.js"],
             "run_at": "document_idle",
             "all_frames": true
         }

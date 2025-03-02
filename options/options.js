@@ -331,24 +331,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
+            await chrome.storage.local.set({ allowCourseValidation: true });
             const tabId = await openBGU4UTab(courseNumber);
-
-            try {
-
-                await chrome.scripting.executeScript({
-                    target: { tabId: tabId, allFrames: true },
-                    func: () => { },
-                    args: []
-                });
-
-                //validate course number in bgu4u website
-                await chrome.scripting.executeScript({
-                    target: { tabId: tabId, allFrames: true },
-                    files: ["scripts/validate_course.js"]
-                });
-            } catch (error) {
-                handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, false);
-            }
         } catch (error) {
             handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null, false);
             return;
@@ -357,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chrome.runtime.onMessage.addListener(function (message, sender) {
         const tabId = sender.tab.id;
-        if (message.type === 'VALIDATE_COURSE') {
+        if (message.type === 'COURSE_FOUND') {
             if (message.courseName) {
                 courseName = message.courseName;
                 if (!result.saved_courses) {
@@ -382,6 +366,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else if (message.type === 'CONNECTION_ERROR') {
             handleMessages('Connection error', 'שגיאת חיבור', 'error', tabId, false);
+        }
+        else if (message.type === 'COURSE_NOT_FOUND') {
+            handleMessages('Course not found', 'הקורס לא נמצא', 'error', tabId, false);
         }
         else if (message.type === 'LOGIN_FAILED') {
             handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', tabId, true);
