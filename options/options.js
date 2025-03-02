@@ -174,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!navigator.onLine) {
             handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', null, true);
+            return;
         }
 
         userFormData = {};
@@ -206,10 +207,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     args: [id, password, user_name]
                 });
 
-                await chrome.scripting.executeScript({
-                    target: { tabId: tabId, allFrames: true },
-                    files: ["scripts/validate_user_details.js"]
-                });
+                // await chrome.scripting.executeScript({
+                //     target: { tabId: tabId, allFrames: true },
+                //     files: ["scripts/validate_user_details.js"]
+                // });
             } catch (error) {
                 handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, true);
             }
@@ -348,6 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.runtime.onMessage.addListener(function (message, sender) {
         const tabId = sender.tab.id;
         if (message.type === 'COURSE_FOUND') {
+            chrome.storage.local.remove('allowCourseValidation');
             if (message.courseName) {
                 courseName = message.courseName;
                 if (!result.saved_courses) {
@@ -372,9 +374,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else if (message.type === 'CONNECTION_ERROR') {
             handleMessages('Connection error', 'שגיאת חיבור', 'error', tabId, false);
+            chrome.storage.local.remove('allowCourseValidation');
         }
         else if (message.type === 'COURSE_NOT_FOUND') {
             handleMessages('Course not found', 'הקורס לא נמצא', 'error', tabId, false);
+            chrome.storage.local.remove('allowCourseValidation');
         }
         else if (message.type === 'LOGIN_FAILED') {
             handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', tabId, true);
@@ -417,6 +421,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const lineContainer = document.createElement("div");
         lineContainer.className = "course_line";
 
+        // create label and course box container
+        const courseLabelContainer = document.createElement("div");
+        courseLabelContainer.className = "course_label_container";
+
         // Create course box
         const courseNameElement = document.createElement("input");
         courseNameElement.type = "text";
@@ -437,6 +445,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        // create label as course number
+        const courseLabel = document.createElement("label");
+        courseLabel.textContent = course_number;
+        courseLabel.className = "course_label";
+        courseLabel.setAttribute("aria-label", "Course number");
+
         // Create edit button
         const editCourseNameButton = document.createElement("button");
         editCourseNameButton.innerHTML = editIcon;
@@ -454,12 +468,6 @@ document.addEventListener('DOMContentLoaded', function () {
             handleMessages('Course name saved', 'שם הקורס נשמר', null, null, false);
             this.style.display = 'none';
         });
-
-        // create label as course number
-        const courseLabel = document.createElement("label");
-        courseLabel.textContent = course_number;
-        courseLabel.className = "course_label";
-        courseLabel.setAttribute("aria-label", "Course number");
 
         // Create remove button
         const removeCourseButton = document.createElement("button");
@@ -488,10 +496,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Append elements
-        lineContainer.appendChild(courseNameElement);
+        courseLabelContainer.appendChild(courseLabel);
+        courseLabelContainer.appendChild(courseNameElement);
+        lineContainer.appendChild(courseLabelContainer);
         lineContainer.appendChild(editCourseNameButton);
         lineContainer.appendChild(removeCourseButton);
-        coursesList.appendChild(courseLabel);
         coursesList.appendChild(lineContainer);
     }
 
