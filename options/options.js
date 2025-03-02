@@ -483,6 +483,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById("courses_fieldset").remove();
                 }
             });
+            // Show toast message of the removed course number
+            handleMessages('Course ' + course_number + ' removed', 'הקורס ' + course_number + ' הוסר', null, null, false);
         });
 
         // Append elements
