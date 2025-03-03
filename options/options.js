@@ -11,6 +11,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const addCourseButton = document.getElementById('add_course_button');
     const saveButton = document.getElementById('save_button');
 
+    let toastTimeout = null;
+
+    // Set initial button state
+    addCourseButton.disabled = true;
+    let addButtonText = '';
+    let courseFormData = {};
+    let userFormData = {};
+    let courseName;
+    let result = {};
+    let courseNumber = '';
+
     const removeIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
@@ -73,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    let toastTimeout = null;
+    loadOptions();
+
     function showToast(enMessage, hebMessage, type) {
         if (toastTimeout) {
             clearTimeout(toastTimeout);
@@ -148,8 +160,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    loadOptions();
-
     theme_select.addEventListener('change', function () {
         const selectedTheme = this.value;
         apply_theme(selectedTheme);
@@ -197,25 +207,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            const tabId = await openBGU4U22Tab();
+            const checkedUserDetails = { id, password, user_name };
+            await chrome.storage.local.set({ allowUserValidation: 1 });
+            await chrome.storage.local.set({ checkedUserDetails : checkedUserDetails });
             try {
-                await chrome.scripting.executeScript({
-                    target: { tabId: tabId, allFrames: true },
-                    func: (id, password, user_name) => {
-                        window.userDetails = { id, password, user_name };
-                    },
-                    args: [id, password, user_name]
-                });
-
-                // await chrome.scripting.executeScript({
-                //     target: { tabId: tabId, allFrames: true },
-                //     files: ["scripts/validate_user_details.js"]
-                // });
+                const tabId = await openBGU4U22Tab();
             } catch (error) {
-                handleMessages('Error executing script', 'שגיאה בהרצת הסקריפט', error, tabId, true);
+                handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null, true);
             }
         } catch (error) {
-            handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, null, true);
+            handleMessages('Error saving', 'שגיאה בשמירה', error, null, true);
         }
     });
 
@@ -268,15 +269,6 @@ document.addEventListener('DOMContentLoaded', function () {
     saveButton.addEventListener('mouseleave', () => {
         saveButton.style.backgroundImage = '';
     });
-
-    // Set initial button state
-    addCourseButton.disabled = true;
-    let addButtonText = '';
-    let courseFormData = {};
-    let userFormData = {};
-    let courseName;
-    let result = {};
-    let courseNumber = '';
 
     NewCourseNumberInput.addEventListener('input', function () {
         const hasValue = this.value.trim() !== '';
@@ -375,6 +367,8 @@ document.addEventListener('DOMContentLoaded', function () {
         else if (message.type === 'CONNECTION_ERROR') {
             handleMessages('Connection error', 'שגיאת חיבור', 'error', tabId, false);
             chrome.storage.local.remove('allowCourseValidation');
+            chrome.storage.local.remove('allowUserValidation');
+            chrome.storage.local.remove('checkedUserDetails');
         }
         else if (message.type === 'COURSE_NOT_FOUND') {
             handleMessages('Course not found', 'הקורס לא נמצא', 'error', tabId, false);
@@ -382,13 +376,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else if (message.type === 'LOGIN_FAILED') {
             handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', tabId, true);
+            chrome.storage.local.remove('allowUserValidation');
+            chrome.storage.local.remove('checkedUserDetails');
         }
         else if (message.type === 'FORM_FIELDS_NOT_FOUND') {
             handleMessages('Website not loaded', 'האתר לא נטען', 'error', tabId, true);
+            chrome.storage.local.remove('allowUserValidation');
+            chrome.storage.local.remove('checkedUserDetails');
         }
         else if (message.type === 'LOGIN_SUCCESS') {
             handleMessages('User details saved', 'פרטי המשתמש נשמרו', null, tabId, true);
             chrome.storage.local.set(userFormData);
+            chrome.storage.local.remove('allowUserValidation');
+            chrome.storage.local.remove('checkedUserDetails');
         }
     });
 
