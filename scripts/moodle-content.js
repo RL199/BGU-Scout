@@ -1,3 +1,5 @@
+"use strict";
+
 console.log('###Moodle content script loaded###');
 
 // Initialize based on document state

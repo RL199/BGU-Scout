@@ -1,3 +1,5 @@
+"use strict";
+
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
     checkOnLoad();
 } else {
@@ -8,11 +10,11 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
 async function checkOnLoad() {
     await chrome.storage.local.get(['allowCourseValidation'], function (result) {
-        console.log('Checking for Course validation');
-        chrome.storage.local.set({ allowCourseValidation: false });
         if (result.allowCourseValidation) {
+            console.log('Checking for Course validation');
+            
             setTimeout(() => {
-                console.error('Course name not found');
+                console.error('Connection error');
                 chrome.runtime.sendMessage({
                     type: 'CONNECTION_ERROR'
                 });
@@ -26,7 +28,7 @@ async function checkOnLoad() {
 function validateCourseDetails() {
     console.log('Validating course details');
     let courseName = '';
-    courseNameElement = document.querySelector("#infoi > h1");
+    const courseNameElement = document.querySelector("#infoi > h1");
     if (courseNameElement) {
         courseName = courseNameElement.innerHTML.split('<br>')[1].trim();
         console.log('Course Name:', courseName);
