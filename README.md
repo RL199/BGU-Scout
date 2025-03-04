@@ -68,6 +68,7 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 - **Course Management**: Save and manage multiple courses for quick access.
 - **Quick Access**: Direct links to BGU's login portal and grade system.
 - **User Data Management**: Securely store and manage user credentials.
+- **Moodle Integration**: Automatically add courses from Moodle to the extension.
 
 ## ⚙️ Installation
 
@@ -134,15 +135,14 @@ Configure your extension settings and customize your experience with ease.
 - Chrome Extension APIs
   - Storage API
   - Tabs API
-  - Scripting API
 
 ### Features Implementation
 
 - **Theme System**: Uses CSS variables for consistent theming across all components.
 - **Localization**: Built-in translation system for Hebrew and English.
-- **Form Validation**: Server-side validation for user credentials.
+- **Form Validation**: Server-side validation for user credentials and course numbers.
 - **Error Handling**: Proper error messages and user feedback.
-- **Storage Management**: Efficient use of Chrome's storage sync API.
+- **Storage Management**: Efficient use of Chrome's storage local API.
 
 ## 🗺️ Roadmap
 
@@ -152,10 +152,10 @@ Configure your extension settings and customize your experience with ease.
 - [ ] Improve error handling and user feedback.
 - [ ] Add support for more BGU systems and services.
 - [ ] Add support for more browsers and platforms.
-- [ ] Improve security and privacy features.
+- [X] Improve security and privacy features.
 - [ ] Add support for more data formats and standards.
 - [ ] Improve performance and scalability.
-- [ ] Add support for more devices and screen sizes.
+- [X] Add support for more devices and screen sizes.
 - [ ] Improve documentation and code quality.
 
 ## 🔐 Privacy and Security
@@ -170,9 +170,6 @@ The extension requires the following permissions:
 
 - `storage`: For saving user preferences and course numbers.
 - `tabs`: For opening BGU websites.
-- `scripting`: For injecting scripts into BGU websites.
-- Host permissions for BGU domains:
-  - `https://bgu4u22.bgu.ac.il/*`
 
 ## 👥 Contributing
 
