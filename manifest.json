@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "BGU Scout",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "Display BGU grade distributions in a more convenient way",
     "icons": {
         "16": "images/icon-16.png",
