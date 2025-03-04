@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const coursesForm = document.getElementById('courses_form');
     const theme_select = document.getElementById('theme');
     const lang_select = document.getElementById('language');
-    const auto_add_moodle_courses = document.getElementById('enable_moodle_courses');
+    const auto_add_moodle_courses = document.getElementById('auto_add_moodle_courses');
     const toast = document.getElementById('toast');
     const NewCourseNumberInput = document.getElementById('add_course_number');
     const addCourseButton = document.getElementById('add_course_button');
@@ -35,55 +35,78 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const translations = {
         en: {
-            enable_moodle_courses_description: "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
-            options: "Options",
+            // Course-related messages
+            add_course_button: "Add",
+            adding_course_button: "Adding...",
+            add_course_number: "Add Course Number:",
+            saved_courses: "Saved Courses",
+
+            // User authentication
             user_name: "User Name:",
             password: "Password:",
             id: "ID Number:",
+            forgot_password: "Forgot Password",
+            save: "Save",
+            saving: "Saving...",
+
+            // Interface settings
+            options: "Options",
             theme: "Color Theme:",
             light: "Light",
             dark: "Dark",
             system: "System",
             language: "Language:",
-            save: "Save",
-            saving: "Saving...",
-            forgot_password: "Forgot Password",
-            toast_message: "",
-            add_course_number: "Add Course Number:",
-            enable_moodle_courses: "Auto-Add Moodle Courses:",
             header1: "Options",
-            add_course_button: "Add",
-            adding_course_button: "Adding...",
-            saved_courses: "Saved Courses",
+
+            // Feature toggles
+            auto_add_moodle_courses: "Auto-Add Moodle Courses:",
+            enable_departmental_details: "Enable Departmental Details: ",
+            auto_add_moodle_courses_description: "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
+            enable_departmental_details_description: "See grade distribution for each department separately",
+
+            // System messages
+            toast_message: "",
             disclaimer: `Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
             Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
         },
         he: {
-            enable_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף אוטומטית קורסים מוצגים",
-            options: "אפשרויות",
+            // Course-related messages
+            add_course_button: "הוסף",
+            adding_course_button: "מוסיף...",
+            add_course_number: "הוסף מספר קורס:",
+            saved_courses: "קורסים שמורים",
+
+            // User authentication
             user_name: "שם משתמש:",
             password: "סיסמה:",
             id: "מספר תעודת זהות:",
+            forgot_password: "שכחתי סיסמה",
+            save: "שמור",
+            saving: "שומר...",
+
+            // Interface settings
+            options: "אפשרויות",
             theme: "ערכת נושא:",
             light: "בהיר",
             dark: "כהה",
             system: "מערכת",
             language: "שפה:",
-            save: "שמור",
-            saving: "שומר...",
-            forgot_password: "שכחתי סיסמה",
-            toast_message: "",
-            add_course_number: "הוסף מספר קורס:",
-            enable_moodle_courses: "הוספת קורסים אוטומטית מהמודל:",
             header1: "אפשרויות",
-            add_course_button: "הוסף",
-            adding_course_button: "מוסיף...",
-            saved_courses: "קורסים שמורים",
+
+            // Feature toggles
+            auto_add_moodle_courses: "הוספת קורסים אוטומטית מהמודל:",
+            enable_departmental_details: "אפשר פירוט מחלקתי: ",
+            auto_add_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף אוטומטית קורסים מוצגים",
+            enable_departmental_details_description: "לראות את התפלגות הציונים לכל מחלקה בנפרד",
+
+            // System messages
+            toast_message: "",
             disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
             הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
         }
     };
 
+    // Load saved options
     loadOptions();
 
     function showToast(enMessage, hebMessage, type) {
@@ -131,9 +154,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Load saved options
     function loadOptions() {
-        chrome.storage.local.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'enable_moodle_courses'], function (result) {
+        chrome.storage.local.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'auto_add_moodle_courses', 'enable_departmental_details'], function (result) {
             if (result.user_name) document.getElementById('user_name').value = result.user_name;
             if (result.id) document.getElementById('id').value = result.id;
             if (result.password) document.getElementById('password').value = result.password;
@@ -154,8 +176,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     addCourseLine(course_number, result.saved_courses[course_number]);
                 }
             }
-            if (result.enable_moodle_courses) {
-                auto_add_moodle_courses.checked = result.enable_moodle_courses;
+            if (result.auto_add_moodle_courses) {
+                auto_add_moodle_courses.checked = result.auto_add_moodle_courses;
+            }
+            if (result.enable_departmental_details) {
+                enable_departmental_details.checked = result.enable_departmental_details;
             }
         });
     }
@@ -173,7 +198,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     auto_add_moodle_courses.addEventListener('change', function () {
-        chrome.storage.local.set({ enable_moodle_courses: this.checked });
+        chrome.storage.local.set({ auto_add_moodle_courses: this.checked });
+    });
+
+    enable_departmental_details.addEventListener('change', function () {
+        chrome.storage.local.set({ enable_departmental_details: (this.checked ? 1 : 0) });
     });
 
     // user form submission
@@ -209,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const checkedUserDetails = { id, password, user_name };
             await chrome.storage.local.set({ allowUserValidation: 1 });
-            await chrome.storage.local.set({ checkedUserDetails : checkedUserDetails });
+            await chrome.storage.local.set({ checkedUserDetails: checkedUserDetails });
             try {
                 const tabId = await openBGU4U22Tab();
             } catch (error) {

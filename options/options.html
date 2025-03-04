@@ -41,8 +41,9 @@
                     <option value="en">English</option>
                 </select>
             </div>
-            <button type="submit" data-i18n="save" id="save_button" aria-label="Save" ></button>
-            <button type="button" id="forgot_password" data-i18n="forgot_password" aria-label="Forgot password"></button>
+            <button type="submit" data-i18n="save" id="save_button" aria-label="Save"></button>
+            <button type="button" id="forgot_password" data-i18n="forgot_password"
+                aria-label="Forgot password"></button>
             <div class="disclaimer" data-i18n="disclaimer"></div>
         </form>
     </div>
@@ -50,13 +51,27 @@
         <form id="courses_form">
             <div class="form_group switch">
                 <div class="switch_label">
-                    <label class="switch_label" for="enable_moodle_courses" data-i18n="enable_moodle_courses"></label>
-                    <label data-i18n="enable_moodle_courses_description" id="enable_moodle_courses_description"></label>
+                    <label class="switch_label" for="enable_departmental_details"
+                        data-i18n="enable_departmental_details"></label>
+                    <label data-i18n="enable_departmental_details_description"
+                        id="enable_departmental_details_description" class="switch_description"></label>
                 </div>
                 <div class="toggle_switch">
-                    <input type="checkbox" id="enable_moodle_courses" name="enable_moodle_courses"
-                        aria-label="Enable Moodle courses synchronization"
-                        role="switch" aria-checked="false">
+                    <input type="checkbox" id="enable_departmental_details" name="enable_departmental_details"
+                        aria-label="Enable departmental details" role="switch" aria-checked="false">
+                    <span class="slider" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="form_group switch">
+                <div class="switch_label">
+                    <label class="switch_label" for="auto_add_moodle_courses"
+                        data-i18n="auto_add_moodle_courses"></label>
+                    <label data-i18n="auto_add_moodle_courses_description" id="auto_add_moodle_courses_description"
+                        class="switch_description"></label>
+                </div>
+                <div class="toggle_switch">
+                    <input type="checkbox" id="auto_add_moodle_courses" name="auto_add_moodle_courses"
+                        aria-label="Enable Moodle courses synchronization" role="switch" aria-checked="false">
                     <span class="slider" aria-hidden="true"></span>
                 </div>
             </div>
@@ -64,7 +79,8 @@
                 <label for="add_course_number" data-i18n="add_course_number"></label>
                 <div class="add_course_container">
                     <input type="text" id="add_course_number" name="add_course_number" aria-label="Course Number">
-                    <button type="button" id="add_course_button" data-i18n="add_course_button" aria-label="Add course"></button>
+                    <button type="button" id="add_course_button" data-i18n="add_course_button"
+                        aria-label="Add course"></button>
                 </div>
             </div>
             <form id="courses_list">

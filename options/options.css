@@ -421,20 +421,20 @@ input:checked+.slider:before {
     margin-bottom: 0;
 }
 
-#enable_moodle_courses_description {
+.switch_description {
     color: var(--sub-label-color);
 }
 
-#enable_moodle_courses_description a {
+.switch_description a {
     color: inherit;
     text-decoration: underline;
 }
 
-#enable_moodle_courses_description a:visited {
+.switch_description a:visited {
     color: inherit;
 }
 
-#enable_moodle_courses_description a:hover {
+.switch_description a:hover {
     color: var(--button-bg);
 }
 
@@ -449,4 +449,8 @@ input:checked+.slider:before {
     align-items: center;
     width: 100%;
     flex: 1;
+}
+
+.switch_description {
+    margin-bottom: 0;
 }

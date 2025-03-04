@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.local.get("not_first_time", function (result) {
         if (!result.not_first_time) {
             chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
-            chrome.storage.local.set({ lang: 'system', theme: 'system' });
+            chrome.storage.local.set({ lang: 'system', theme: 'system', enable_departmental_details: 0 });
         }
     });
 
@@ -249,7 +249,8 @@ document.addEventListener("DOMContentLoaded", function () {
             getStorageData("department"),
             getStorageData("degree"),
             getStorageData("course"),
-            getStorageData("last_key_update")
+            getStorageData("last_key_update"),
+            getStorageData("enable_departmental_details")
         ]).then(async (results) => {
             const [
                 year,
@@ -258,7 +259,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 department,
                 degree,
                 course,
-                lastKeyUpdate
+                lastKeyUpdate,
+                enable_departmental_details
             ] = results.map((r) => Object.values(r)[0]);
 
             if (!year || !semester || !exam_quiz || !department || !degree || !course) {
@@ -295,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 `/list_degree_level=*${degree}@` +
                 `/list_course=*${course}@` +
                 `/LIST_GROUP=*@` +
-                `/P_FOR_STUDENT=1`;
+                `/P_FOR_STUDENT=${enable_departmental_details ? 0 : 1}`;
 
             chrome.tabs.create({ url: url });
         });
