@@ -3,8 +3,8 @@
 console.log('###Moodle content script loaded###');
 
 // Initialize based on document state
-chrome.storage.local.get(['enable_moodle_courses'], function (result) {
-    if (result.enable_moodle_courses) {
+chrome.storage.local.get(['auto_add_moodle_courses'], function (result) {
+    if (result.auto_add_moodle_courses) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeCourseList);
         } else {
