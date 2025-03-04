@@ -222,12 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     await chrome.storage.local.remove("generatePKey");
                     setLoadingGraphStyle(false);
                     resolve(message.pKey);
-                    chrome.tabs.remove(sender.tab.id);
                 } else if (message.type === "P_KEY_NOT_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
                     setLoadingGraphStyle(false);
-                    chrome.tabs.remove(sender.tab.id);
                     reject(new Error('Key generation failed'));
                     await chrome.storage.local.remove("generatePKey");
                 }

@@ -223,7 +223,7 @@ select:hover {
 .toast {
     position: fixed;
     bottom: 1rem;
-    right: 1rem;
+    right: 50%;
     background-color: var(--container-bg);
     border: 1px solid var(--box-border);
     color: var(--toast-color);
