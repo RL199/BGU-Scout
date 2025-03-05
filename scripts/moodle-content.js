@@ -1,8 +1,10 @@
+"use strict";
+
 console.log('###Moodle content script loaded###');
 
 // Initialize based on document state
-chrome.storage.local.get(['enable_moodle_courses'], function (result) {
-    if (result.enable_moodle_courses) {
+chrome.storage.local.get(['auto_add_moodle_courses'], function (result) {
+    if (result.auto_add_moodle_courses) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeCourseList);
         } else {
@@ -37,10 +39,14 @@ function checkForCourseList(courseList, obs) {
         console.log('Course items:', courseItems);
         const coursesToSave = {};
         courseItems.forEach(courseItem => {
-            const courseName = courseItem.innerText
+            const courseName = (courseItem.innerText
                 .trim()
                 .match(/(.*)\n/)?.[0]
-                ?.replace(/\n/g, '') || courseItem.innerText.trim();
+                ?.replace(/\n/g, '') || courseItem.innerText.trim())
+                .replace(/(\S)\s*סמ\s*[0-9]+\s*(\S)/g, '$1 $2')  // Keep space between words
+                .replace(/\s*סמ\s*[0-9]+\s*/g, ' ')              // Handle edge cases
+                .replace(/\s+/g, ' ')                            // Normalize spaces
+                .trim();                                         // Remove trailing spaces
             console.log('Course name:', courseName);
             const courseLink = courseItem.querySelector('a').href;
             const courseCode = courseLink.match(/id=(\d+)/)[1];

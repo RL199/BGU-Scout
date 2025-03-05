@@ -1,0 +1,74 @@
+name: Release on Merge to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get version from manifest
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.get_version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create ZIP file
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          mkdir -p build
+          zip -r build/BGU.Scout.zip . -x "*.git*" "*.github*" "*.idea*" "*.vscode*" "Screenshots/*" "build/*" "*.DS_Store" "*.md" "icons/*"
+
+      - name: Get commit messages since last release
+        if: steps.check_tag.outputs.exists == 'false'
+        id: get_changes
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            CHANGES=$(git log --pretty=format:"- %s" | head -n 10)
+          else
+            CHANGES=$(git log $LAST_TAG..HEAD --pretty=format:"- %s")
+          fi
+          # Use step output instead of environment variable
+          echo "changes<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: BGU Scout v${{ steps.get_version.outputs.version }}
+          body: |
+            # BGU Scout v${{ steps.get_version.outputs.version }}
+
+            ## What's Changed
+            ${{ steps.get_changes.outputs.changes }}
+
+            ## Installation
+            1. Download the ZIP file
+            2. Extract it to a folder
+            3. Open Chrome and go to `chrome://extensions/`
+            4. Enable "Developer mode"
+            5. Click "Load unpacked" and select the extracted folder
+          files: build/BGU.Scout.zip
+          draft: false

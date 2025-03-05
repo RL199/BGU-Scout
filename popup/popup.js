@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const quizInput = document.getElementById("quiz");
     const courseNumberInput = document.getElementById("course_number");
 
+    let lang;
+
     const optionsIcon = `
                 <svg xmlns="http://www.w3.org/2000/svg" id="options_icon" viewBox="0 0 16 16">
                     <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.local.get("not_first_time", function (result) {
         if (!result.not_first_time) {
             chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
-            chrome.storage.local.set({ lang: 'system', theme: 'system' });
+            chrome.storage.local.set({ lang: 'system', theme: 'system', enable_departmental_details: 0 });
         }
     });
 
@@ -77,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // Set theme and language
-    let lang;
     chrome.storage.local.get(["theme", "lang"], function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
@@ -169,8 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // Open login page
+    // Open BGU login page
     openLoginBtn.addEventListener("click", function () {
         chrome.tabs.create({
             url: "https://bgu4u22.bgu.ac.il/apex/f?p=104:LOGIN_DESKTOP",
@@ -211,23 +211,23 @@ document.addEventListener("DOMContentLoaded", function () {
             const timeout = setTimeout(() => {
                 setLoadingGraphStyle(false);
                 reject(new Error('Key generation timeout'));
-            }, 20000); // 20 second timeout
+            }, 15000); // 15 second timeout
 
             chrome.runtime.onMessage.addListener(async function listener(message, sender) {
                 if (message.type === "P_KEY_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
                     await chrome.storage.local.set({ p_key: message.pKey });
-                    chrome.storage.local.set({ last_key_update: new Date().getTime() });
+                    await chrome.storage.local.set({ last_key_update: new Date().getTime() });
+                    await chrome.storage.local.remove("generatePKey");
                     setLoadingGraphStyle(false);
                     resolve(message.pKey);
-                    chrome.tabs.remove(sender.tab.id);
                 } else if (message.type === "P_KEY_NOT_FOUND") {
                     clearTimeout(timeout);
                     chrome.runtime.onMessage.removeListener(listener);
                     setLoadingGraphStyle(false);
-                    chrome.tabs.remove(sender.tab.id);
                     reject(new Error('Key generation failed'));
+                    await chrome.storage.local.remove("generatePKey");
                 }
             });
         });
@@ -237,21 +237,18 @@ document.addEventListener("DOMContentLoaded", function () {
     openGraphBtn.addEventListener("click", async function () {
         setLoadingGraphStyle(true);
 
-
-        const getStorageSyncData = (key) =>
-            new Promise((resolve) => chrome.storage.local.get(key, resolve));
-
-        const getStorageLocalData = (key) =>
+        const getStorageData = (key) =>
             new Promise((resolve) => chrome.storage.local.get(key, resolve));
 
         Promise.all([
-            getStorageSyncData("year"),
-            getStorageSyncData("semester"),
-            getStorageSyncData("exam_quiz"),
-            getStorageSyncData("department"),
-            getStorageSyncData("degree"),
-            getStorageSyncData("course"),
-            getStorageLocalData("last_key_update")
+            getStorageData("year"),
+            getStorageData("semester"),
+            getStorageData("exam_quiz"),
+            getStorageData("department"),
+            getStorageData("degree"),
+            getStorageData("course"),
+            getStorageData("last_key_update"),
+            getStorageData("enable_departmental_details")
         ]).then(async (results) => {
             const [
                 year,
@@ -260,7 +257,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 department,
                 degree,
                 course,
-                lastKeyUpdate
+                lastKeyUpdate,
+                enable_departmental_details
             ] = results.map((r) => Object.values(r)[0]);
 
             if (!year || !semester || !exam_quiz || !department || !degree || !course) {
@@ -282,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            const { p_key } = await getStorageSyncData("p_key");
+            const { p_key } = await getStorageData("p_key");
 
             const url =
                 `https://reports4u22.bgu.ac.il/GeneratePDF.php?` +
@@ -297,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 `/list_degree_level=*${degree}@` +
                 `/list_course=*${course}@` +
                 `/LIST_GROUP=*@` +
-                `/P_FOR_STUDENT=1`;
+                `/P_FOR_STUDENT=${enable_departmental_details ? 0 : 1}`;
 
             chrome.tabs.create({ url: url });
         });
@@ -315,6 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
             yearInput.dispatchEvent(new Event("change"));
         }
     });
+
     // Save year input
     yearInput.addEventListener("change", function () {
         const year = yearInput.value;
@@ -366,24 +365,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Generate primary key
     async function generatePKey() {
         try {
-            const tabId = await openBGUTab();
-            try {
-                //check internet connection
-                await chrome.scripting.executeScript({
-                    target: { tabId: tabId, allFrames: true },
-                    func: () => { },
-                    args: []
-                });
-
-                await chrome.scripting.executeScript({
-                    target: { tabId: tabId },
-                    files: ["scripts/generate_p_key.js"],
-                });
-            } catch (error) {
-                console.error(error);
-                chrome.tabs.remove(tabId);
-                throw error;
-            }
+            await chrome.storage.local.set({ generatePKey: 1 });
+            const tabId = await openBGU22Tab();
         } catch (error) {
             console.error("Error:", error);
             throw error;
@@ -417,7 +400,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Open BGU tab
-async function openBGUTab() {
+async function openBGU22Tab() {
     try {
         // Create new tab
         const tab = await chrome.tabs.create({

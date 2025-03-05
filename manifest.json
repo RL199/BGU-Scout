@@ -1,15 +1,15 @@
 {
     "manifest_version": 3,
     "name": "BGU Scout",
-    "version": "1.0.1",
-    "description": "Display BGU courses graphs",
+    "version": "1.1.0",
+    "description": "Display BGU grade distributions in a more convenient way",
     "icons": {
         "16": "images/icon-16.png",
         "32": "images/icon-32.png",
         "48": "images/icon-48.png",
         "128": "images/icon-128.png"
     },
-    "permissions": ["storage", "tabs", "scripting"],
+    "permissions": ["storage", "tabs"],
     "optional_permissions": [],
     "options_page": "options/options.html",
     "action": {
@@ -22,12 +22,8 @@
         "default_title": "BGU Scout",
         "default_popup": "popup/popup.html"
     },
-    "host_permissions": [
-        "https://bgu4u22.bgu.ac.il/*",
-        "https://bgu4u.bgu.ac.il/*"
-    ],
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "scripts/background.js"
     },
     "content_scripts": [
         {
@@ -43,6 +39,14 @@
                 "https://moodle.bgu.ac.il/moodle/my/*"
             ],
             "js": ["scripts/moodle-content.js"],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department=*"
+            ],
+            "js": ["scripts/bgu4u-content.js"],
             "run_at": "document_idle",
             "all_frames": true
         }

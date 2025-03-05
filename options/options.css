@@ -121,6 +121,7 @@ h1 {
     margin-bottom: 1.5rem;
     transition: transform 1s;
     cursor: default;
+    font-size: 2rem;
 }
 
 h1:hover {
@@ -189,7 +190,8 @@ select:hover {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
     transition: opacity 0.3s;
 }
 
@@ -221,7 +223,7 @@ select:hover {
 .toast {
     position: fixed;
     bottom: 1rem;
-    right: 1rem;
+    right: 50%;
     background-color: var(--container-bg);
     border: 1px solid var(--box-border);
     color: var(--toast-color);
@@ -254,6 +256,7 @@ select:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: auto;
 }
 
 #add_course_button:disabled {
@@ -294,7 +297,7 @@ select:hover {
 
 #courses_list {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     margin-top: 0rem;
     justify-content: space-between;
     gap: 0;
@@ -302,6 +305,7 @@ select:hover {
 
 .course_line {
     display: flex;
+    flex-direction: row;
     width: 100%;
     justify-content: space-between;
     align-items: center;
@@ -409,32 +413,46 @@ input:checked+.slider:before {
     margin-top: 0.5rem;
 }
 
-.course_label:first-child {
-    margin-top: 0;
+.course_line:first-child {
+    .course_label {
+        margin-top: 0;
+    }
 }
 
 .switch_label {
     margin-bottom: 0;
 }
 
-#enable_moodle_courses_description {
+.switch_description {
     color: var(--sub-label-color);
 }
 
-#enable_moodle_courses_description a {
+.switch_description a {
     color: inherit;
     text-decoration: underline;
 }
 
-#enable_moodle_courses_description a:visited {
+.switch_description a:visited {
     color: inherit;
 }
 
-#enable_moodle_courses_description a:hover {
+.switch_description a:hover {
     color: var(--button-bg);
 }
 
 .adding_course {
     opacity: 0.7;
     pointer-events: none;
+}
+
+.course_label_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+}
+
+.switch_description {
+    margin-bottom: 0;
 }
