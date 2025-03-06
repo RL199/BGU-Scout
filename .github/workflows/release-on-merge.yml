@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,6 +38,60 @@ jobs:
           mkdir -p build
           zip -r build/BGU.Scout.zip . -x "*.git*" "*.github*" "*.idea*" "*.vscode*" "Screenshots/*" "build/*" "*.DS_Store" "*.md" "icons/*"
 
+      - name: Get PR description for merged PR
+        if: steps.check_tag.outputs.exists == 'false'
+        id: get_pr_info
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const payload = context.payload;
+            const repo = context.repo;
+
+            try {
+              // Get the commit SHA that triggered this workflow
+              const sha = payload.after;
+
+              // Get the commit message to check if it's a merge commit
+              const { data: commit } = await github.rest.git.getCommit({
+                owner: repo.owner,
+                repo: repo.name,
+                commit_sha: sha
+              });
+
+              // If it's a merge commit, extract PR number
+              const prMatch = commit.message.match(/Merge pull request #(\d+)/);
+
+              if (prMatch) {
+                const prNumber = parseInt(prMatch[1], 10);
+
+                // Get PR details
+                const { data: pr } = await github.rest.pulls.get({
+                  owner: repo.owner,
+                  repo: repo.name,
+                  pull_number: prNumber
+                });
+
+                // Set outputs
+                core.setOutput('pr_found', 'true');
+                core.setOutput('pr_title', pr.title);
+                core.setOutput('pr_number', prNumber.toString());
+                core.setOutput('pr_url', pr.html_url);
+                core.setOutput('pr_description', pr.body || '');
+                return;
+              }
+            } catch (error) {
+              console.error('Error getting PR info:', error);
+            }
+
+            // If we get here, either there was an error or no PR was found
+            core.setOutput('pr_found', 'false');
+            core.setOutput('pr_title', '');
+            core.setOutput('pr_number', '');
+            core.setOutput('pr_url', '');
+            core.setOutput('pr_description', '');
+          result-encoding: string
+
       - name: Get commit messages since last release
         if: steps.check_tag.outputs.exists == 'false'
         id: get_changes
@@ -44,13 +99,18 @@ jobs:
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
             CHANGES=$(git log --pretty=format:"- %s" | head -n 10)
+            COMPARE_URL="https://github.com/${{ github.repository }}/commits"
           else
             CHANGES=$(git log $LAST_TAG..HEAD --pretty=format:"- %s")
+            # Create a comparison URL between the last tag and the current version
+            COMPARE_URL="https://github.com/${{ github.repository }}/compare/${LAST_TAG}...v${{ steps.get_version.outputs.version }}"
           fi
-          # Use step output instead of environment variable
+
           echo "changes<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "compare_url=$COMPARE_URL" >> $GITHUB_OUTPUT
+          echo "last_tag=${LAST_TAG}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         if: steps.check_tag.outputs.exists == 'false'
@@ -61,8 +121,12 @@ jobs:
           body: |
             # BGU Scout v${{ steps.get_version.outputs.version }}
 
+            ${{ steps.get_pr_info.outputs.pr_found == 'true' && format('## PR Description: {0} [#{1}]({2})\n{3}', steps.get_pr_info.outputs.pr_title, steps.get_pr_info.outputs.pr_number, steps.get_pr_info.outputs.pr_url, steps.get_pr_info.outputs.pr_description) || '' }}
+
             ## What's Changed
             ${{ steps.get_changes.outputs.changes }}
+
+            ${{ steps.get_changes.outputs.last_tag && format('[Compare changes with {0}]({1})', steps.get_changes.outputs.last_tag, steps.get_changes.outputs.compare_url) || format('[View all commits]({0})', steps.get_changes.outputs.compare_url) }}
 
             ## Installation
             1. Download the ZIP file
