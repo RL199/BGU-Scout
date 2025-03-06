@@ -154,6 +154,10 @@ input {
     height: 36px;
 }
 
+.error {
+    border-color: var(--error-color);
+}
+
 select {
     font-size: medium;
     width: 100%;

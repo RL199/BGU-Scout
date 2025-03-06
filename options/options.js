@@ -3,15 +3,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const userForm = document.getElementById('user_form');
     const coursesForm = document.getElementById('courses_form');
-    const theme_select = document.getElementById('theme');
-    const lang_select = document.getElementById('language');
-    const auto_add_moodle_courses = document.getElementById('auto_add_moodle_courses');
+    const themeSelect = document.getElementById('theme');
+    const langSelect = document.getElementById('language');
+    const autoAddMoodleCourses = document.getElementById('auto_add_moodle_courses');
     const toast = document.getElementById('toast');
     const NewCourseNumberInput = document.getElementById('add_course_number');
     const addCourseButton = document.getElementById('add_course_button');
     const saveButton = document.getElementById('save_button');
 
     let toastTimeout = null;
+
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const hebrewLanguageMediaQuery = window.matchMedia('(prefers-language-scheme: hebrew)');
 
     // Set initial button state
     addCourseButton.disabled = true;
@@ -116,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         translations['en']['toast_message'] = enMessage;
         translations['he']['toast_message'] = hebMessage;
-        apply_lang(document.documentElement.getAttribute('data-lang'));
+        applyLang(document.documentElement.getAttribute('data-lang'));
         let toastType = type === 'success' ? 'success' : type === 'error' ? 'error' : 'other';
         // Set toast shadow color
         document.documentElement.style.setProperty('--toast-color', `var(--${toastType}-color)`);
@@ -127,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
-    function apply_theme(theme) {
+    function applyTheme(theme) {
         if (theme === 'system') {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
@@ -136,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function apply_lang(lang) {
+    function applyLang(lang) {
         const prefersHebrew = navigator.language.startsWith('he');
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
@@ -160,16 +163,16 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.id) document.getElementById('id').value = result.id;
             if (result.password) document.getElementById('password').value = result.password;
             if (result.theme) {
-                theme_select.value = result.theme;
-                apply_theme(result.theme);
+                themeSelect.value = result.theme;
+                applyTheme(result.theme);
             } else {
-                apply_theme('system');
+                applyTheme('system');
             }
             if (result.lang) {
-                lang_select.value = result.lang;
-                apply_lang(result.lang);
+                langSelect.value = result.lang;
+                applyLang(result.lang);
             } else {
-                apply_lang('system');
+                applyLang('system');
             }
             if (result.saved_courses) {
                 for (const course_number in result.saved_courses) {
@@ -177,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
             if (result.auto_add_moodle_courses) {
-                auto_add_moodle_courses.checked = result.auto_add_moodle_courses;
+                autoAddMoodleCourses.checked = result.auto_add_moodle_courses;
             }
             if (result.enable_departmental_details) {
                 enable_departmental_details.checked = result.enable_departmental_details;
@@ -185,19 +188,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    theme_select.addEventListener('change', function () {
+    themeSelect.addEventListener('change', function () {
         const selectedTheme = this.value;
-        apply_theme(selectedTheme);
+        applyTheme(selectedTheme);
         chrome.storage.local.set({ theme: selectedTheme });
     });
 
-    lang_select.addEventListener('change', function () {
+    langSelect.addEventListener('change', function () {
         const selected_lang = this.value;
-        apply_lang(selected_lang);
+        applyLang(selected_lang);
         chrome.storage.local.set({ lang: selected_lang });
     });
 
-    auto_add_moodle_courses.addEventListener('change', function () {
+    autoAddMoodleCourses.addEventListener('change', function () {
         chrome.storage.local.set({ auto_add_moodle_courses: this.checked });
     });
 
@@ -217,35 +220,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         userFormData = {};
-        const id = document.getElementById('id').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const user_name = document.getElementById('user_name').value.trim();
+        const idElement = document.getElementById('id');
+        const passwordElement = document.getElementById('password');
+        const userNameElement = document.getElementById('user_name');
+        const id = idElement.value.trim();
+        const password = passwordElement.value.trim();
+        const userName = userNameElement.value.trim();
         userFormData.id = id;
         userFormData.password = password;
-        userFormData.user_name = user_name;
+        userFormData.user_name = userName;
 
-        if (!id || !password || !user_name) {
+        if (!id || !password || !userName) {
             handleMessages('Please fill all fields', 'אנא מלא את כל השדות', 'error', true);
-            if (!id) {
-                document.getElementById('id').style.border = '1px solid red';
-            }
-            if (!password) {
-                document.getElementById('password').style.border = '1px solid red';
-            }
-            if (!user_name) {
-                document.getElementById('user_name').style.border = '1px solid red';
-            }
+            if (!id)        idElement.classList.add('error');
+            if (!password)  passwordElement.classList.add('error');
+            if (!userName)  userNameElement.classList.add('error');
             return;
         }
 
         const userDetails = await chrome.storage.local.get(['id', 'password', 'user_name']);
-        if (userDetails.id === id && userDetails.password === password && userDetails.user_name === user_name) {
+        if (userDetails.id === id && userDetails.password === password && userDetails.user_name === userName) {
             handleMessages('User details already saved', 'פרטי המשתמש כבר נשמרו', null, true);
             return;
         }
 
         try {
-            const checkedUserDetails = { id, password, user_name };
+            const checkedUserDetails = { id, password, user_name: userName };
             await chrome.storage.local.set({ allowUserValidation: 1 });
             await chrome.storage.local.set({ checkedUserDetails: checkedUserDetails });
             try {
@@ -276,15 +276,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addListener(function () {
-        if (theme_select.value === 'system') {
-            apply_theme('system');
+    darkModeMediaQuery.addEventListener('change', function () {
+        if (themeSelect.value === 'system') {
+            applyTheme('system');
         }
     });
 
-    window.matchMedia('(prefers-language-scheme: hebrew)').addListener(function () {
-        if (lang_select.value === 'system') {
-            apply_lang('system');
+    hebrewLanguageMediaQuery.addEventListener('change', function () {
+        if (langSelect.value === 'system') {
+            applyLang('system');
         }
     });
 
