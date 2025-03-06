@@ -226,6 +226,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!id || !password || !user_name) {
             handleMessages('Please fill all fields', 'אנא מלא את כל השדות', 'error', true);
+            if (!id) {
+                document.getElementById('id').style.border = '1px solid red';
+            }
+            if (!password) {
+                document.getElementById('password').style.border = '1px solid red';
+            }
+            if (!user_name) {
+                document.getElementById('user_name').style.border = '1px solid red';
+            }
             return;
         }
 
