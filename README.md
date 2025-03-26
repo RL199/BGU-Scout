@@ -2,22 +2,22 @@
 
 <div align="center">
   <a href="https://github.com/RL199/BGU-Scout?tab=MIT-1-ov-file">
-    <img src="https://img.shields.io/github/license/RL199/BGU-Scout?style=flat-square" alt="license">
+    <img src="https://img.shields.io/github/license/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="license">
   </a>
   <a href="https://github.com/RL199/BGU-Scout/issues">
-    <img src="https://img.shields.io/github/issues/RL199/BGU-Scout?style=flat-square" alt="issues">
+    <img src="https://img.shields.io/github/issues/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="issues">
   </a>
   <a href="https://github.com/RL199/BGU-Scout/commits">
-    <img src="https://img.shields.io/github/last-commit/RL199/BGU-Scout?style=flat-square" alt="last commit">
+    <img src="https://img.shields.io/github/last-commit/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="last commit">
   </a>
   <a href="https://github.com/RL199/BGU-Scout/releases">
-    <img src="https://img.shields.io/github/v/release/RL199/BGU-Scout?style=flat-square&include_prereleases" alt="release">
-    </a>
+    <img src="https://img.shields.io/github/v/release/RL199/BGU-Scout?style=for-the-badge&include_prereleases&color=f7941e" alt="release">
+  </a>
   <a href="https://github.com/RL199/BGU-Scout">
-    <img src="https://img.shields.io/github/repo-size/RL199/BGU-Scout?style=flat-square" alt="repo size">
+    <img src="https://img.shields.io/github/repo-size/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="repo size">
   </a>
   <a href="https://github.com/RL199/BGU-Scout/releases/download">
-    <img src="https://img.shields.io/github/downloads/RL199/BGU-Scout/total?style=flat-square" alt="downloads">
+    <img src="https://img.shields.io/github/downloads/RL199/BGU-Scout/total?style=for-the-badge&color=f7941e" alt="downloads">
   </a>
 </div>
 
@@ -146,16 +146,16 @@ Configure your extension settings and customize your experience with ease.
 
 ## 🗺️ Roadmap
 
+- [X]  Improve security and privacy features.
+- [X] Add support for more devices and screen sizes.
+- [ ] Improve error handling and user feedback.
 - [ ] Add support for searching courses by name.
 - [ ] Improve user experience and accessibility.
 - [ ] Add more customization options.
-- [ ] Improve error handling and user feedback.
 - [ ] Add support for more BGU systems and services.
 - [ ] Add support for more browsers and platforms.
-- [X] Improve security and privacy features.
 - [ ] Add support for more data formats and standards.
 - [ ] Improve performance and scalability.
-- [X] Add support for more devices and screen sizes.
 - [ ] Improve documentation and code quality.
 
 ## 🔐 Privacy and Security

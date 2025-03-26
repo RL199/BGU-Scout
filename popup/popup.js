@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const semesterInput = document.getElementById("semester");
     const examInput = document.getElementById("exam");
     const quizInput = document.getElementById("quiz");
-    const courseNumberInput = document.getElementById("course_number");
+    const courseInput = document.getElementById("course_number");
+    const messageElement = document.getElementById("message");
 
     let lang;
 
@@ -57,7 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
             total_exam: "Total",
             quiz_number: "Quiz Number:",
             course_number: "Course:",
-            select_course: "Select Course or add more in options page"
+            select_course: "Select Course or add more in options page",
+            message: "Please fill your user details in the options page."
         },
         he: {
             loadingGraph: "טוען גרף",
@@ -74,7 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
             total_exam: "סה\"כ",
             quiz_number: "מספר בוחן:",
             course_number: "קורס:",
-            select_course: "בחר קורס או הוסף עוד בדף האפשרויות"
+            select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
+            message: "אנא מלא את פרטי המשתמש בדף האפשרויות."
         },
     };
 
@@ -119,9 +122,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     chrome.storage.local.get(["user_name", "id", "password"], async function (result) {
         if (!result.user_name || !result.id || !result.password) {
-            alertPopup("Please fill in your user credentials in the options page.", "אנא מלא את פרטי המשתמש בדף האפשרויות.");
-            chrome.runtime.openOptionsPage();
-            return;
+            const popupForm = document.getElementById("popup_form");
+            popupForm.style.display = "none";
+            messageElement.style.display = "block";
+            messageElement.innerHTML = translations[lang].message;
+            openOptionsBtn.classList.add("clickMe");
         }
     });
 
@@ -162,12 +167,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     );
 
-    function alertPopup(enMessage, heMessage) {
-        if (lang === 'he') {
-            alert(heMessage);
-        } else {
-            alert(enMessage);
-        }
+    function sendMessage(enMessage, heMessage, type) {
+        translations['en'].message = enMessage;
+        translations['he'].message = heMessage;
+        messageElement.innerHTML = translations[lang].message;
+        messageElement.style.display = "block";
+        messageElement.classList.add(type);
+        setTimeout(() => {
+            messageElement.style.display = "none";
+            messageElement.classList.remove(type);
+        }, 10000);
     }
 
     // Open BGU login page
@@ -262,8 +271,13 @@ document.addEventListener("DOMContentLoaded", function () {
             ] = results.map((r) => Object.values(r)[0]);
 
             if (!year || !semester || !exam_quiz || !department || !degree || !course) {
-                alertPopup("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.");
+                sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
                 setLoadingGraphStyle(false);
+                //mark the fields that are missing
+                if (!year) yearInput.classList.add("missing");
+                if (!semester) semesterInput.classList.add("missing");
+                if (!exam_quiz) [examInput, quizInput].forEach(el => el.classList.add("missing"));
+                if (!department || !degree || !course) courseInput.classList.add("missing");
                 return;
             }
             try {
@@ -274,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     await waitForKey();
                 }
             } catch (error) {
-                alertPopup("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.");
+                sendMessage("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.", "error");
                 setLoadingGraphStyle(false);
                 console.error(error);
                 return;
@@ -316,6 +330,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Save year input
     yearInput.addEventListener("change", function () {
+        yearInput.classList.remove("missing");
         const year = yearInput.value;
         if (year < 1970 || year > new Date().getFullYear()) {
             return;
@@ -326,6 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     semesterInput.addEventListener("change", function () {
+        semesterInput.classList.remove("missing");
         const semester = document.querySelector('input[name="semester"]:checked').value;
         chrome.storage.local.set({ semester: semester }, function () {
             console.log("Semester saved:", semester);
@@ -333,6 +349,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     examInput.addEventListener("change", function () {
+        examInput.classList.remove("missing");
+        quizInput.classList.remove("missing");
         const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
         chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
             console.log("Exam saved:", exam_quiz);
@@ -340,14 +358,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     quizInput.addEventListener("change", function () {
+        examInput.classList.remove("missing");
+        quizInput.classList.remove("missing");
         const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
         chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
             console.log("Quiz saved:", exam_quiz);
         });
     });
 
-    courseNumberInput.addEventListener("change", function () {
-        const full_course_number = courseNumberInput.value;
+    courseInput.addEventListener("change", function () {
+        courseInput.classList.remove("missing");
+        const full_course_number = courseInput.value;
         const course_number = full_course_number.split(".");
         const department = course_number[0];
         const degree = course_number[1];
