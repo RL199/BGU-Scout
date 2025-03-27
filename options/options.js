@@ -230,6 +230,9 @@ document.addEventListener('DOMContentLoaded', function () {
         userFormData.password = password;
         userFormData.user_name = userName;
 
+        idElement.classList.remove('error');
+        passwordElement.classList.remove('error');
+        userNameElement.classList.remove('error');
         if (!id || !password || !userName) {
             handleMessages('Please fill all fields', 'אנא מלא את כל השדות', 'error', true);
             if (!id)        idElement.classList.add('error');
@@ -288,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Mouse-tracking gradient effect
+    // Mouse tracking gradient effect
     saveButton.addEventListener('mousemove', (e) => {
         const rect = saveButton.getBoundingClientRect();
         const x = e.clientX - rect.left; // x position within the element
