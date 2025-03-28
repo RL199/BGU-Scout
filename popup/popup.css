@@ -426,10 +426,17 @@ input:checked+.slider:before {
     color: var(--button-bg);
 }
 
-.year_span_container {
+.multiple_graphs_container {
     display: none;
     width: 100%;
     margin-bottom: 0;
+}
+
+.multiple_graphs.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
 }
 
 .year_range {

@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const courseSelect = document.getElementById("course_number");
     const startYearInput = document.getElementById("start_year");
     const endYearInput = document.getElementById("end_year");
-    const enableYearSpanToggle = document.getElementById("enable_year_span");
+    const enableMultipleGraphsToggle = document.getElementById("enable_multiple_graphs");
     const singleYearContainer = document.querySelector(".single_year");
-    const yearSpanContainer = document.querySelector(".year_span_container");
-    const yearSpanSwitch = document.getElementById("year_span_switch");
+    const multipleGraphsContainer = document.querySelector(".multiple_graphs_container");
+    const multipleGraphsSwitch = document.getElementById("multiple_graphs_switch");
     const yearSemesterContainer = document.querySelector(".year_semester_container");
 
     // Single selection elements (radio buttons)
@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
             course_number: "Course:",
             select_course: "Select Course or add more in options page",
             message: "Please fill your user details in the options page.",
-            enable_year_span: "Enable multiple graphs",
-            enable_year_span_description: "Open multiple graphs or export to Excel",
+            enable_multiple_graphs: "Enable multiple graphs",
+            enable_multiple_graphs_description: "Open multiple graphs or export to Excel",
             start_year: "Year:",
             end_year: "To Year:"
         },
@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function () {
             course_number: "קורס:",
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
             message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
-            enable_year_span: "אפשר גרפים מרובים",
-            enable_year_span_description: "פתח גרפים מרובים או ייצא לאקסל",
+            enable_multiple_graphs: "אפשר גרפים מרובים",
+            enable_multiple_graphs_description: "פתח גרפים מרובים או ייצא לאקסל",
             start_year: "משנה:",
             end_year: "לשנה:"
         },
@@ -153,13 +153,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadSavedValues();
 
-    function loadSavedValues () {
+    function loadSavedValues() {
         chrome.storage.local.get(
             [
                 "year",
                 "start_year",
                 "end_year",
-                "enable_year_span",
+                "enable_multiple_graphs",
                 "semester",
                 "exam_quiz",
                 "selected_semesters",
@@ -169,12 +169,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 "full_course_number"
             ],
             function (result) {
-                // Handle year span toggle
-                const isYearSpanEnabled = result.enable_year_span;
-                if (isYearSpanEnabled) {
-                    enableYearSpanToggle.checked = true;
+                // Handle multiple graphs toggle
+                const isMultipleGraphsEnabled = result.enable_multiple_graphs;
+                if (isMultipleGraphsEnabled) {
+                    enableMultipleGraphsToggle.checked = true;
                     singleYearContainer.style.display = "none";
-                    yearSpanContainer.style.display = "flex";
+                    multipleGraphsContainer.style.display = "flex";
 
                     // Show checkbox selectors
                     toggleSelectionMode(true);
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (result.end_year) endYearInput.value = result.end_year;
 
                 // Set semester values
-                if (isYearSpanEnabled) {
+                if (isMultipleGraphsEnabled) {
                     // Multiple selection mode
                     if (result.selected_semesters && result.selected_semesters.length > 0) {
                         semesterCheckboxes.forEach(checkbox => {
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // Set exam/quiz values
-                if (isYearSpanEnabled) {
+                if (isMultipleGraphsEnabled) {
                     // Multiple selection mode
                     if (result.selected_exams && result.selected_exams.length > 0) {
                         examCheckboxes.forEach(checkbox => {
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!result.user_name || !result.id || !result.password) {
             const popupForm = document.getElementById("popup_form");
             popupForm.style.display = "none";
-            yearSpanSwitch.style.display = "none";
+            multipleGraphsSwitch.style.display = "none";
             messageElement.style.display = "block";
             messageElement.innerHTML = translations[lang].message;
             openOptionsBtn.classList.add("clickMe");
@@ -294,27 +294,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //change the name of labels
         if (enableMultiple) {
-        translations['en'].loadingGraph = "Loading Graphs";
-        translations['he'].loadingGraph = "טוען גרפים";
-        translations['en'].semester = "Semesters:";
-        translations['he'].semester = "סמסטרים:";
-        translations['en'].exam_number = "Exam Numbers:";
-        translations['he'].exam_number = "מספרי מבחנים:";
-        translations['en'].quiz_number = "Quiz Numbers:";
-        translations['he'].quiz_number = "מספרי בחנים:";
-        translations['en'].graph = "Graphs";
-        translations['he'].graph = "גרפים";
+            translations['en'].loadingGraph = "Loading Graphs";
+            translations['he'].loadingGraph = "טוען גרפים";
+            translations['en'].semester = "Semesters:";
+            translations['he'].semester = "סמסטרים:";
+            translations['en'].exam_number = "Exam Numbers:";
+            translations['he'].exam_number = "מספרי מבחנים:";
+            translations['en'].quiz_number = "Quiz Numbers:";
+            translations['he'].quiz_number = "מספרי בחנים:";
+            translations['en'].graph = "Graphs";
+            translations['he'].graph = "גרפים";
         } else {
-        translations['en'].loadingGraph = "Loading Graph";
-        translations['he'].loadingGraph = "טוען גרף";
-        translations['en'].semester = "Semester:";
-        translations['he'].semester = "סמסטר:";
-        translations['en'].exam_number = "Exam Number:";
-        translations['he'].exam_number = "מספר מבחן:";
-        translations['en'].quiz_number = "Quiz Number:";
-        translations['he'].quiz_number = "מספר בוחן:";
-        translations['en'].graph = "Graph";
-        translations['he'].graph = "גרף";
+            translations['en'].loadingGraph = "Loading Graph";
+            translations['he'].loadingGraph = "טוען גרף";
+            translations['en'].semester = "Semester:";
+            translations['he'].semester = "סמסטר:";
+            translations['en'].exam_number = "Exam Number:";
+            translations['he'].exam_number = "מספר מבחן:";
+            translations['en'].quiz_number = "Quiz Number:";
+            translations['he'].quiz_number = "מספר בוחן:";
+            translations['en'].graph = "Graph";
+            translations['he'].graph = "גרף";
         }
         updateTexts();
     }
@@ -390,7 +390,7 @@ document.addEventListener("DOMContentLoaded", function () {
             new Promise((resolve) => chrome.storage.local.get(key, resolve));
 
         Promise.all([
-            getStorageData("enable_year_span"),
+            getStorageData("enable_multiple_graphs"),
             getStorageData("year"),
             getStorageData("start_year"),
             getStorageData("end_year"),
@@ -406,7 +406,7 @@ document.addEventListener("DOMContentLoaded", function () {
             getStorageData("enable_departmental_details")
         ]).then(async (results) => {
             const [
-                enable_year_span,
+                enable_multiple_graphs,
                 year,
                 start_year,
                 end_year,
@@ -423,11 +423,11 @@ document.addEventListener("DOMContentLoaded", function () {
             ] = results.map((r) => Object.values(r)[0]);
 
             // Validate selections
-            const isYearSpan = enable_year_span;
+            const isMultipleGraphs = enable_multiple_graphs;
             let years, semesters, examTypes;
 
             // Get year values
-            if (isYearSpan) {
+            if (isMultipleGraphs) {
                 years = (start_year && end_year) ?
                     Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
             } else {
@@ -435,7 +435,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Get semester values
-            if (isYearSpan) {
+            if (isMultipleGraphs) {
                 semesters = selected_semesters && selected_semesters.length > 0 ?
                     selected_semesters : null;
             } else {
@@ -443,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Get exam/quiz values
-            if (isYearSpan) {
+            if (isMultipleGraphs) {
                 examTypes = [];
                 if (selected_exams && selected_exams.length > 0) {
                     examTypes.push(...selected_exams);
@@ -455,12 +455,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 examTypes = exam_quiz ? [exam_quiz] : null;
             }
 
+            if (startYearInput.value < 1970 || endYearInput.value < 1970 || startYearInput.value > new Date().getFullYear() || endYearInput.value > new Date().getFullYear()) {
+                sendMessage("Please select valid years.", "אנא בחר שנים תקפות.", "error");
+                setLoadingGraphStyle(false);
+                startYearInput.classList.add("missing");
+                endYearInput.classList.add("missing");
+                return;
+            }
+
+            if (yearInput.value < 1970 || yearInput.value > new Date().getFullYear()) {
+                sendMessage("Please select a valid year.", "אנא בחר שנה תקפה.", "error");
+                setLoadingGraphStyle(false);
+                yearInput.classList.add("missing");
+                return;
+            }
+
+            if (isMultipleGraphs && (start_year > end_year)) {
+                sendMessage("Please select valid year span.", "אנא בחר טווח שנים תקף.", "error");
+                setLoadingGraphStyle(false);
+                startYearInput.classList.add("missing");
+                endYearInput.classList.add("missing");
+                return;
+            }
+
             if (!years || !semesters || !examTypes || examTypes.length === 0 || !course_number || courseSelect.value === "") {
                 sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
                 setLoadingGraphStyle(false);
 
                 // Mark missing fields
-                if (isYearSpan) {
+                if (isMultipleGraphs) {
                     if (!start_year || !end_year) {
                         if (!start_year) startYearInput.classList.add("missing");
                         if (!end_year) endYearInput.classList.add("missing");
@@ -469,14 +492,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!year) yearInput.classList.add("missing");
                 }
                 if (!semesters || semesters.length === 0) {
-                    if (isYearSpan) {
+                    if (isMultipleGraphs) {
                         semesterCheckboxContainer.classList.add("missing");
                     } else {
                         semesterRadioContainer.classList.add("missing");
                     }
                 }
                 if (!examTypes || examTypes.length === 0) {
-                    if (isYearSpan) {
+                    if (isMultipleGraphs) {
                         examCheckboxContainer.classList.add("missing");
                         quizCheckboxContainer.classList.add("missing");
                     } else {
@@ -541,17 +564,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Year span toggle event
-    enableYearSpanToggle.addEventListener("change", function () {
-        const isEnabled = enableYearSpanToggle.checked;
+    // Multiple graphs toggle event
+    enableMultipleGraphsToggle.addEventListener("change", function () {
+        const isEnabled = enableMultipleGraphsToggle.checked;
         singleYearContainer.style.display = isEnabled ? "none" : "block";
-        yearSpanContainer.style.display = isEnabled ? "flex" : "none";
+        multipleGraphsContainer.style.display = isEnabled ? "flex" : "none";
 
         // Toggle selection mode
         toggleSelectionMode(isEnabled);
 
-        chrome.storage.local.set({ enable_year_span: isEnabled }, function () {
-            console.log("Year span enabled:", isEnabled);
+        chrome.storage.local.set({ enable_multiple_graphs: isEnabled }, function () {
+            console.log("Multiple graphs enabled:", isEnabled);
         });
         loadSavedValues();
     });
