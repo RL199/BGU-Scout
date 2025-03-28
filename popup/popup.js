@@ -6,9 +6,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const openGraphBtn = document.getElementById("open_graph");
     const openOptionsBtn = document.getElementById("open_options");
     const yearInput = document.getElementById("year");
-    const semesterInput = document.getElementById("semester");
-    const examInput = document.getElementById("exam");
-    const quizInput = document.getElementById("quiz");
+    const courseSelect = document.getElementById("course_number");
+    const startYearInput = document.getElementById("start_year");
+    const endYearInput = document.getElementById("end_year");
+    const enableYearSpanToggle = document.getElementById("enable_year_span");
+    const singleYearContainer = document.querySelector(".single_year");
+    const yearSpanContainer = document.querySelector(".year_span_container");
+    const yearSpanSwitch = document.getElementById("year_span_switch");
+    const yearSemesterContainer = document.querySelector(".year_semester_container");
+
+    // Single selection elements (radio buttons)
+    const semesterRadioContainer = document.getElementById("semester_radio");
+    const examRadioContainer = document.getElementById("exam_radio");
+    const quizRadioContainer = document.getElementById("quiz_radio");
+    const semesterRadios = document.querySelectorAll('input[name="semester_radio"]');
+    const examQuizRadios = document.querySelectorAll('input[name="exam_quiz_radio"]');
+
+    // Multiple selection elements (checkboxes)
+    const semesterCheckboxContainer = document.getElementById("semester_checkbox");
+    const examCheckboxContainer = document.getElementById("exam_checkbox");
+    const quizCheckboxContainer = document.getElementById("quiz_checkbox");
+    const semesterCheckboxes = document.querySelectorAll('input[name="semester"]');
+    const examCheckboxes = document.querySelectorAll('input[name="exam"]');
+    const quizCheckboxes = document.querySelectorAll('input[name="quiz"]');
+
     const courseInput = document.getElementById("course_number");
     const messageElement = document.getElementById("message");
 
@@ -50,7 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
             options: "Options",
             login: "BGU Site",
             graph: "Graph",
-            key: "Key:",
             first_semester: "Fall",
             second_semester: "Spring",
             third_semester: "Summer",
@@ -59,7 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
             quiz_number: "Quiz Number:",
             course_number: "Course:",
             select_course: "Select Course or add more in options page",
-            message: "Please fill your user details in the options page."
+            message: "Please fill your user details in the options page.",
+            enable_year_span: "Enable multiple graphs",
+            enable_year_span_description: "Open multiple graphs or export to Excel",
+            start_year: "Year:",
+            end_year: "To Year:"
         },
         he: {
             loadingGraph: "טוען גרף",
@@ -68,7 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
             options: "אפשרויות",
             login: "אתר בנ\"ג",
             graph: "גרף",
-            key: "מפתח:",
             first_semester: "סתיו",
             second_semester: "אביב",
             third_semester: "קיץ",
@@ -77,7 +100,11 @@ document.addEventListener("DOMContentLoaded", function () {
             quiz_number: "מספר בוחן:",
             course_number: "קורס:",
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
-            message: "אנא מלא את פרטי המשתמש בדף האפשרויות."
+            message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
+            enable_year_span: "אפשר גרפים מרובים",
+            enable_year_span_description: "פתח גרפים מרובים או ייצא לאקסל",
+            start_year: "משנה:",
+            end_year: "לשנה:"
         },
     };
 
@@ -103,6 +130,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
         document.documentElement.setAttribute("lang", lang);
+        updateTexts();
+    });
+
+    function updateTexts() {
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -118,65 +149,174 @@ document.addEventListener("DOMContentLoaded", function () {
                 el.innerHTML = graphIcon + text;
             }
         });
-    });
+    }
+
+    loadSavedValues();
+
+    function loadSavedValues () {
+        chrome.storage.local.get(
+            [
+                "year",
+                "start_year",
+                "end_year",
+                "enable_year_span",
+                "semester",
+                "exam_quiz",
+                "selected_semesters",
+                "selected_exams",
+                "selected_quizzes",
+                "saved_courses",
+                "full_course_number"
+            ],
+            function (result) {
+                // Handle year span toggle
+                const isYearSpanEnabled = result.enable_year_span;
+                if (isYearSpanEnabled) {
+                    enableYearSpanToggle.checked = true;
+                    singleYearContainer.style.display = "none";
+                    yearSpanContainer.style.display = "flex";
+
+                    // Show checkbox selectors
+                    toggleSelectionMode(true);
+                }
+
+                // Set year values
+                if (result.year) yearInput.value = result.year;
+                if (result.start_year) startYearInput.value = result.start_year;
+                if (result.end_year) endYearInput.value = result.end_year;
+
+                // Set semester values
+                if (isYearSpanEnabled) {
+                    // Multiple selection mode
+                    if (result.selected_semesters && result.selected_semesters.length > 0) {
+                        semesterCheckboxes.forEach(checkbox => {
+                            if (result.selected_semesters.includes(checkbox.value)) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    }
+                } else {
+                    // Single selection mode
+                    if (result.semester) {
+                        const semesterRadio = document.querySelector(`input[name="semester_radio"][value="${result.semester}"]`);
+                        if (semesterRadio) semesterRadio.checked = true;
+                    } else {
+                        // Default to first semester
+                        document.getElementById("first_semester_radio").checked = true;
+                    }
+                }
+
+                // Set exam/quiz values
+                if (isYearSpanEnabled) {
+                    // Multiple selection mode
+                    if (result.selected_exams && result.selected_exams.length > 0) {
+                        examCheckboxes.forEach(checkbox => {
+                            if (result.selected_exams.includes(checkbox.value)) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    }
+                    if (result.selected_quizzes && result.selected_quizzes.length > 0) {
+                        quizCheckboxes.forEach(checkbox => {
+                            if (result.selected_quizzes.includes(checkbox.value)) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    }
+                } else {
+                    // Single selection mode
+                    if (result.exam_quiz) {
+                        const examQuizRadio = document.querySelector(`input[name="exam_quiz_radio"][value="${result.exam_quiz}"]`);
+                        if (examQuizRadio) examQuizRadio.checked = true;
+                    }
+                }
+
+                while (courseSelect.options.length > 1) {
+                    courseSelect.remove(1);
+                }
+                if (result.saved_courses) {
+                    const courses = result.saved_courses;
+                    for (const course_number in courses) {
+                        const option = document.createElement("option");
+                        option.value = course_number
+                        option.textContent = courses[course_number];
+                        courseSelect.appendChild(option);
+                    }
+                }
+                // check if course number is saved and if saved courses contain the course number
+                if (result.full_course_number && result.saved_courses && result.saved_courses[result.full_course_number]) {
+                    courseSelect.value = result.full_course_number;
+                }
+            }
+        );
+    }
 
     chrome.storage.local.get(["user_name", "id", "password"], async function (result) {
         if (!result.user_name || !result.id || !result.password) {
             const popupForm = document.getElementById("popup_form");
             popupForm.style.display = "none";
+            yearSpanSwitch.style.display = "none";
             messageElement.style.display = "block";
             messageElement.innerHTML = translations[lang].message;
             openOptionsBtn.classList.add("clickMe");
         }
     });
 
-    // Load saved values
-    chrome.storage.local.get(
-        [
-            "year",
-            "semester",
-            "exam_quiz",
-            "saved_courses",
-            "full_course_number"
-        ],
-        function (result) {
-            if (result.year) yearInput.value = result.year;
-            if (result.semester)
-                document.querySelector(
-                    `input[name="semester"][value="${result.semester}"]`
-                ).checked = true;
-            if (result.exam_quiz)
-                document.querySelector(
-                    `input[name="exam_quiz"][value="${result.exam_quiz}"]`
-                ).checked = true;
-
-            const courseSelect = document.getElementById("course_number");
-            if (result.saved_courses) {
-                const courses = result.saved_courses;
-                for (const course_number in courses) {
-                    const option = document.createElement("option");
-                    option.value = course_number
-                    option.textContent = courses[course_number];
-                    courseSelect.appendChild(option);
-                }
-            }
-            // check if course number is saved and if saved courses contain the course number
-            if (result.full_course_number && result.saved_courses && result.saved_courses[result.full_course_number]) {
-                courseSelect.value = result.full_course_number;
-            }
-        }
-    );
 
     function sendMessage(enMessage, heMessage, type) {
         translations['en'].message = enMessage;
         translations['he'].message = heMessage;
         messageElement.innerHTML = translations[lang].message;
-        messageElement.style.display = "block";
+        messageElement.style.display = "flex";
         messageElement.classList.add(type);
         setTimeout(() => {
             messageElement.style.display = "none";
             messageElement.classList.remove(type);
         }, 10000);
+    }
+
+    // Function to toggle between radio buttons and checkboxes
+    function toggleSelectionMode(enableMultiple) {
+        // Toggle semester selectors
+        semesterRadioContainer.style.display = enableMultiple ? "none" : "flex";
+        semesterCheckboxContainer.style.display = enableMultiple ? "flex" : "none";
+
+        // Toggle exam selectors
+        examRadioContainer.style.display = enableMultiple ? "none" : "flex";
+        examCheckboxContainer.style.display = enableMultiple ? "flex" : "none";
+
+        // Toggle quiz selectors
+        quizRadioContainer.style.display = enableMultiple ? "none" : "flex";
+        quizCheckboxContainer.style.display = enableMultiple ? "flex" : "none";
+
+        if (enableMultiple) yearSemesterContainer.style.flexDirection = "column";
+        else yearSemesterContainer.style.flexDirection = "row";
+
+        //change the name of labels
+        if (enableMultiple) {
+        translations['en'].loadingGraph = "Loading Graphs";
+        translations['he'].loadingGraph = "טוען גרפים";
+        translations['en'].semester = "Semesters:";
+        translations['he'].semester = "סמסטרים:";
+        translations['en'].exam_number = "Exam Numbers:";
+        translations['he'].exam_number = "מספרי מבחנים:";
+        translations['en'].quiz_number = "Quiz Numbers:";
+        translations['he'].quiz_number = "מספרי בחנים:";
+        translations['en'].graph = "Graphs";
+        translations['he'].graph = "גרפים";
+        } else {
+        translations['en'].loadingGraph = "Loading Graph";
+        translations['he'].loadingGraph = "טוען גרף";
+        translations['en'].semester = "Semester:";
+        translations['he'].semester = "סמסטר:";
+        translations['en'].exam_number = "Exam Number:";
+        translations['he'].exam_number = "מספר מבחן:";
+        translations['en'].quiz_number = "Quiz Number:";
+        translations['he'].quiz_number = "מספר בוחן:";
+        translations['en'].graph = "Graph";
+        translations['he'].graph = "גרף";
+        }
+        updateTexts();
     }
 
     // Open BGU login page
@@ -192,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
             openGraphBtn.disabled = true;
 
             const loadingPaths = [
-                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>',
+                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1z"/>',
                 '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
                 '<path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>'
             ];
@@ -250,9 +390,15 @@ document.addEventListener("DOMContentLoaded", function () {
             new Promise((resolve) => chrome.storage.local.get(key, resolve));
 
         Promise.all([
+            getStorageData("enable_year_span"),
             getStorageData("year"),
+            getStorageData("start_year"),
+            getStorageData("end_year"),
             getStorageData("semester"),
             getStorageData("exam_quiz"),
+            getStorageData("selected_semesters"),
+            getStorageData("selected_exams"),
+            getStorageData("selected_quizzes"),
             getStorageData("department"),
             getStorageData("degree"),
             getStorageData("course"),
@@ -260,9 +406,15 @@ document.addEventListener("DOMContentLoaded", function () {
             getStorageData("enable_departmental_details")
         ]).then(async (results) => {
             const [
+                enable_year_span,
                 year,
+                start_year,
+                end_year,
                 semester,
                 exam_quiz,
+                selected_semesters,
+                selected_exams,
+                selected_quizzes,
                 department,
                 degree,
                 course,
@@ -270,16 +422,75 @@ document.addEventListener("DOMContentLoaded", function () {
                 enable_departmental_details
             ] = results.map((r) => Object.values(r)[0]);
 
-            if (!year || !semester || !exam_quiz || !department || !degree || !course) {
+            // Validate selections
+            const isYearSpan = enable_year_span;
+            let years, semesters, examTypes;
+
+            // Get year values
+            if (isYearSpan) {
+                years = (start_year && end_year) ?
+                    Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
+            } else {
+                years = year ? [year] : null;
+            }
+
+            // Get semester values
+            if (isYearSpan) {
+                semesters = selected_semesters && selected_semesters.length > 0 ?
+                    selected_semesters : null;
+            } else {
+                semesters = semester ? [semester] : null;
+            }
+
+            // Get exam/quiz values
+            if (isYearSpan) {
+                examTypes = [];
+                if (selected_exams && selected_exams.length > 0) {
+                    examTypes.push(...selected_exams);
+                }
+                if (selected_quizzes && selected_quizzes.length > 0) {
+                    examTypes.push(...selected_quizzes);
+                }
+            } else {
+                examTypes = exam_quiz ? [exam_quiz] : null;
+            }
+
+            if (!years || !semesters || !examTypes || examTypes.length === 0 || !course_number || courseSelect.value === "") {
                 sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
                 setLoadingGraphStyle(false);
-                //mark the fields that are missing
-                if (!year) yearInput.classList.add("missing");
-                if (!semester) semesterInput.classList.add("missing");
-                if (!exam_quiz) [examInput, quizInput].forEach(el => el.classList.add("missing"));
-                if (!department || !degree || !course) courseInput.classList.add("missing");
+
+                // Mark missing fields
+                if (isYearSpan) {
+                    if (!start_year || !end_year) {
+                        if (!start_year) startYearInput.classList.add("missing");
+                        if (!end_year) endYearInput.classList.add("missing");
+                    }
+                } else {
+                    if (!year) yearInput.classList.add("missing");
+                }
+                if (!semesters || semesters.length === 0) {
+                    if (isYearSpan) {
+                        semesterCheckboxContainer.classList.add("missing");
+                    } else {
+                        semesterRadioContainer.classList.add("missing");
+                    }
+                }
+                if (!examTypes || examTypes.length === 0) {
+                    if (isYearSpan) {
+                        examCheckboxContainer.classList.add("missing");
+                        quizCheckboxContainer.classList.add("missing");
+                    } else {
+                        examRadioContainer.classList.add("missing");
+                        quizRadioContainer.classList.add("missing");
+                    }
+                }
+
+                if (!course_number || courseSelect.value === "")
+                    courseInput.classList.add("missing");
+
                 return;
             }
+
             try {
                 const currentTime = new Date().getTime();
                 console.log("Current time:", currentTime);
@@ -296,39 +507,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const { p_key } = await getStorageData("p_key");
 
-            const url =
-                `https://reports4u22.bgu.ac.il/GeneratePDF.php?` +
-                `server=aristo4stu419c` +
-                `/report=SCRR016w` +
-                `/p_key=${p_key}` +
-                `/p_year=${year}` +
-                `/p_semester=${semester}` +
-                `/out_institution=0` +
-                `/grade=${exam_quiz}` +
-                `/list_department=*${department}@` +
-                `/list_degree_level=*${degree}@` +
-                `/list_course=*${course}@` +
-                `/LIST_GROUP=*@` +
-                `/P_FOR_STUDENT=${enable_departmental_details ? 0 : 1}`;
+            // Generate URLs for each combination
+            const urls = [];
 
-            chrome.tabs.create({ url: url });
+            for (const yr of years) {
+                for (const sem of semesters) {
+                    for (const examType of examTypes) {
+                        const url =
+                            `https://reports4u22.bgu.ac.il/GeneratePDF.php?` +
+                            `server=aristo4stu419c` +
+                            `/report=SCRR016w` +
+                            `/p_key=${p_key}` +
+                            `/p_year=${yr}` +
+                            `/p_semester=${sem}` +
+                            `/out_institution=0` +
+                            `/grade=${examType}` +
+                            `/list_department=*${department}@` +
+                            `/list_degree_level=*${degree}@` +
+                            `/list_course=*${course}@` +
+                            `/LIST_GROUP=*@` +
+                            `/P_FOR_STUDENT=${enable_departmental_details ? 0 : 1}`;
+
+                        urls.push(url);
+                    }
+                }
+            }
+
+            // Open the URLs in new tabs
+            setLoadingGraphStyle(false);
+            for (let i = 0; i < urls.length; i++) {
+                chrome.tabs.create({ url: urls[i] });
+            }
         });
     });
 
-    // Year input wheel event
-    yearInput.addEventListener("wheel", (event) => {
-        if (document.activeElement === yearInput) {
-            event.preventDefault();
-            if (event.deltaY < 0) {
-                yearInput.stepUp();
-            } else {
-                yearInput.stepDown();
-            }
-            yearInput.dispatchEvent(new Event("change"));
-        }
+    // Year span toggle event
+    enableYearSpanToggle.addEventListener("change", function () {
+        const isEnabled = enableYearSpanToggle.checked;
+        singleYearContainer.style.display = isEnabled ? "none" : "block";
+        yearSpanContainer.style.display = isEnabled ? "flex" : "none";
+
+        // Toggle selection mode
+        toggleSelectionMode(isEnabled);
+
+        chrome.storage.local.set({ enable_year_span: isEnabled }, function () {
+            console.log("Year span enabled:", isEnabled);
+        });
+        loadSavedValues();
     });
 
-    // Save year input
+    function handleYearInputWheel(event, inputElement) {
+        if (document.activeElement === inputElement) {
+            event.preventDefault();
+            if (event.deltaY < 0) {
+                inputElement.stepUp();
+            } else {
+                inputElement.stepDown();
+            }
+            inputElement.dispatchEvent(new Event("change"));
+        }
+    }
+
+    // Attach wheel event listeners to year inputs
+    yearInput.addEventListener("wheel", (event) => handleYearInputWheel(event, yearInput));
+    startYearInput.addEventListener("wheel", (event) => handleYearInputWheel(event, startYearInput));
+    endYearInput.addEventListener("wheel", (event) => handleYearInputWheel(event, endYearInput));
+
+    // Save year inputs
     yearInput.addEventListener("change", function () {
         yearInput.classList.remove("missing");
         const year = yearInput.value;
@@ -339,30 +584,80 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Year saved:", year);
         });
     });
-
-    semesterInput.addEventListener("change", function () {
-        semesterInput.classList.remove("missing");
-        const semester = document.querySelector('input[name="semester"]:checked').value;
-        chrome.storage.local.set({ semester: semester }, function () {
-            console.log("Semester saved:", semester);
+    startYearInput.addEventListener("change", function () {
+        startYearInput.classList.remove("missing");
+        const startYear = startYearInput.value;
+        if (startYear < 1970 || startYear > new Date().getFullYear()) {
+            return;
+        }
+        chrome.storage.local.set({ start_year: startYear }, function () {
+            console.log("Start year saved:", startYear);
+        });
+    });
+    endYearInput.addEventListener("change", function () {
+        endYearInput.classList.remove("missing");
+        const endYear = endYearInput.value;
+        if (endYear < 1970 || endYear > new Date().getFullYear()) {
+            return;
+        }
+        chrome.storage.local.set({ end_year: endYear }, function () {
+            console.log("End year saved:", endYear);
         });
     });
 
-    examInput.addEventListener("change", function () {
-        examInput.classList.remove("missing");
-        quizInput.classList.remove("missing");
-        const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
-        chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
-            console.log("Exam saved:", exam_quiz);
+    // Save single selection semester
+    semesterRadios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            const semester = document.querySelector('input[name="semester_radio"]:checked').value;
+            chrome.storage.local.set({ semester: semester }, function () {
+                console.log("Semester saved:", semester);
+            });
         });
     });
 
-    quizInput.addEventListener("change", function () {
-        examInput.classList.remove("missing");
-        quizInput.classList.remove("missing");
-        const exam_quiz = document.querySelector('input[name="exam_quiz"]:checked').value;
-        chrome.storage.local.set({ exam_quiz: exam_quiz }, function () {
-            console.log("Quiz saved:", exam_quiz);
+    // Save single selection exam/quiz
+    examQuizRadios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            const examQuiz = document.querySelector('input[name="exam_quiz_radio"]:checked').value;
+            chrome.storage.local.set({ exam_quiz: examQuiz }, function () {
+                console.log("Exam/Quiz saved:", examQuiz);
+            });
+        });
+    });
+
+    // Save multiple selection semester
+    semesterCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            const selectedSemesters = Array.from(document.querySelectorAll('input[name="semester"]:checked'))
+                .map(input => input.value);
+
+            chrome.storage.local.set({ selected_semesters: selectedSemesters }, function () {
+                console.log("Selected semesters saved:", selectedSemesters);
+            });
+        });
+    });
+
+    // Save multiple selection exam
+    examCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            const selectedExams = Array.from(document.querySelectorAll('input[name="exam"]:checked'))
+                .map(input => input.value);
+
+            chrome.storage.local.set({ selected_exams: selectedExams }, function () {
+                console.log("Selected exams saved:", selectedExams);
+            });
+        });
+    });
+
+    // Save multiple selection quiz
+    quizCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            const selectedQuizzes = Array.from(document.querySelectorAll('input[name="quiz"]:checked'))
+                .map(input => input.value);
+
+            chrome.storage.local.set({ selected_quizzes: selectedQuizzes }, function () {
+                console.log("Selected quizzes saved:", selectedQuizzes);
+            });
         });
     });
 

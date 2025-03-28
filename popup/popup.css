@@ -15,6 +15,7 @@
     --success-color: #4caf50;
     --error-color: #f44336;
     --other-color: #f49b55;
+    --sub-label-color: grey;
 }
 
 [data-theme="dark"] {
@@ -52,6 +53,8 @@ body {
     background-color: var(--container-bg);
     border-radius: 8px;
     padding: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 h1 {
@@ -101,7 +104,7 @@ hr {
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 label {
@@ -228,7 +231,8 @@ select:hover {
 .year_semester_container {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    row-gap: 0;
+    column-gap: 10px;
     margin-bottom: 0;
 }
 
@@ -264,7 +268,16 @@ select:hover {
     color: var(--other-color);
 }
 
-#year.missing, #semester.missing, #exam.missing, #quiz.missing, #course_number.missing {
+#year.missing,
+#start_year.missing,
+#end_year.missing,
+#semester_radio.missing,
+#semester_checkbox.missing,
+#exam_radio.missing,
+#exam_checkbox.missing,
+#quiz_radio.missing,
+#quiz_checkbox.missing,
+#course_number.missing {
     border: 1px solid var(--error-color);
     border-radius: 4px;
 }
@@ -325,4 +338,156 @@ select:hover {
     100% {
         box-shadow: 0 0 0 0 rgba(247, 148, 30, 0);
     }
+}
+
+.toggle_switch {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.toggle_switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--input-border);
+    transition: .4s;
+    border-radius: 34px;
+    box-shadow: 0 0 10px var(--input-border);
+    z-index: 1;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ffffff;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--button-bg);
+    box-shadow: 0 0 10px var(--button-bg);
+}
+
+input:checked+.slider:before {
+    transform: translateX(22px);
+}
+
+.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px
+}
+
+.switch_label {
+    flex: 1;
+}
+
+.switch_label {
+    margin-bottom: 0;
+}
+
+.switch_description {
+    color: var(--sub-label-color);
+    font-size: 13px;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+.switch_description a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.switch_description a:visited {
+    color: inherit;
+}
+
+.switch_description a:hover {
+    color: var(--button-bg);
+}
+
+.year_span_container {
+    display: none;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.year_range {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.start_year_container,
+.end_year_container {
+    width: 48%;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.checkbox-option {
+    position: relative;
+}
+
+.checkbox-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-option label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0;
+}
+
+.checkbox-option input[type="checkbox"]:checked+label {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+#semester_checkbox,
+#exam_checkbox,
+#quiz_checkbox {
+    display: none;
+}
+
+#year_semester_container.split {
+    flex-wrap: wrap;
 }
