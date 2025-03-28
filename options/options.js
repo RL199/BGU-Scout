@@ -247,6 +247,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        if (!IDValidator(id)) {
+            handleMessages('Invalid ID', 'תעודת זהות לא תקינה', 'error', true);
+            idElement.classList.add('error');
+            return;
+        }
+
         try {
             const checkedUserDetails = { id, password, user_name: userName };
             await chrome.storage.local.set({ allowUserValidation: 1 });
@@ -630,4 +636,16 @@ async function openBGU4UTab(courseNumber) {
         console.error("Failed to create tab:", error);
         throw error;
     }
+}
+
+function IDValidator(id) {
+    if (!id || !Number(id) || id.length !== 9 || isNaN(id)) {  // Make sure ID is formatted properly
+        return false;
+    }
+    let sum = 0;
+    for (let i = 0; i < id.length; i++) {
+        const incNum = Number(id[i]) * ((i % 2) + 1);  // Multiply number by 1 or 2
+        sum += (incNum > 9) ? incNum - 9 : incNum;  // Sum the digits up and add to total
+    }
+    return (sum % 10 === 0);
 }
