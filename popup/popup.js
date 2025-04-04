@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get elements
     const openLoginBtn = document.getElementById("open_login");
     const openGraphBtn = document.getElementById("open_graph");
+    const exportExcelBtn = document.getElementById("export_excel");
     const openOptionsBtn = document.getElementById("open_options");
     const yearInput = document.getElementById("year");
     const courseSelect = document.getElementById("course_number");
@@ -56,6 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <svg xmlns="http://www.w3.org/2000/svg" id="graph_icon" viewBox="0 0 16 16">
                     <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>`;
 
+    const excelIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="excel_icon" viewBox="0 0 16 16">
+                    <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
+                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                </svg>`;
+
     chrome.storage.local.get("not_first_time", function (result) {
         if (!result.not_first_time) {
             chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
@@ -65,12 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const translations = {
         en: {
-            loadingGraph: "Loading Graph",
+            loadingGraph: "Loading",
             year: "Year:",
             semester: "Semester:",
             options: "Options",
             login: "BGU Site",
             graph: "Graph",
+            export: "Export",
             first_semester: "Fall",
             second_semester: "Spring",
             third_semester: "Summer",
@@ -80,18 +88,19 @@ document.addEventListener("DOMContentLoaded", function () {
             course_number: "Course:",
             select_course: "Select Course or add more in options page",
             message: "Please fill your user details in the options page.",
-            enable_multiple_graphs: "Enable multiple graphs",
+            enable_multiple_graphs: "Enable multiple graphs:",
             enable_multiple_graphs_description: "Open multiple graphs or export to Excel",
             start_year: "Year:",
             end_year: "To Year:"
         },
         he: {
-            loadingGraph: "טוען גרף",
+            loadingGraph: "טוען",
             year: "שנה:",
             semester: "סמסטר:",
             options: "אפשרויות",
             login: "אתר בנ\"ג",
             graph: "גרף",
+            export: "ייצוא",
             first_semester: "סתיו",
             second_semester: "אביב",
             third_semester: "קיץ",
@@ -101,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             course_number: "קורס:",
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
             message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
-            enable_multiple_graphs: "אפשר גרפים מרובים",
+            enable_multiple_graphs: "אפשר גרפים מרובים:",
             enable_multiple_graphs_description: "פתח גרפים מרובים או ייצא לאקסל",
             start_year: "משנה:",
             end_year: "לשנה:"
@@ -147,6 +156,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             else if (key === 'graph') {
                 el.innerHTML = graphIcon + text;
+            }
+            else if (key === 'export') {
+                el.innerHTML = excelIcon + text;
             }
         });
     }
@@ -289,13 +301,14 @@ document.addEventListener("DOMContentLoaded", function () {
         quizRadioContainer.style.display = enableMultiple ? "none" : "flex";
         quizCheckboxContainer.style.display = enableMultiple ? "flex" : "none";
 
+        // Toggle Excel button visibility
+        exportExcelBtn.style.display = enableMultiple ? "flex" : "none";
+
         if (enableMultiple) yearSemesterContainer.style.flexDirection = "column";
         else yearSemesterContainer.style.flexDirection = "row";
 
         //change the name of labels
         if (enableMultiple) {
-            translations['en'].loadingGraph = "Loading Graphs";
-            translations['he'].loadingGraph = "טוען גרפים";
             translations['en'].semester = "Semesters:";
             translations['he'].semester = "סמסטרים:";
             translations['en'].exam_number = "Exam Numbers:";
@@ -305,8 +318,6 @@ document.addEventListener("DOMContentLoaded", function () {
             translations['en'].graph = "Graphs";
             translations['he'].graph = "גרפים";
         } else {
-            translations['en'].loadingGraph = "Loading Graph";
-            translations['he'].loadingGraph = "טוען גרף";
             translations['en'].semester = "Semester:";
             translations['he'].semester = "סמסטר:";
             translations['en'].exam_number = "Exam Number:";
@@ -326,10 +337,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    async function setLoadingGraphStyle(loading) {
+    async function setLoadingGraphStyle(loading, isExcel = false) {
+        const button = isExcel ? exportExcelBtn : openGraphBtn;
+
         if (loading) {
-            openGraphBtn.classList.add("loading");
-            openGraphBtn.disabled = true;
+            button.classList.add("loading");
+            button.disabled = true;
 
             const loadingPaths = [
                 '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1z"/>',
@@ -339,18 +352,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let currentIndex = 0;
             const interval = setInterval(() => {
-                openGraphBtn.innerHTML = loadingGraphIcon + loadingPaths[currentIndex] + `</svg> ` + translations[lang].loadingGraph;
+                const baseIcon = isExcel ? excelIcon : loadingGraphIcon;
+                button.innerHTML = baseIcon + loadingPaths[currentIndex] + `</svg> ` +
+                    (isExcel ? translations[lang].export : translations[lang].loadingGraph);
 
                 currentIndex = (currentIndex + 1) % loadingPaths.length;
             }, 500);
 
             // Store interval ID to clear it later
-            openGraphBtn.loadingInterval = interval;
+            button.loadingInterval = interval;
         } else {
-            openGraphBtn.classList.remove("loading");
-            openGraphBtn.disabled = false;
-            clearInterval(openGraphBtn.loadingInterval);
-            openGraphBtn.innerHTML = graphIcon + translations[lang].graph;
+            button.classList.remove("loading");
+            button.disabled = false;
+            clearInterval(button.loadingInterval);
+
+            if (isExcel) {
+                button.innerHTML = excelIcon + translations[lang].export;
+            } else {
+                button.innerHTML = graphIcon + translations[lang].graph;
+            }
         }
     }
 
@@ -564,6 +584,134 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Export to Excel
+    exportExcelBtn.addEventListener("click", async function () {
+        setLoadingGraphStyle(true, true); // true for Excel mode
+
+        const getStorageData = (key) =>
+            new Promise((resolve) => chrome.storage.local.get(key, resolve));
+
+        Promise.all([
+            getStorageData("enable_multiple_graphs"),
+            getStorageData("start_year"),
+            getStorageData("end_year"),
+            getStorageData("selected_semesters"),
+            getStorageData("selected_exams"),
+            getStorageData("selected_quizzes"),
+            getStorageData("department"),
+            getStorageData("degree"),
+            getStorageData("course"),
+            getStorageData("last_key_update"),
+            getStorageData("enable_departmental_details")
+        ]).then(async (results) => {
+            const [
+                enable_multiple_graphs,
+                start_year,
+                end_year,
+                selected_semesters,
+                selected_exams,
+                selected_quizzes,
+                department,
+                degree,
+                course,
+                lastKeyUpdate,
+                enable_departmental_details
+            ] = results.map((r) => Object.values(r)[0]);
+
+            // Validate selections
+            const years = (start_year && end_year) ?
+                Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
+
+            const semesters = selected_semesters && selected_semesters.length > 0 ?
+                selected_semesters : null;
+
+            const examTypes = [];
+            if (selected_exams && selected_exams.length > 0) {
+                examTypes.push(...selected_exams);
+            }
+            if (selected_quizzes && selected_quizzes.length > 0) {
+                examTypes.push(...selected_quizzes);
+            }
+
+            if (startYearInput.value < 1970 || endYearInput.value < 1970 || startYearInput.value > new Date().getFullYear() || endYearInput.value > new Date().getFullYear()) {
+                sendMessage("Please select valid years.", "אנא בחר שנים תקפות.", "error");
+                setLoadingGraphStyle(false);
+                startYearInput.classList.add("missing");
+                endYearInput.classList.add("missing");
+                return;
+            }
+
+            if (start_year > end_year) {
+                sendMessage("Please select valid year span.", "אנא בחר טווח שנים תקף.", "error");
+                setLoadingGraphStyle(false);
+                startYearInput.classList.add("missing");
+                endYearInput.classList.add("missing");
+                return;
+            }
+
+            if (!years || !semesters || !examTypes || examTypes.length === 0 || !course_number || courseSelect.value === "") {
+                sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
+                setLoadingGraphStyle(false);
+
+                // Mark missing fields
+                if (!start_year || !end_year) {
+                    if (!start_year) startYearInput.classList.add("missing");
+                    if (!end_year) endYearInput.classList.add("missing");
+                }
+
+                if (!semesters || semesters.length === 0) {
+                    semesterCheckboxContainer.classList.add("missing");
+                }
+
+                if (!examTypes || examTypes.length === 0) {
+                    examCheckboxContainer.classList.add("missing");
+                    quizCheckboxContainer.classList.add("missing");
+                }
+
+                if (!course_number || courseSelect.value === "")
+                    courseInput.classList.add("missing");
+
+                return;
+            }
+
+            try {
+                const currentTime = new Date().getTime();
+                console.log("Current time:", currentTime);
+                if (currentTime - lastKeyUpdate > 420000) {
+                    await generatePKey();
+                    await waitForKey();
+                }
+            } catch (error) {
+                sendMessage("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.", "error");
+                setLoadingGraphStyle(false);
+                console.error(error);
+                return;
+            }
+
+            const { p_key } = await getStorageData("p_key");
+
+            // Generate URL for Excel export
+            const excelURL =
+                `https://reports4u22.bgu.ac.il/GenerateEXCEL.php?` +
+                `server=aristo4stu419c` +
+                `/report=SCRR016w` +
+                `/p_key=${p_key}` +
+                `/p_year=${years.join(',')}` +
+                `/p_semester=${semesters.join(',')}` +
+                `/out_institution=0` +
+                `/grade=${examTypes.join(',')}` +
+                `/list_department=*${department}@` +
+                `/list_degree_level=*${degree}@` +
+                `/list_course=*${course}@` +
+                `/LIST_GROUP=*@` +
+                `/P_FOR_STUDENT=${enable_departmental_details ? 0 : 1}`;
+
+            // Open the Excel URL in a new tab
+            setLoadingGraphStyle(false);
+            chrome.tabs.create({ url: excelURL });
+        });
+    });
+
     // Multiple graphs toggle event
     enableMultipleGraphsToggle.addEventListener("change", function () {
         const isEnabled = enableMultipleGraphsToggle.checked;
@@ -717,9 +865,9 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.runtime.openOptionsPage();
     });
 
-    // Mouse-tracking gradient effect
-    openGraphBtn.addEventListener('mousemove', (e) => {
-        const rect = openGraphBtn.getBoundingClientRect();
+    // Mouse-tracking gradient effect function
+    function applyMouseTrackingGradient(e, element, startColor, endColor) {
+        const rect = element.getBoundingClientRect();
         const x = e.clientX - rect.left; // x position within the element
         const y = e.clientY - rect.top;  // y position within the element
 
@@ -728,13 +876,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const percentY = y / rect.height;
 
         // Update the gradient based on mouse position
-        const startColor = getComputedStyle(document.documentElement).getPropertyValue('--button-start-color').trim();
-        const endColor = getComputedStyle(document.documentElement).getPropertyValue('--button-end-color').trim();
-        openGraphBtn.style.backgroundImage = `radial-gradient(circle at ${percentX * 100}% ${percentY * 100}%, ${endColor}, ${startColor})`;
+        element.style.backgroundImage = `radial-gradient(circle at ${percentX * 100}% ${percentY * 100}%, ${endColor}, ${startColor})`;
+    }
+
+    // Add mouse-tracking effect to the graph button
+    openGraphBtn.addEventListener('mousemove', (e) => {
+        applyMouseTrackingGradient(e, openGraphBtn,
+            getComputedStyle(document.documentElement).getPropertyValue('--button-start-color').trim(),
+            getComputedStyle(document.documentElement).getPropertyValue('--button-end-color').trim()
+        );
     });
 
     openGraphBtn.addEventListener('mouseleave', () => {
         openGraphBtn.style.backgroundImage = '';
+    });
+
+    // Add mouse-tracking effect to the Excel button
+    exportExcelBtn.addEventListener('mousemove', (e) => {
+        applyMouseTrackingGradient(e, exportExcelBtn,
+            // green excel color
+            getComputedStyle(document.documentElement).getPropertyValue('--excel-button-start-color').trim(),
+            getComputedStyle(document.documentElement).getPropertyValue('--excel-button-end-color').trim()
+        );
+    });
+
+    exportExcelBtn.addEventListener('mouseleave', () => {
+        exportExcelBtn.style.backgroundImage = '';
     });
 });
 

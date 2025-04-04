@@ -16,6 +16,9 @@
     --error-color: #f44336;
     --other-color: #f49b55;
     --sub-label-color: grey;
+    --excel-button-color: #4caf50;
+    --excel-button-start-color: #4caf50;
+    --excel-button-end-color: #82bc82;
 }
 
 [data-theme="dark"] {
@@ -32,6 +35,9 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
+    --excel-button-color: #4caf50;
+    --excel-button-start-color: #4caf50;
+    --excel-button-end-color: #388e3c;
 }
 
 [lang="he"] {
@@ -228,6 +234,34 @@ select:hover {
     width: 100%;
 }
 
+.buttons-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.buttons-container button {
+    flex: 1;
+}
+
+#export_excel {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: var(--excel-button-color);
+}
+
+#excel_icon {
+    fill: var(--button-text);
+    width: 25px;
+    height: 25px;
+    color: var(--button-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .year_semester_container {
     display: flex;
     justify-content: space-between;
@@ -391,7 +425,7 @@ input:checked+.slider:before {
     transform: translateX(22px);
 }
 
-.switch {
+switch {
     display: flex;
     align-items: center;
     justify-content: space-between;
