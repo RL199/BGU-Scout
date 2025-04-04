@@ -16,9 +16,9 @@
     --error-color: #f44336;
     --other-color: #f49b55;
     --sub-label-color: grey;
-    --excel-button-color: #4caf50;
-    --excel-button-start-color: #4caf50;
-    --excel-button-end-color: #82bc82;
+    --export-button-color: #4caf50;
+    --export-button-start-color: #4caf50;
+    --export-button-end-color: #82bc82;
 }
 
 [data-theme="dark"] {
@@ -35,9 +35,9 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
-    --excel-button-color: #4caf50;
-    --excel-button-start-color: #4caf50;
-    --excel-button-end-color: #388e3c;
+    --export-button-color: #4caf50;
+    --export-button-start-color: #4caf50;
+    --export-button-end-color: #388e3c;
 }
 
 [lang="he"] {
@@ -217,7 +217,7 @@ select:hover {
 }
 
 #login_icon,
-#graph_icon,
+#display_icon,
 #options_icon {
     fill: var(--button-text);
     width: 25px;
@@ -249,7 +249,7 @@ select:hover {
     justify-content: center;
     align-items: center;
     width: 100%;
-    background: var(--excel-button-color);
+    background: var(--export-button-color);
 }
 
 #excel_icon {
