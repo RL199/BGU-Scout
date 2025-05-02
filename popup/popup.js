@@ -87,11 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
             quiz_number: "Quiz Number:",
             course_number: "Course:",
             select_course: "Select Course or add more in options page",
-            message: "Please fill your user details in the options page.",
+            no_user_message: "Please fill your user details in the options page.",
+            no_course_message: "Please add course in the options page.",
             enable_multiple_graphs: "Enable multiple graphs:",
             enable_multiple_graphs_description: "Display multiple graphs or export to Excel",
             start_year: "Year:",
-            end_year: "To Year:"
+            end_year: "To Year:",
         },
         he: {
             loading: "טוען",
@@ -109,11 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
             quiz_number: "מספר בוחן:",
             course_number: "קורס:",
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
-            message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
+            no_user_message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
+            no_course_message: "אנא הוסף קורס בדף האפשרויות.",
             enable_multiple_graphs: "אפשר גרפים מרובים:",
             enable_multiple_graphs_description: "הצג גרפים מרובים או ייצא לאקסל",
             start_year: "משנה:",
-            end_year: "לשנה:"
+            end_year: "לשנה:",
         },
     };
 
@@ -263,13 +265,23 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
-    chrome.storage.local.get(["user_name", "id", "password"], async function (result) {
+    chrome.storage.local.get(["user_name", "id", "password", "saved_courses"], function (result) {
+        let message = "";
+        const popupForm = document.getElementById("popup_form");
         if (!result.user_name || !result.id || !result.password) {
-            const popupForm = document.getElementById("popup_form");
             popupForm.style.display = "none";
             multipleGraphsSwitch.style.display = "none";
             messageElement.style.display = "block";
-            messageElement.innerHTML = translations[lang].message;
+            message = translations[lang].no_user_message;
+            messageElement.innerHTML = message;
+            openOptionsBtn.classList.add("clickMe");
+        }
+        if (!result.saved_courses || Object.keys(result.saved_courses).length === 0) {
+            popupForm.style.display = "none";
+            multipleGraphsSwitch.style.display = "none";
+            messageElement.style.display = "block";
+            message = message + "<br>" + translations[lang].no_course_message;
+            messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
         }
     });
