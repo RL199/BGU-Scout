@@ -90,7 +90,8 @@ body {
     }
 
     .user_container,
-    .courses_container {
+    .courses_container,
+    .general_options_container {
         margin: 0.2rem;
         width: calc(100% - 2rem);
         max-width: none;
@@ -98,7 +99,8 @@ body {
 }
 
 .user_container,
-.courses_container {
+.courses_container,
+.general_options_container {
     max-width: 400px;
     width: 100%;
     margin: 1rem;
