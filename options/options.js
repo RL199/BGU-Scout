@@ -240,6 +240,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('option[value="system"][data-i18n="system"]').title = translations[lang]['title_system_language'];
         document.querySelector('option[value="he"]').title = translations[lang]['title_he_language'];
         document.querySelector('option[value="en"]').title = translations[lang]['title_en_language'];
+
+        // Update tooltips for dynamically created course elements
+        const courseNameInputs = document.querySelectorAll('.course_name_input');
+        courseNameInputs.forEach(input => {
+            input.title = translations[lang]['title_course_name'];
+        });
+
+        const courseLabels = document.querySelectorAll('.course_label');
+        courseLabels.forEach(label => {
+            const courseNumber = label.textContent;
+            label.title = translations[lang]['title_course_number_label'] + courseNumber;
+        });
+
+        const editCourseButtons = document.querySelectorAll('.edit_course_name_button');
+        editCourseButtons.forEach(button => {
+            button.title = translations[lang]['title_edit_course'];
+        });
+
+        const removeCourseButtons = document.querySelectorAll('.remove_course_button');
+        removeCourseButtons.forEach(button => {
+            button.title = translations[lang]['title_remove_course'];
+        });
     }
 
     function loadOptions() {

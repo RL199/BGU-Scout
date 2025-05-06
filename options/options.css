@@ -394,6 +394,11 @@ input:checked+.slider:before {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    border-radius: 8px;
+    padding: 0.5rem;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
 }
 
 .switch_label {

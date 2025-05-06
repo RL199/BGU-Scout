@@ -425,11 +425,16 @@ input:checked+.slider:before {
     transform: translateX(22px);
 }
 
-switch {
+.switch {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px
+    margin-bottom: 16px;
+
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--input-border);
+    border-top: 1px solid var(--input-border);
 }
 
 .switch_label {
