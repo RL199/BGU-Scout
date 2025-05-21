@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
             result = await chrome.storage.local.get(['saved_courses']);
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
-                handleMessages('Course' + courseNumber + ' already exists', 'הקורס ' + courseNumber + ' כבר קיים', null, false);
+                handleMessages('Course ' + courseNumber + ' already exists', 'הקורס ' + courseNumber + ' כבר קיים', null, false);
                 return;
             }
         } catch (error) {
@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     lastCourseNameInput.style.border = '2px solid var(--border-color)';
                 }, 2000);
 
-                handleMessages('Course' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
+                handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
             } else {
                 handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', false);
             }
