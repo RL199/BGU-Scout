@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const courseInput = document.getElementById("course_number");
     const messageElement = document.getElementById("message");
 
+    const getStorageData = (key) =>
+        new Promise((resolve) => chrome.storage.local.get(key, resolve));
+
     let lang;
 
     const optionsIcon = `
@@ -62,6 +65,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
                     <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
                 </svg>`;
+
+    const excelLoadingIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="excel_icon" viewBox="0 0 16 16">
+                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                    <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z" `;
 
     chrome.storage.local.get("not_first_time", function (result) {
         if (!result.not_first_time) {
@@ -93,6 +101,15 @@ document.addEventListener("DOMContentLoaded", function () {
             enable_multiple_graphs_description: "Display multiple graphs or export to Excel",
             start_year: "Year:",
             end_year: "To Year:",
+            exam_type: "Exam Type:",
+            average: "Average",
+            median: "Median",
+            std_dev: "Standard Deviation",
+            pass_rate: "Pass Rate",
+            total_students: "Total Students",
+            final_grades: "Final Grades",
+            exam: "Exam",
+            quiz: "Quiz",
         },
         he: {
             loading: "טוען",
@@ -116,6 +133,15 @@ document.addEventListener("DOMContentLoaded", function () {
             enable_multiple_graphs_description: "הצג גרפים מרובים או ייצא לאקסל",
             start_year: "משנה:",
             end_year: "לשנה:",
+            exam_type: "סוג בחינה:",
+            average: "ממוצע",
+            median: "חציון",
+            std_dev: "סטיית תקן",
+            pass_rate: "אחוז עוברים",
+            total_students: "סה\"כ סטודנטים",
+            final_grades: "ציון סופי",
+            exam: "מבחן",
+            quiz: "בוחן",
         },
     };
 
@@ -214,9 +240,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (result.semester) {
                         const semesterRadio = document.querySelector(`input[name="semester_radio"][value="${result.semester}"]`);
                         if (semesterRadio) semesterRadio.checked = true;
-                    } else {
-                        // Default to first semester
-                        document.getElementById("first_semester_radio").checked = true;
                     }
                 }
 
@@ -353,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
             button.disabled = true;
 
             const loadingPaths = [
-                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1z"/>',
+                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
                 '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
                 '<path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>'
             ];
@@ -363,12 +386,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 button.innerHTML = loadingDisplayIcon + loadingPaths[currentIndex] + '</svg> ' + translations[lang].loading;
 
                 currentIndex = (currentIndex + 1) % loadingPaths.length;
-            }, 500);
+            }, 300);
 
             // Store interval ID to clear it later
             button.loadingInterval = interval;
         } else if (loading && isExcel) {
-            //TODO: add loading animation for excel button
+            button.classList.add("loading");
+            button.disabled = true;
+
+            const loadingPaths = [
+                'transform = "matrix(0.96592611, 0.25881901, -0.25881901, 0.96592611, 7.9e-7, 5.3e-7)"', // 15 degrees
+                'transform = "matrix(0.86602509, 0.5, -0.5, 0.86602509, 9.3e-7, 3.4e-7)"', // 30 degrees
+                'transform = "matrix(0.707107, 0.707107, -0.707107, 0.707107, -0.000001, 0)"', // 45 degrees
+                'transform = "matrix(0.5, 0.866025, -0.866025, 0.5, -0.000001, 0)"', // 60 degrees
+                'transform = "matrix(0.258819, 0.965926, -0.965926, 0.258819, -0.000001, -0.000001)"', // 75 degrees
+                'transform = "matrix(0, 1, -1, 0, -0.000001, -0.000001)"', // 90 degrees
+                'transform = "matrix(-0.258819, 0.965926, -0.965926, -0.258819, -0.000001, -0.000001)"', // 105 degrees
+                'transform = "matrix(-0.5, 0.866025, -0.866025, -0.5, -0.000001, -0.000001)"', // 120 degrees
+                'transform = "matrix(-0.707107, 0.707107, -0.707107, -0.707107, -0.000001, -0.000001)"', // 135 degrees
+                'transform = "matrix(-0.86602509, 0.5, -0.5, -0.86602509, -9.3e-7, -3.4e-7)"', // 150 degrees
+                'transform = "matrix(-0.96592611, 0.25881901, -0.25881901, -0.96592611, -7.9e-7, -5.3e-7)"', // 165 degrees
+                'transform = "matrix(-1, 0, 0, -1, 0, -0.000002)"', // 180 degrees
+            ];
+
+            let currentIndex = 0;
+            const interval = setInterval(() => {
+                button.innerHTML = excelLoadingIcon + loadingPaths[currentIndex] + ' style = "transform-origin: 7.99621px 9.99569px;"/> </svg> ' + translations[lang].loading;
+
+                currentIndex = (currentIndex + 1) % loadingPaths.length;
+            }, 100);
+
+            // Store interval ID to clear it later
+            button.loadingInterval = interval;
+
         } else {
             button.classList.remove("loading");
             button.disabled = false;
@@ -413,8 +463,11 @@ document.addEventListener("DOMContentLoaded", function () {
     displayBtn.addEventListener("click", async function () {
         setLoadingButtonStyle(true);
 
-        const getStorageData = (key) =>
-            new Promise((resolve) => chrome.storage.local.get(key, resolve));
+        // Use the validation helper function
+        if (!validateSelections()) {
+            setLoadingButtonStyle(false);
+            return;
+        }
 
         Promise.all([
             getStorageData("enable_multiple_graphs"),
@@ -449,12 +502,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 enable_departmental_details
             ] = results.map((r) => Object.values(r)[0]);
 
-            // Validate selections
-            const isMultipleGraphs = enable_multiple_graphs;
             let years, semesters, examTypes;
 
             // Get year values
-            if (isMultipleGraphs) {
+            if (enable_multiple_graphs) {
                 years = (start_year && end_year) ?
                     Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
             } else {
@@ -462,7 +513,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Get semester values
-            if (isMultipleGraphs) {
+            if (enable_multiple_graphs) {
                 semesters = selected_semesters && selected_semesters.length > 0 ?
                     selected_semesters : null;
             } else {
@@ -470,7 +521,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Get exam/quiz values
-            if (isMultipleGraphs) {
+            if (enable_multiple_graphs) {
                 examTypes = [];
                 if (selected_exams && selected_exams.length > 0) {
                     examTypes.push(...selected_exams);
@@ -480,65 +531,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             } else {
                 examTypes = exam_quiz ? [exam_quiz] : null;
-            }
-
-            if (startYearInput.value < 1970 || endYearInput.value < 1970 || startYearInput.value > new Date().getFullYear() || endYearInput.value > new Date().getFullYear()) {
-                sendMessage("Please select valid years.", "אנא בחר שנים תקפות.", "error");
-                setLoadingButtonStyle(false);
-                startYearInput.classList.add("missing");
-                endYearInput.classList.add("missing");
-                return;
-            }
-
-            if (yearInput.value < 1970 || yearInput.value > new Date().getFullYear()) {
-                sendMessage("Please select a valid year.", "אנא בחר שנה תקפה.", "error");
-                setLoadingButtonStyle(false);
-                yearInput.classList.add("missing");
-                return;
-            }
-
-            if (isMultipleGraphs && (start_year > end_year)) {
-                sendMessage("Please select valid year span.", "אנא בחר טווח שנים תקף.", "error");
-                setLoadingButtonStyle(false);
-                startYearInput.classList.add("missing");
-                endYearInput.classList.add("missing");
-                return;
-            }
-
-            if (!years || !semesters || !examTypes || examTypes.length === 0 || !course_number || courseSelect.value === "") {
-                sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
-                setLoadingButtonStyle(false);
-
-                // Mark missing fields
-                if (isMultipleGraphs) {
-                    if (!start_year || !end_year) {
-                        if (!start_year) startYearInput.classList.add("missing");
-                        if (!end_year) endYearInput.classList.add("missing");
-                    }
-                } else {
-                    if (!year) yearInput.classList.add("missing");
-                }
-                if (!semesters || semesters.length === 0) {
-                    if (isMultipleGraphs) {
-                        semesterCheckboxContainer.classList.add("missing");
-                    } else {
-                        semesterRadioContainer.classList.add("missing");
-                    }
-                }
-                if (!examTypes || examTypes.length === 0) {
-                    if (isMultipleGraphs) {
-                        examCheckboxContainer.classList.add("missing");
-                        quizCheckboxContainer.classList.add("missing");
-                    } else {
-                        examRadioContainer.classList.add("missing");
-                        quizRadioContainer.classList.add("missing");
-                    }
-                }
-
-                if (!course_number || courseSelect.value === "")
-                    courseInput.classList.add("missing");
-
-                return;
             }
 
             try {
@@ -555,7 +547,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            const { p_key } = await getStorageData("p_key");
+            const p_key = (await getStorageData("p_key")).p_key;
 
             // Generate URLs for each combination
             const urls = [];
@@ -595,9 +587,85 @@ document.addEventListener("DOMContentLoaded", function () {
     exportExcelBtn.addEventListener("click", async function () {
         setLoadingButtonStyle(true, true);
 
+        // Validate all required inputs before proceeding
+        if (!validateSelections(true)) {
+            setLoadingButtonStyle(false, true);
+            return;
+        }
+
+        const lastKeyUpdate = (await getStorageData("last_key_update")).last_key_update;
+
+        try {
+            const currentTime = new Date().getTime();
+            if (currentTime - lastKeyUpdate > 420000) {
+                await generatePKey();
+                await waitForKey();
+            }
+        } catch (error) {
+            sendMessage("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.", "error");
+            setLoadingButtonStyle(false);
+            console.error(error);
+            return;
+        }
+
+        // Get values from storage
+        const p_key = (await getStorageData("p_key")).p_key;
+        const department = (await getStorageData("department")).department;
+        const degree = (await getStorageData("degree")).degree;
+        const course = (await getStorageData("course")).course;
+        const start_year = parseInt(startYearInput.value);
+        const end_year = parseInt(endYearInput.value);
+        const selected_semesters = (await getStorageData("selected_semesters")).selected_semesters;
+        const selected_exams = (await getStorageData("selected_exams")).selected_exams;
+        const selected_quizzes = (await getStorageData("selected_quizzes")).selected_quizzes;
+        const enable_departmental_details = (await getStorageData("enable_departmental_details")).enable_departmental_details;
+        // Get selected values for the report
+        let years, semesters, examTypes;
+        years = (start_year && end_year) ?
+            Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
+        semesters = selected_semesters && selected_semesters.length > 0 ?
+            selected_semesters : null;
+        examTypes = [];
+        if (selected_exams && selected_exams.length > 0) {
+            examTypes.push(...selected_exams);
+        }
+        if (selected_quizzes && selected_quizzes.length > 0) {
+            examTypes.push(...selected_quizzes);
+        }
+
+        // Generate URLs for each combination
+        const urls = [];
+
+        for (const yr of years) {
+            for (const sem of semesters) {
+                for (const examType of examTypes) {
+                    const url =
+                        `https://reports4u22.bgu.ac.il/GeneratePDF.php?` +
+                        `server=aristo4stu419c` +
+                        `/report=SCRR016w` +
+                        `/p_key=${p_key}` +
+                        `/p_year=${yr}` +
+                        `/p_semester=${sem}` +
+                        `/out_institution=0` +
+                        `/grade=${examType}` +
+                        `/list_department=*${department}@` +
+                        `/list_degree_level=*${degree}@` +
+                        `/list_course=*${course}@` +
+                        `/LIST_GROUP=*@` +
+                        `/P_FOR_STUDENT=${enable_departmental_details ? 0 : 1}`;
+
+                    urls.push(url);
+                }
+            }
+        }
+
         try {
             // Get course information
             const courseName = courseSelect.options[courseSelect.selectedIndex].text;
+            //remove special characters that affect file naming
+            const courseNumberNoSpecChars = courseName.replace(/[<>:"\/\\|?*]/g, "");
+            // Limit the length of the course name to 31 characters for excel sheet name limitation
+            const trimmedCourseName = courseNumberNoSpecChars.length > 30 ? courseNumberNoSpecChars.substring(0, 31) : courseNumberNoSpecChars;
             const courseNumber = courseSelect.value;
             const currentDate = new Date().toLocaleDateString();
 
@@ -678,6 +746,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     format: '0.00%',
                     value: row => row.passRate / 100,
                     width: 15
+                },
+                {
+                    column: translations[lang].total_students || 'Total Students',
+                    type: Number,
+                    value: row => row.totalStudents,
+                    width: 15
                 }
             ];
 
@@ -697,19 +771,19 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Get semester name
                             let semesterName = '';
                             switch (semester) {
-                                case '1': semesterName = translations[lang].first_semester || 'Fall'; break;
-                                case '2': semesterName = translations[lang].second_semester || 'Spring'; break;
-                                case '3': semesterName = translations[lang].third_semester || 'Summer'; break;
+                                case '1': semesterName = translations[lang].first_semester; break;
+                                case '2': semesterName = translations[lang].second_semester; break;
+                                case '3': semesterName = translations[lang].third_semester; break;
                             }
 
                             // Get exam type name
                             let examTypeName = '';
                             if (examType <= 5) {
                                 examTypeName = examType == 5
-                                    ? (translations[lang].total_exam || 'Total')
-                                    : `${translations[lang].exam || 'Exam'} ${examType}`;
+                                    ? (translations[lang].final_grades)
+                                    : `${translations[lang].exam} ${examType}`;
                             } else {
-                                examTypeName = `${translations[lang].quiz || 'Quiz'} ${examType - 10}`;
+                                examTypeName = `${translations[lang].quiz} ${examType - 10}`;
                             }
 
                             // Add data object
@@ -742,12 +816,12 @@ document.addEventListener("DOMContentLoaded", function () {
             // Generate the Excel file
             await writeXlsxFile(statObjects, {
                 schema,
-                fileName: `${courseNumber}_${courseName}_stats.xlsx`,
-                sheet: courseName,
+                fileName: `${courseNumber}_${trimmedCourseName}.xlsx`,
+                sheet: trimmedCourseName,
                 fontFamily: 'Calibri',
                 fontSize: 12,
                 orientation: 'portrait',
-                dateFormat: 'mm/dd/yyyy',
+                dateFormat: 'dd/mm/yyyy',
                 stickyRowsCount: 1,
                 rightToLeft: lang === 'he',
                 getHeaderStyle: () => ({
@@ -761,9 +835,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // Helper functions for localization
             function getSemesterName(semesterCode, language) {
                 switch (semesterCode) {
-                    case '1': return translations[language].first_semester || 'Fall';
-                    case '2': return translations[language].second_semester || 'Spring';
-                    case '3': return translations[language].third_semester || 'Summer';
+                    case '1': return translations[language].first_semester;
+                    case '2': return translations[language].second_semester;
+                    case '3': return translations[language].third_semester;
                     default: return 'Unknown';
                 }
             }
@@ -771,10 +845,10 @@ document.addEventListener("DOMContentLoaded", function () {
             function getExamTypeName(examTypeCode, language) {
                 if (examTypeCode <= 5) {
                     return examTypeCode == 5
-                        ? (translations[language].total_exam || 'Total')
-                        : `${translations[language].exam || 'Exam'} ${examTypeCode}`;
+                        ? (translations[language].final_grades)
+                        : `${translations[language].exam} ${examTypeCode}`;
                 } else {
-                    return `${translations[language].quiz || 'Quiz'} ${examTypeCode - 10}`;
+                    return `${translations[language].quiz} ${examTypeCode - 10}`;
                 }
             }
 
@@ -792,6 +866,117 @@ document.addEventListener("DOMContentLoaded", function () {
             setLoadingButtonStyle(false, true);
         }
     });
+
+    // Validation helper function for excel and display buttons
+    function validateSelections(isMultipleGraphs) {
+        // For Excel button, always use multiple graphs mode
+        if (isMultipleGraphs === undefined) {
+            isMultipleGraphs = enableMultipleGraphsToggle.checked;
+        }
+
+        // Get year values
+        let years;
+        if (isMultipleGraphs) {
+            const startYear = parseInt(startYearInput.value);
+            const endYear = parseInt(endYearInput.value);
+
+            // Validate years are in valid range
+            if (startYear < 1970 || endYear < 1970 ||
+                startYear > new Date().getFullYear() ||
+                endYear > new Date().getFullYear()) {
+                sendMessage("Please select valid years.", "אנא בחר שנים תקפות.", "error");
+                startYearInput.classList.add("missing");
+                endYearInput.classList.add("missing");
+                return false;
+            }
+
+            // Validate start year <= end year
+            if (startYear > endYear) {
+                sendMessage("Please select valid year span.", "אנא בחר טווח שנים תקף.", "error");
+                startYearInput.classList.add("missing");
+                endYearInput.classList.add("missing");
+                return false;
+            }
+
+            years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+        } else {
+            const year = parseInt(yearInput.value);
+
+            // Validate year is in valid range
+            if (year < 1970 || year > new Date().getFullYear()) {
+                sendMessage("Please select a valid year.", "אנא בחר שנה תקפה.", "error");
+                yearInput.classList.add("missing");
+                return false;
+            }
+
+            years = [year];
+        }
+
+        // Get semester values
+        let semesters;
+        if (isMultipleGraphs) {
+            semesters = Array.from(document.querySelectorAll('input[name="semester"]:checked'))
+                .map(input => input.value);
+        } else {
+            const selectedSemester = document.querySelector('input[name="semester_radio"]:checked');
+            semesters = selectedSemester ? [selectedSemester.value] : [];
+        }
+
+        // Get exam/quiz values
+        let examTypes = [];
+        if (isMultipleGraphs) {
+            const selectedExams = Array.from(document.querySelectorAll('input[name="exam"]:checked'))
+                .map(input => input.value);
+            const selectedQuizzes = Array.from(document.querySelectorAll('input[name="quiz"]:checked'))
+                .map(input => input.value);
+
+            examTypes = [...selectedExams, ...selectedQuizzes];
+        } else {
+            const selectedExamQuiz = document.querySelector('input[name="exam_quiz_radio"]:checked');
+            examTypes = selectedExamQuiz ? [selectedExamQuiz.value] : [];
+        }
+
+        // Check if all required fields are provided
+        if (years.length === 0 || semesters.length === 0 || examTypes.length === 0 || courseSelect.value === "") {
+            sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
+
+            // Mark missing fields
+            if (isMultipleGraphs) {
+                if (startYearInput.value === "" || endYearInput.value === "") {
+                    if (startYearInput.value === "") startYearInput.classList.add("missing");
+                    if (endYearInput.value === "") endYearInput.classList.add("missing");
+                }
+            } else {
+                if (yearInput.value === "") yearInput.classList.add("missing");
+            }
+
+            if (semesters.length === 0) {
+                if (isMultipleGraphs) {
+                    semesterCheckboxContainer.classList.add("missing");
+                } else {
+                    semesterRadioContainer.classList.add("missing");
+                }
+            }
+
+            if (examTypes.length === 0) {
+                if (isMultipleGraphs) {
+                    examCheckboxContainer.classList.add("missing");
+                    quizCheckboxContainer.classList.add("missing");
+                } else {
+                    examRadioContainer.classList.add("missing");
+                    quizRadioContainer.classList.add("missing");
+                }
+            }
+
+            if (courseSelect.value === "") {
+                courseInput.classList.add("missing");
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 
     // Multiple graphs toggle event
     enableMultipleGraphsToggle.addEventListener("change", function () {
@@ -1002,7 +1187,6 @@ async function openBGU22Tab() {
 }
 
 // Helper function to simulate fetching statistics data
-// In a real implementation, this would make an API call to your backend
 async function fetchStatistics(courseNumber, year, semester, examType) {
     // For demonstration purposes, use a deterministic but varied result based on inputs
     // In a real application, this would be an API call
