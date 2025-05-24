@@ -110,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             final_grades: "Final Grades",
             exam: "Exam",
             quiz: "Quiz",
+            lecturers: "Lecturers",
         },
         he: {
             loading: "טוען",
@@ -142,6 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
             final_grades: "ציון סופי",
             exam: "מבחן",
             quiz: "בוחן",
+            lecturers: "מרצים",
         },
     };
 
@@ -752,7 +754,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     type: Number,
                     value: row => row.totalStudents,
                     width: 15
-                }
+                },
+                {
+                    column: translations[lang].lecturers || 'Lecturers',
+                    type: Number,
+                    value: row => row.lecturers,
+                    width: 15
+                },
             ];
 
             // Prepare data objects for the schema
