@@ -234,13 +234,14 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('add_course_button').title = translations[lang]['title_add_course'];
 
         // Selection options
-        document.querySelector('option[value="system"][data-i18n="system"]').title = translations[lang]['title_system_theme'];
-        document.querySelector('option[value="light"][data-i18n="light"]').title = translations[lang]['title_light_theme'];
-        document.querySelector('option[value="dark"][data-i18n="dark"]').title = translations[lang]['title_dark_theme'];
-        document.querySelector('option[value="system"][data-i18n="system"]').title = translations[lang]['title_system_language'];
-        document.querySelector('option[value="he"]').title = translations[lang]['title_he_language'];
-        document.querySelector('option[value="en"]').title = translations[lang]['title_en_language'];
-
+        // Theme selection options
+        document.querySelector('#theme option[value="system"]').title = translations[lang]['title_system_theme'];
+        document.querySelector('#theme option[value="light"]').title = translations[lang]['title_light_theme'];
+        document.querySelector('#theme option[value="dark"]').title = translations[lang]['title_dark_theme'];
+        // Language selection options
+        document.querySelector('#language option[value="system"]').title = translations[lang]['title_system_language'];
+        document.querySelector('#language option[value="he"]').title = translations[lang]['title_he_language'];
+        document.querySelector('#language option[value="en"]').title = translations[lang]['title_en_language'];
         // Update tooltips for dynamically created course elements
         const courseNameInputs = document.querySelectorAll('.course_name_input');
         courseNameInputs.forEach(input => {
