@@ -9,7 +9,10 @@
         "48": "images/icon-48.png",
         "128": "images/icon-128.png"
     },
-    "permissions": ["storage", "tabs"],
+    "permissions": [
+        "storage",
+        "tabs"
+    ],
     "optional_permissions": [],
     "options_page": "options/options.html",
     "action": {
@@ -30,7 +33,9 @@
             "matches": [
                 "https://bgu4u22.bgu.ac.il/*"
             ],
-            "js": ["scripts/bgu4u22-content.js"],
+            "js": [
+                "scripts/bgu4u22-content.js"
+            ],
             "run_at": "document_idle",
             "all_frames": true
         },
@@ -38,7 +43,9 @@
             "matches": [
                 "https://moodle.bgu.ac.il/moodle/my/*"
             ],
-            "js": ["scripts/moodle-content.js"],
+            "js": [
+                "scripts/moodle-content.js"
+            ],
             "run_at": "document_idle",
             "all_frames": true
         },
@@ -46,9 +53,34 @@
             "matches": [
                 "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department=*"
             ],
-            "js": ["scripts/bgu4u-content.js"],
+            "js": [
+                "scripts/bgu4u-content.js"
+            ],
             "run_at": "document_idle",
             "all_frames": true
+        },
+        {
+            "matches": [
+                "https://reports4u22.bgu.ac.il/*"
+            ],
+            "js": [
+                "scripts/reports4u22-content.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "pdfjs-5.2.133-legacy-dist/*",
+                "pdfjs-5.2.133-legacy-dist/build/pdf.js",
+                "pdfjs-5.2.133-legacy-dist/build/pdf.worker.js",
+                "pdfjs-5.2.133-legacy-dist/cmaps/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
         }
     ]
 }

@@ -661,6 +661,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        //wait for all URLs to be fetched
+        const statisticsPromises = urls.map(url => fetchStatisticsFromUrl(url));
+        const statisticsResults = await Promise.all(statisticsPromises);
+        const statisticsData = statisticsResults.filter(result => result !== null);
+        if (statisticsData.length === 0) {
+            sendMessage("No statistics data found for the selected criteria.", "לא נמצאו נתוני סטטיסטיקה עבור הקריטריונים שנבחרו.", "error");
+            setLoadingButtonStyle(false, true);
+            return;
+        }
+
         try {
             // Get course information
             const courseName = courseSelect.options[courseSelect.selectedIndex].text;
@@ -1225,4 +1235,102 @@ async function fetchStatistics(courseNumber, year, semester, examType) {
         stdDev: stdDevBase,
         passRate: Math.min(100, Math.max(0, passRateBase + passRateAdjust + (summerPenalty * 1.5)))
     };
+}
+
+// Helper function to fetch statistics from URL using content script
+async function fetchStatisticsFromUrl(url) {
+    return new Promise((resolve, reject) => {
+        console.log('Fetching statistics from URL:', url);
+
+        // Create a message listener that will receive the parsing results
+        function messageListener(message) {
+            if (message.url !== url) return; // Not our request
+
+            if (message.type === 'PDF_PARSE_COMPLETE' && message.success) {
+                chrome.runtime.onMessage.removeListener(messageListener);
+                console.log('Successfully parsed PDF');
+                resolve(message.data);
+            } else if (message.type === 'PDF_PARSE_ERROR') {
+                chrome.runtime.onMessage.removeListener(messageListener);
+                console.error('Failed to parse PDF:', message.error);
+                reject(new Error(message.error || 'Unknown parsing error'));
+            }
+        }
+
+        // Register the message listener
+        chrome.runtime.onMessage.addListener(messageListener);
+
+        // First try to create a new tab directly - this is more reliable
+        createAndParsePDF(url);
+
+        // Set overall timeout
+        setTimeout(() => {
+            chrome.runtime.onMessage.removeListener(messageListener);
+            reject(new Error('PDF parsing timeout after 30 seconds'));
+        }, 30000);
+    });
+}
+
+// Function to create a new tab and parse PDF
+function createAndParsePDF(url) {
+    console.log('Creating new tab for URL:', url);
+
+    chrome.tabs.create({ url: url, active: false }, tab => {
+        if (chrome.runtime.lastError) {
+            console.error('Error creating tab:', chrome.runtime.lastError.message);
+            return;
+        }
+
+        const tabId = tab.id;
+        console.log('Created tab with ID:', tabId);
+
+        // Wait for the tab to be fully loaded before sending messages
+        function checkTabReady() {
+            chrome.tabs.get(tabId, (tabInfo) => {
+                if (chrome.runtime.lastError || !tabInfo) {
+                    console.log('Tab was closed or error occurred');
+                    return;
+                }
+
+                if (tabInfo.status === 'complete') {
+                    // Tab is loaded, send message after a slight delay to ensure content script is ready
+                    setTimeout(() => {
+                        chrome.tabs.sendMessage(tabId, { type: 'FORCE_RELOAD_PDFJS' }, (response) => {
+                            if (chrome.runtime.lastError) {
+                                console.error('Error forcing PDF.js reload:', chrome.runtime.lastError.message);
+                            } else {
+                                console.log('PDF.js force reload response:', response);
+
+                                // Now send the parse request
+                                chrome.tabs.sendMessage(tabId, {
+                                    type: 'PARSE_PDF_URL',
+                                    url: url
+                                });
+                            }
+                        });
+                    }, 1000);
+                } else {
+                    // Tab still loading, check again after a delay
+                    setTimeout(checkTabReady, 500);
+                }
+            });
+        }
+
+        // Start checking if tab is ready
+        checkTabReady();
+
+        // Set a timeout to close the tab if it doesn't close automatically
+        setTimeout(() => {
+            try {
+                chrome.tabs.get(tabId, (tabInfo) => {
+                    if (tabInfo && !chrome.runtime.lastError) {
+                        console.log('Tab still open after timeout, closing:', tabId);
+                        chrome.tabs.remove(tabId);
+                    }
+                });
+            } catch (e) {
+                console.log('Tab already closed or error:', e);
+            }
+        }, 25000);
+    });
 }
