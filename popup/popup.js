@@ -33,6 +33,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const courseInput = document.getElementById("course_number");
     const messageElement = document.getElementById("message");
+    const aboutBtn = document.getElementById("about_btn");
+    const aboutModal = document.getElementById("about_modal");
+    const closeModalBtn = document.getElementById("close_modal");
+    const extensionVersionElement = document.getElementById("extension_version");
 
     const getStorageData = (key) =>
         new Promise((resolve) => chrome.storage.local.get(key, resolve));
@@ -111,6 +115,11 @@ document.addEventListener("DOMContentLoaded", function () {
             exam: "Exam",
             quiz: "Quiz",
             lecturers: "Lecturers",
+            about_title: "About BGU Scout",
+            version: "Version",
+            creator: "Creator",
+            linkedin: "LinkedIn",
+            github: "GitHub",
         },
         he: {
             loading: "טוען",
@@ -144,6 +153,11 @@ document.addEventListener("DOMContentLoaded", function () {
             exam: "מבחן",
             quiz: "בוחן",
             lecturers: "מרצים",
+            about_title: "אודות BGU Scout",
+            version: "גרסה",
+            creator: "יוצר",
+            linkedin: "לינקדאין",
+            github: "גיטהאב",
         },
     };
 
@@ -288,6 +302,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         );
+
+        // Get extension version from manifest
+        const manifest = chrome.runtime.getManifest();
+        extensionVersionElement.textContent = manifest.version;
+
+        const linkItems = document.querySelectorAll(".link-item");
+        // Apply gradient effect to link buttons
+        linkItems.forEach(linkItem => {
+            linkItem.addEventListener('mousemove', (e) => {
+                applyMouseTrackingGradient(e, linkItem,
+                    getComputedStyle(document.documentElement).getPropertyValue('--button-start-color').trim(),
+                    getComputedStyle(document.documentElement).getPropertyValue('--button-end-color').trim()
+                );
+            });
+            linkItem.addEventListener('mouseleave', () => {
+                linkItem.style.backgroundImage = '';
+            });
+        });
     }
 
     chrome.storage.local.get(["user_name", "id", "password", "saved_courses"], function (result) {
@@ -1186,6 +1218,28 @@ document.addEventListener("DOMContentLoaded", function () {
     exportExcelBtn.addEventListener('mouseleave', () => {
         exportExcelBtn.style.backgroundImage = '';
     });
+
+    // About modal functionality
+    aboutBtn.addEventListener("click", function () {
+        aboutModal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+    });
+
+    closeModalBtn.addEventListener("click", function () {
+        closeAboutModal();
+    });
+
+    // Close modal when clicking outside of it
+    aboutModal.addEventListener("click", function (event) {
+        if (event.target === aboutModal) {
+            closeAboutModal();
+        }
+    });
+
+    function closeAboutModal() {
+        aboutModal.style.display = "none";
+        document.body.style.overflow = ""; // Restore scrolling
+    }
 });
 
 // Open BGU tab
@@ -1235,102 +1289,4 @@ async function fetchStatistics(courseNumber, year, semester, examType) {
         stdDev: stdDevBase,
         passRate: Math.min(100, Math.max(0, passRateBase + passRateAdjust + (summerPenalty * 1.5)))
     };
-}
-
-// Helper function to fetch statistics from URL using content script
-async function fetchStatisticsFromUrl(url) {
-    return new Promise((resolve, reject) => {
-        console.log('Fetching statistics from URL:', url);
-
-        // Create a message listener that will receive the parsing results
-        function messageListener(message) {
-            if (message.url !== url) return; // Not our request
-
-            if (message.type === 'PDF_PARSE_COMPLETE' && message.success) {
-                chrome.runtime.onMessage.removeListener(messageListener);
-                console.log('Successfully parsed PDF');
-                resolve(message.data);
-            } else if (message.type === 'PDF_PARSE_ERROR') {
-                chrome.runtime.onMessage.removeListener(messageListener);
-                console.error('Failed to parse PDF:', message.error);
-                reject(new Error(message.error || 'Unknown parsing error'));
-            }
-        }
-
-        // Register the message listener
-        chrome.runtime.onMessage.addListener(messageListener);
-
-        // First try to create a new tab directly - this is more reliable
-        createAndParsePDF(url);
-
-        // Set overall timeout
-        setTimeout(() => {
-            chrome.runtime.onMessage.removeListener(messageListener);
-            reject(new Error('PDF parsing timeout after 30 seconds'));
-        }, 30000);
-    });
-}
-
-// Function to create a new tab and parse PDF
-function createAndParsePDF(url) {
-    console.log('Creating new tab for URL:', url);
-
-    chrome.tabs.create({ url: url, active: false }, tab => {
-        if (chrome.runtime.lastError) {
-            console.error('Error creating tab:', chrome.runtime.lastError.message);
-            return;
-        }
-
-        const tabId = tab.id;
-        console.log('Created tab with ID:', tabId);
-
-        // Wait for the tab to be fully loaded before sending messages
-        function checkTabReady() {
-            chrome.tabs.get(tabId, (tabInfo) => {
-                if (chrome.runtime.lastError || !tabInfo) {
-                    console.log('Tab was closed or error occurred');
-                    return;
-                }
-
-                if (tabInfo.status === 'complete') {
-                    // Tab is loaded, send message after a slight delay to ensure content script is ready
-                    setTimeout(() => {
-                        chrome.tabs.sendMessage(tabId, { type: 'FORCE_RELOAD_PDFJS' }, (response) => {
-                            if (chrome.runtime.lastError) {
-                                console.error('Error forcing PDF.js reload:', chrome.runtime.lastError.message);
-                            } else {
-                                console.log('PDF.js force reload response:', response);
-
-                                // Now send the parse request
-                                chrome.tabs.sendMessage(tabId, {
-                                    type: 'PARSE_PDF_URL',
-                                    url: url
-                                });
-                            }
-                        });
-                    }, 1000);
-                } else {
-                    // Tab still loading, check again after a delay
-                    setTimeout(checkTabReady, 500);
-                }
-            });
-        }
-
-        // Start checking if tab is ready
-        checkTabReady();
-
-        // Set a timeout to close the tab if it doesn't close automatically
-        setTimeout(() => {
-            try {
-                chrome.tabs.get(tabId, (tabInfo) => {
-                    if (tabInfo && !chrome.runtime.lastError) {
-                        console.log('Tab still open after timeout, closing:', tabId);
-                        chrome.tabs.remove(tabId);
-                    }
-                });
-            } catch (e) {
-                console.log('Tab already closed or error:', e);
-            }
-        }, 25000);
-    });
 }

@@ -69,18 +69,5 @@
             "run_at": "document_start",
             "all_frames": true
         }
-    ],
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "pdfjs-5.2.133-legacy-dist/*",
-                "pdfjs-5.2.133-legacy-dist/build/pdf.js",
-                "pdfjs-5.2.133-legacy-dist/build/pdf.worker.js",
-                "pdfjs-5.2.133-legacy-dist/cmaps/*"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
-        }
     ]
 }
