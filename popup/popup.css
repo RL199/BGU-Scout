@@ -15,6 +15,10 @@
     --success-color: #4caf50;
     --error-color: #f44336;
     --other-color: #f49b55;
+    --sub-label-color: grey;
+    --export-button-color: #4caf50;
+    --export-button-start-color: #4caf50;
+    --export-button-end-color: #82bc82;
 }
 
 [data-theme="dark"] {
@@ -31,6 +35,9 @@
     --toast-text: #333333;
     --button-start-color: #f7941e;
     --button-end-color: #b86600;
+    --export-button-color: #4caf50;
+    --export-button-start-color: #4caf50;
+    --export-button-end-color: #388e3c;
 }
 
 [lang="he"] {
@@ -52,6 +59,8 @@ body {
     background-color: var(--container-bg);
     border-radius: 8px;
     padding: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 h1 {
@@ -101,12 +110,12 @@ hr {
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: var(--text-color);
     font-size: 14px;
 }
@@ -208,7 +217,7 @@ select:hover {
 }
 
 #login_icon,
-#graph_icon,
+#display_icon,
 #options_icon {
     fill: var(--button-text);
     width: 25px;
@@ -225,10 +234,39 @@ select:hover {
     width: 100%;
 }
 
+.buttons-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.buttons-container button {
+    flex: 1;
+}
+
+#export_excel {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: var(--export-button-color);
+}
+
+#excel_icon {
+    fill: var(--button-text);
+    width: 25px;
+    height: 25px;
+    color: var(--button-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .year_semester_container {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    row-gap: 0;
+    column-gap: 10px;
     margin-bottom: 0;
 }
 
@@ -264,7 +302,16 @@ select:hover {
     color: var(--other-color);
 }
 
-#year.missing, #semester.missing, #exam.missing, #quiz.missing, #course_number.missing {
+#year.missing,
+#start_year.missing,
+#end_year.missing,
+#semester_radio.missing,
+#semester_checkbox.missing,
+#exam_radio.missing,
+#exam_checkbox.missing,
+#quiz_radio.missing,
+#quiz_checkbox.missing,
+#course_number.missing {
     border: 1px solid var(--error-color);
     border-radius: 4px;
 }
@@ -325,4 +372,372 @@ select:hover {
     100% {
         box-shadow: 0 0 0 0 rgba(247, 148, 30, 0);
     }
+}
+
+.toggle_switch {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.toggle_switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--input-border);
+    transition: .4s;
+    border-radius: 34px;
+    box-shadow: 0 0 10px var(--input-border);
+    z-index: 1;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ffffff;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--button-bg);
+    box-shadow: 0 0 10px var(--button-bg);
+}
+
+input:checked+.slider:before {
+    transform: translateX(22px);
+}
+
+.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--input-border);
+    border-top: 1px solid var(--input-border);
+}
+
+.switch_label {
+    flex: 1;
+}
+
+.switch_label {
+    margin-bottom: 0;
+}
+
+.switch_description {
+    color: var(--sub-label-color);
+    font-size: 13px;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+.switch_description a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.switch_description a:visited {
+    color: inherit;
+}
+
+.switch_description a:hover {
+    color: var(--button-bg);
+}
+
+.multiple_graphs_container {
+    display: none;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.multiple_graphs.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.year_range {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.start_year_container,
+.end_year_container {
+    width: 48%;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.checkbox-option {
+    position: relative;
+}
+
+.checkbox-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-option label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0;
+}
+
+.checkbox-option input[type="checkbox"]:checked+label {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+#semester_checkbox,
+#exam_checkbox,
+#quiz_checkbox {
+    display: none;
+}
+
+#year_semester_container.split {
+    flex-wrap: wrap;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.about-btn {
+    position: absolute;
+    left: 0;
+    background: var(--button-bg);
+    border: 1px solid var(--h1-color);
+    padding: 0;
+    cursor: pointer;
+    border-radius: 20%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.about-btn svg {
+    fill: var(--button-text);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--container-bg);
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--box-border);
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--h1-color), var(--button-bg));
+    color: var(--button-text);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: var(--button-text);
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    flex-shrink: 0;
+}
+
+.close-btn:hover {
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
+.close-btn svg {
+    width: 36px;
+    height: 36px;
+    fill: var(--button-text);
+}
+
+.modal-body {
+    padding: 24px 20px;
+}
+
+.about-section {
+    margin-bottom: 24px;
+}
+
+.about-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.about-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.about-label {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.about-value {
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.links-section h3 {
+    color: var(--text-color);
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+}
+
+.link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: large;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    gap: 4px;
+    min-height: 60px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.link-item:hover {
+    opacity: 0.9;
+    filter: brightness(98%);
+}
+
+.link-item:active {
+    transform: scale(0.98);
+}
+
+.link-item svg {
+    width: 25px;
+    height: 25px;
+    fill: var(--button-text);
+}
+
+.link-item span {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--button-text);
+}
+
+/* RTL support for modal */
+[lang="he"] .modal-header {
+    direction: rtl;
+}
+
+[lang="he"] .about-item {
+    direction: rtl;
+}
+
+[lang="he"] .about-btn {
+    left: auto;
+    right: 0;
 }

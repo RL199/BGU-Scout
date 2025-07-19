@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', function () {
             dark: "Dark",
             system: "System",
             language: "Language:",
-            header1: "Options",
+            user_container_header: "User",
+            courses_container_header: "Courses",
+            general_options_container_header: "General",
 
             // Feature toggles
             auto_add_moodle_courses: "Auto-Add Moodle Courses:",
@@ -70,7 +72,34 @@ document.addEventListener('DOMContentLoaded', function () {
             // System messages
             toast_message: "",
             disclaimer: `Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
-            Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`
+            Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`,
+
+            // Tooltips
+            title_general_header: "General settings for the extension",
+            title_theme: "Choose the color theme for the extension interface",
+            title_system_theme: "Use your system's default theme",
+            title_light_theme: "Use light theme",
+            title_dark_theme: "Use dark theme",
+            title_language: "Choose the display language for the extension",
+            title_system_language: "Use your system's default language",
+            title_he_language: "Change language to Hebrew",
+            title_en_language: "Change language to English",
+            title_enable_departmental: "Toggle to see grade distribution for each department separately",
+            title_user_header: "User account settings",
+            title_username: "Enter your BGU username",
+            title_password: "Enter your BGU password",
+            title_id: "Enter your ID number",
+            title_save: "Save your user details",
+            title_forgot_password: "Go to password reset page",
+            title_disclaimer: "Important information about data privacy",
+            title_courses_header: "Manage your course list",
+            title_moodle_sync: "Automatically add courses from your Moodle page",
+            title_course_number: "Enter a course number in format XXX.X.XXXX",
+            title_add_course: "Add this course to your tracked courses",
+            title_edit_course: "Save course name changes",
+            title_remove_course: "Remove this course",
+            title_course_name: "Edit course name",
+            title_course_number_label: "Course number: "
         },
         he: {
             // Course-related messages
@@ -94,7 +123,9 @@ document.addEventListener('DOMContentLoaded', function () {
             dark: "כהה",
             system: "מערכת",
             language: "שפה:",
-            header1: "אפשרויות",
+            user_container_header: "משתמש",
+            courses_container_header: "קורסים",
+            general_options_container_header: "כללי",
 
             // Feature toggles
             auto_add_moodle_courses: "הוספת קורסים אוטומטית מהמודל:",
@@ -105,7 +136,34 @@ document.addEventListener('DOMContentLoaded', function () {
             // System messages
             toast_message: "",
             disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
-            הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`
+            הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`,
+
+            // Tooltips
+            title_general_header: "הגדרות כלליות של התוסף",
+            title_theme: "בחר ערכת נושא לממשק התוסף",
+            title_system_theme: "השתמש בערכת הנושא של המערכת שלך",
+            title_light_theme: "השתמש בערכת נושא בהירה",
+            title_dark_theme: "השתמש בערכת נושא כהה",
+            title_language: "בחר שפת תצוגה לתוסף",
+            title_system_language: "השתמש בשפת המערכת שלך",
+            title_he_language: "שנה שפה לעברית",
+            title_en_language: "שנה שפה לאנגלית",
+            title_enable_departmental: "הפעל כדי לראות התפלגות ציונים לכל מחלקה בנפרד",
+            title_user_header: "הגדרות חשבון משתמש",
+            title_username: "הזן את שם המשתמש שלך ב-BGU",
+            title_password: "הזן את הסיסמה שלך ב-BGU",
+            title_id: "הזן את מספר תעודת הזהות שלך",
+            title_save: "שמור את פרטי המשתמש שלך",
+            title_forgot_password: "עבור לדף איפוס סיסמה",
+            title_disclaimer: "מידע חשוב על פרטיות הנתונים",
+            title_courses_header: "נהל את רשימת הקורסים שלך",
+            title_moodle_sync: "הוסף אוטומטית קורסים מדף המודל שלך",
+            title_course_number: "הזן מספר קורס בפורמט XXX.X.XXXX",
+            title_add_course: "הוסף קורס זה לקורסים המעוקבים שלך",
+            title_edit_course: "שמור שינויים בשם הקורס",
+            title_remove_course: "הסר קורס זה",
+            title_course_name: "ערוך את שם הקורס",
+            title_course_number_label: "מספר קורס: "
         }
     };
 
@@ -154,6 +212,56 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
             el.innerHTML = translations[lang][key];
+        });
+
+        // Update title attributes
+        document.querySelector('h1[data-i18n="general_options_container_header"]').title = translations[lang]['title_general_header'];
+        document.querySelector('h1[data-i18n="user_container_header"]').title = translations[lang]['title_user_header'];
+        document.querySelector('h1[data-i18n="courses_container_header"]').title = translations[lang]['title_courses_header'];
+
+        // Form elements
+        document.getElementById('theme').title = translations[lang]['title_theme'];
+        document.getElementById('language').title = translations[lang]['title_language'];
+        document.getElementById('enable_departmental_details').title = translations[lang]['title_enable_departmental'];
+        document.getElementById('user_name').title = translations[lang]['title_username'];
+        document.getElementById('password').title = translations[lang]['title_password'];
+        document.getElementById('id').title = translations[lang]['title_id'];
+        document.getElementById('save_button').title = translations[lang]['title_save'];
+        document.getElementById('forgot_password').title = translations[lang]['title_forgot_password'];
+        document.querySelector('.disclaimer').title = translations[lang]['title_disclaimer'];
+        document.getElementById('auto_add_moodle_courses').title = translations[lang]['title_moodle_sync'];
+        document.getElementById('add_course_number').title = translations[lang]['title_course_number'];
+        document.getElementById('add_course_button').title = translations[lang]['title_add_course'];
+
+        // Selection options
+        // Theme selection options
+        document.querySelector('#theme option[value="system"]').title = translations[lang]['title_system_theme'];
+        document.querySelector('#theme option[value="light"]').title = translations[lang]['title_light_theme'];
+        document.querySelector('#theme option[value="dark"]').title = translations[lang]['title_dark_theme'];
+        // Language selection options
+        document.querySelector('#language option[value="system"]').title = translations[lang]['title_system_language'];
+        document.querySelector('#language option[value="he"]').title = translations[lang]['title_he_language'];
+        document.querySelector('#language option[value="en"]').title = translations[lang]['title_en_language'];
+        // Update tooltips for dynamically created course elements
+        const courseNameInputs = document.querySelectorAll('.course_name_input');
+        courseNameInputs.forEach(input => {
+            input.title = translations[lang]['title_course_name'];
+        });
+
+        const courseLabels = document.querySelectorAll('.course_label');
+        courseLabels.forEach(label => {
+            const courseNumber = label.textContent;
+            label.title = translations[lang]['title_course_number_label'] + courseNumber;
+        });
+
+        const editCourseButtons = document.querySelectorAll('.edit_course_name_button');
+        editCourseButtons.forEach(button => {
+            button.title = translations[lang]['title_edit_course'];
+        });
+
+        const removeCourseButtons = document.querySelectorAll('.remove_course_button');
+        removeCourseButtons.forEach(button => {
+            button.title = translations[lang]['title_remove_course'];
         });
     }
 
@@ -230,17 +338,26 @@ document.addEventListener('DOMContentLoaded', function () {
         userFormData.password = password;
         userFormData.user_name = userName;
 
+        idElement.classList.remove('error');
+        passwordElement.classList.remove('error');
+        userNameElement.classList.remove('error');
         if (!id || !password || !userName) {
             handleMessages('Please fill all fields', 'אנא מלא את כל השדות', 'error', true);
-            if (!id)        idElement.classList.add('error');
-            if (!password)  passwordElement.classList.add('error');
-            if (!userName)  userNameElement.classList.add('error');
+            if (!id) idElement.classList.add('error');
+            if (!password) passwordElement.classList.add('error');
+            if (!userName) userNameElement.classList.add('error');
             return;
         }
 
         const userDetails = await chrome.storage.local.get(['id', 'password', 'user_name']);
         if (userDetails.id === id && userDetails.password === password && userDetails.user_name === userName) {
             handleMessages('User details already saved', 'פרטי המשתמש כבר נשמרו', null, true);
+            return;
+        }
+
+        if (!IDValidator(id)) {
+            handleMessages('Invalid ID', 'תעודת זהות לא תקינה', 'error', true);
+            idElement.classList.add('error');
             return;
         }
 
@@ -288,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Mouse-tracking gradient effect
+    // Mouse tracking gradient effect
     saveButton.addEventListener('mousemove', (e) => {
         const rect = saveButton.getBoundingClientRect();
         const x = e.clientX - rect.left; // x position within the element
@@ -359,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function () {
             result = await chrome.storage.local.get(['saved_courses']);
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
-                handleMessages('Course number already exists', 'מספר הקורס כבר קיים', 'error', false);
+                handleMessages('Course ' + courseNumber + ' already exists', 'הקורס ' + courseNumber + ' כבר קיים', null, false);
                 return;
             }
         } catch (error) {
@@ -397,7 +514,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 NewCourseNumberInput.dispatchEvent(event);
 
                 addCourseLine(courseNumber, courseName);
-                handleMessages('Course added', 'הקורס נוסף', null, false);
+                // mark last added course border as green
+                const lastCourseLine = document.querySelector('.course_line:last-child');
+                const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
+                lastCourseNameInput.style.border = '2px solid var(--success-color)';
+                lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
+                setTimeout(() => {
+                    lastCourseNameInput.style.border = '2px solid var(--border-color)';
+                }, 2000);
+
+                handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
             } else {
                 handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', false);
             }
@@ -471,6 +597,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseNameElement.style.textAlign = 'center';
         courseNameElement.id = "course_name_input" + course_number;
         courseNameElement.setAttribute("aria-label", "Course name");
+        courseNameElement.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_course_name']);
 
         courseNameElement.addEventListener('input', function () {
             const hasValue = this.value.trim() !== '';
@@ -488,6 +615,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseLabel.textContent = course_number;
         courseLabel.className = "course_label";
         courseLabel.setAttribute("aria-label", "Course number");
+        courseLabel.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_course_number_label'] + course_number);
 
         // Create edit button
         const editCourseNameButton = document.createElement("button");
@@ -495,6 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editCourseNameButton.className = "edit_course_name_button";
         editCourseNameButton.id = "edit_course_name_button" + course_number;
         editCourseNameButton.style.display = 'none';
+        editCourseNameButton.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_edit_course']);
         editCourseNameButton.addEventListener('click', function (e) {
             e.preventDefault();
             // save course name
@@ -512,6 +641,7 @@ document.addEventListener('DOMContentLoaded', function () {
         removeCourseButton.innerHTML = removeIcon;
         removeCourseButton.className = "remove_course_button";
         removeCourseButton.id = "remove_course_button" + course_name;
+        removeCourseButton.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_remove_course']);
 
         // Add remove functionality
         removeCourseButton.addEventListener('click', function (e) {
@@ -627,4 +757,16 @@ async function openBGU4UTab(courseNumber) {
         console.error("Failed to create tab:", error);
         throw error;
     }
+}
+
+function IDValidator(id) {
+    if (!id || !Number(id) || id.length !== 9 || isNaN(id)) {  // Make sure ID is formatted properly
+        return false;
+    }
+    let sum = 0;
+    for (let i = 0; i < id.length; i++) {
+        const incNum = Number(id[i]) * ((i % 2) + 1);  // Multiply number by 1 or 2
+        sum += (incNum > 9) ? incNum - 9 : incNum;  // Sum the digits up and add to total
+    }
+    return (sum % 10 === 0);
 }

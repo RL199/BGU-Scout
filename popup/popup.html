@@ -11,30 +11,76 @@
 
 <body>
     <div class="container">
-        <h1>BGU Scout</h1>
+        <div class="header-container">
+            <button type="button" id="about_btn" class="about-btn" aria-label="About" title="About">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                    <path
+                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                </svg>
+            </button>
+            <h1>BGU Scout</h1>
+        </div>
         <div class="button-group">
             <button type="button" id="open_options" data-i18n="options">Options</button>
             <button type="button" id="open_login" data-i18n="login">Login</button>
         </div>
+        <div class="multiple_graphs switch" id="multiple_graphs_switch">
+            <div class="switch_label">
+                <label class="switch_label" for="enable_multiple_graphs" data-i18n="enable_multiple_graphs"></label>
+                <label data-i18n="enable_multiple_graphs_description" id="enable_multiple_graphs_description"
+                    class="switch_description"></label>
+            </div>
+            <div class="toggle_switch">
+                <input type="checkbox" id="enable_multiple_graphs" name="enable_multiple_graphs"
+                    aria-label="Enable multiple graphs" role="switch" aria-checked="false">
+                <span class="slider" aria-hidden="true"></span>
+            </div>
+        </div>
         <form id="popup_form">
-            <div class = "form-group year_semester_container">
-                <div class="form-group year_container">
+            <div class="form-group year_semester_container">
+                <div class="form-group year_container single_year">
                     <label for="year" data-i18n="year">Year:</label>
                     <input type="number" min="1970" max="2025" id="year">
                 </div>
+                <div class="form-group multiple_graphs_container">
+                    <div class="year_range">
+                        <div class="form-group start_year_container">
+                            <label for="start_year" data-i18n="start_year">Start Year:</label>
+                            <input type="number" min="1970" max="2025" id="start_year">
+                        </div>
+                        <div class="form-group end_year_container">
+                            <label for="end_year" data-i18n="end_year">End Year:</label>
+                            <input type="number" min="1970" max="2025" id="end_year">
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group semester_container">
                     <label data-i18n="semester">Semester:</label>
-                    <div class="radio-group" id="semester">
+                    <div class="radio-group" id="semester_radio">
                         <div class="radio-option">
-                            <input type="radio" id="first_semester" name="semester" value="1">
+                            <input type="radio" id="first_semester_radio" name="semester_radio" value="1">
+                            <label for="first_semester_radio" data-i18n="first_semester">Fall</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="second_semester_radio" name="semester_radio" value="2">
+                            <label for="second_semester_radio" data-i18n="second_semester">Spring</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="third_semester_radio" name="semester_radio" value="3">
+                            <label for="third_semester_radio" data-i18n="third_semester">Summer</label>
+                        </div>
+                    </div>
+                    <div class="checkbox-group" id="semester_checkbox">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="first_semester" name="semester" value="1">
                             <label for="first_semester" data-i18n="first_semester">Fall</label>
                         </div>
-                        <div class="radio-option">
-                            <input type="radio" id="second_semester" name="semester" value="2">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="second_semester" name="semester" value="2">
                             <label for="second_semester" data-i18n="second_semester">Spring</label>
                         </div>
-                        <div class="radio-option">
-                            <input type="radio" id="third_semester" name="semester" value="3">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="third_semester" name="semester" value="3">
                             <label for="third_semester" data-i18n="third_semester">Summer</label>
                         </div>
                     </div>
@@ -42,46 +88,86 @@
             </div>
             <div class="form-group">
                 <label data-i18n="exam_number">Exam Number:</label>
-                <div class="radio-group" id="exam">
+                <div class="radio-group" id="exam_radio">
                     <div class="radio-option">
-                        <input type="radio" id="first_exam" name="exam_quiz" value="1">
+                        <input type="radio" id="first_exam_radio" name="exam_quiz_radio" value="1">
+                        <label for="first_exam_radio">1</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="second_exam_radio" name="exam_quiz_radio" value="2">
+                        <label for="second_exam_radio">2</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="third_exam_radio" name="exam_quiz_radio" value="3">
+                        <label for="third_exam_radio">3</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="fourth_exam_radio" name="exam_quiz_radio" value="4">
+                        <label for="fourth_exam_radio">4</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="total_exam_radio" name="exam_quiz_radio" value="5">
+                        <label for="total_exam_radio" data-i18n="total_exam">Total</label>
+                    </div>
+                </div>
+                <div class="checkbox-group" id="exam_checkbox">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="first_exam" name="exam" value="1">
                         <label for="first_exam">1</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="second_exam" name="exam_quiz" value="2">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="second_exam" name="exam" value="2">
                         <label for="second_exam">2</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="third_exam" name="exam_quiz" value="3">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="third_exam" name="exam" value="3">
                         <label for="third_exam">3</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="fourth_exam" name="exam_quiz" value="4">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="fourth_exam" name="exam" value="4">
                         <label for="fourth_exam">4</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="total_exam" name="exam_quiz" value="5">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="total_exam" name="exam" value="5">
                         <label for="total_exam" data-i18n="total_exam">Total</label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label data-i18n="quiz_number">Quiz Number:</label>
-                <div class="radio-group" id="quiz">
+                <div class="radio-group" id="quiz_radio">
                     <div class="radio-option">
-                        <input type="radio" id="first_quiz" name="exam_quiz" value="11">
+                        <input type="radio" id="first_quiz_radio" name="exam_quiz_radio" value="11">
+                        <label for="first_quiz_radio">1</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="second_quiz_radio" name="exam_quiz_radio" value="12">
+                        <label for="second_quiz_radio">2</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="third_quiz_radio" name="exam_quiz_radio" value="13">
+                        <label for="third_quiz_radio">3</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="fourth_quiz_radio" name="exam_quiz_radio" value="14">
+                        <label for="fourth_quiz_radio">4</label>
+                    </div>
+                </div>
+                <div class="checkbox-group" id="quiz_checkbox">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="first_quiz" name="quiz" value="11">
                         <label for="first_quiz">1</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="second_quiz" name="exam_quiz" value="12">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="second_quiz" name="quiz" value="12">
                         <label for="second_quiz">2</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="third_quiz" name="exam_quiz" value="13">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="third_quiz" name="quiz" value="13">
                         <label for="third_quiz">3</label>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" id="fourth_quiz" name="exam_quiz" value="14">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="fourth_quiz" name="quiz" value="14">
                         <label for="fourth_quiz">4</label>
                     </div>
                 </div>
@@ -92,10 +178,59 @@
                     <option value="" data-i18n="select_course">Select a course</option>
                 </select>
             </div>
-            <button type="button" id="open_graph" data-i18n="graph">Graph</button>
+            <div class="buttons-container">
+                <button type="button" id="display_graph" data-i18n="display">Display</button>
+                <button type="button" id="export_excel" data-i18n="export">Export</button>
+            </div>
         </form>
         <div id="message" data-i18n="message"></div>
     </div>
+    <div id="about_modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="about_title">About BGU Scout</h2>
+                <button type="button" id="close_modal" class="close-btn" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path
+                            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="about-section">
+                    <div class="about-item">
+                        <span class="about-label" data-i18n="version">Version:</span>
+                        <span id="extension_version" class="about-value">Loading...</span>
+                    </div>
+                    <div class="about-item">
+                        <span class="about-label" data-i18n="creator">Creator:</span>
+                        <span class="about-value">Roy Levi</span>
+                    </div>
+                </div>
+                <div class="links-section">
+                    <div class="links-grid">
+                        <a href="https://www.linkedin.com/in/roy-levi-018779215/" target="_blank" class="link-item"
+                            title="LinkedIn Profile">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                <path
+                                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z" />
+                            </svg>
+                            <span data-i18n="linkedin">LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/RL199/BGU-Scout" target="_blank" class="link-item"
+                            title="GitHub Repository">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+                            </svg>
+                            <span data-i18n="github">GitHub</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../export/write-excel-file.min.js"></script>
     <script src="popup.js"></script>
 </body>
 

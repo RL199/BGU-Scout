@@ -90,7 +90,8 @@ body {
     }
 
     .user_container,
-    .courses_container {
+    .courses_container,
+    .general_options_container {
         margin: 0.2rem;
         width: calc(100% - 2rem);
         max-width: none;
@@ -98,7 +99,8 @@ body {
 }
 
 .user_container,
-.courses_container {
+.courses_container,
+.general_options_container {
     max-width: 400px;
     width: 100%;
     margin: 1rem;
@@ -119,15 +121,14 @@ h1 {
     color: var(--h1-color);
     text-align: center;
     margin-bottom: 1.5rem;
-    transition: transform 1s;
+    transition: filter 1.5s;
     cursor: default;
     font-size: 2rem;
 }
 
 h1:hover {
-    transform: rotate(360deg);
+    filter: hue-rotate(360deg);
     transition-delay: 0.5s;
-    /* filter: hue-rotate(180deg); */
 }
 
 .form_group {
@@ -392,6 +393,11 @@ input:checked+.slider:before {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    border-radius: 8px;
+    padding: 0.5rem;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
 }
 
 .switch_label {
