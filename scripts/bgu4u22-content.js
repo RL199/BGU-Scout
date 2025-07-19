@@ -100,7 +100,7 @@ function checkForPKey() {
     } else {
         console.error('Invalid page');
         chrome.runtime.sendMessage({
-            type: 'P_KEY_NOT_FOUND'
+            type: 'PROBABLY_INVALID_USER_DETAILS'
         });
     }
 }

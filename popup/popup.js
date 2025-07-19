@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
             no_user_message: "Please fill your user details in the options page.",
             no_course_message: "Please add course in the options page.",
             enable_multiple_graphs: "Enable multiple graphs:",
-            enable_multiple_graphs_description: "Display multiple graphs or export to Excel",
+            enable_multiple_graphs_description: "Display multiple graphs", //TODO: Implement Excel export functionality
             start_year: "Year:",
             end_year: "To Year:",
             exam_type: "Exam Type:",
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
             no_user_message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
             no_course_message: "אנא הוסף קורס בדף האפשרויות.",
             enable_multiple_graphs: "אפשר גרפים מרובים:",
-            enable_multiple_graphs_description: "הצג גרפים מרובים או ייצא לאקסל",
+            enable_multiple_graphs_description: "הצג גרפים מרובים", //TODO: Implement Excel export functionality
             start_year: "משנה:",
             end_year: "לשנה:",
             exam_type: "סוג בחינה:",
@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
         quizCheckboxContainer.style.display = enableMultiple ? "flex" : "none";
 
         // Toggle Excel button visibility
-        exportExcelBtn.style.display = enableMultiple ? "flex" : "none";
+        // exportExcelBtn.style.display = enableMultiple ? "flex" : "none"; TODO: Implement Excel export functionality
 
         if (enableMultiple) yearSemesterContainer.style.flexDirection = "column";
         else yearSemesterContainer.style.flexDirection = "row";
@@ -489,6 +489,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     reject(new Error('Key generation failed'));
                     await chrome.storage.local.remove("generatePKey");
                 }
+                else if (message.type === "PROBABLY_INVALID_USER_DETAILS") {
+                    clearTimeout(timeout);
+                    chrome.runtime.onMessage.removeListener(listener);
+                    setLoadingButtonStyle(false);
+                    reject(new Error('Probably invalid user details'));
+                }
             });
         });
     }
@@ -575,6 +581,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     await waitForKey();
                 }
             } catch (error) {
+                if (error.message === 'Probably invalid user details') {
+                    sendMessage("Probably invalid user details. Please check your user details in the options page.", "כנראה פרטי משתמש לא תקינים. אנא בדוק את פרטי המשתמש בדף האפשרויות.", "error");
+                    setLoadingButtonStyle(false);
+                    return;
+                }
                 sendMessage("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.", "error");
                 setLoadingButtonStyle(false);
                 console.error(error);
