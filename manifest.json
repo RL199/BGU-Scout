@@ -14,16 +14,6 @@
         "tabs"
     ],
     "optional_permissions": [],
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "images/*.png"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
-        }
-    ],
     "options_page": "options/options.html",
     "action": {
         "default_icon": {
