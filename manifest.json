@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "BGU Scout",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "description": "Show BGU grade distributions in a more convenient way",
     "icons": {
         "16": "images/icon-16.png",
@@ -14,6 +14,16 @@
         "tabs"
     ],
     "optional_permissions": [],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "images/*.png"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
     "options_page": "options/options.html",
     "action": {
         "default_icon": {
