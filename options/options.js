@@ -770,3 +770,19 @@ function IDValidator(id) {
     }
     return (sum % 10 === 0);
 }
+
+// TODO: Implement icon change logic
+// chrome.action.setIcon({
+//     path: {
+//         "16": chrome.runtime.getURL("images/icon-blue-16.png"),
+//         "32": chrome.runtime.getURL("images/icon-blue-32.png"),
+//         "48": chrome.runtime.getURL("images/icon-blue-48.png"),
+//         "128": chrome.runtime.getURL("images/icon-blue-128.png")
+//     }
+// }, function () {
+//     if (chrome.runtime.lastError) {
+//         console.error("Error setting icon:", chrome.runtime.lastError.message);
+//     } else {
+//         console.log("Icon changed to blue");
+//     }
+// });
