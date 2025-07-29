@@ -59,6 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
             dark: "Dark",
             system: "System",
             language: "Language:",
+            color_palette: "Color Scheme:",
+            orange: "Orange",
+            blue: "Blue",
+            green: "Green",
+            red: "Red",
+            purple: "Purple",
+            pink: "Pink",
             user_container_header: "User",
             courses_container_header: "Courses",
             general_options_container_header: "General",
@@ -81,6 +88,13 @@ document.addEventListener('DOMContentLoaded', function () {
             title_light_theme: "Use light theme",
             title_dark_theme: "Use dark theme",
             title_language: "Choose the display language for the extension",
+            title_color_palette: "Choose the color scheme for the extension",
+            title_color_orange: "Orange color scheme",
+            title_color_blue: "Blue color scheme",
+            title_color_green: "Green color scheme",
+            title_color_red: "Red color scheme",
+            title_color_purple: "Purple color scheme",
+            title_color_pink: "Pink color scheme",
             title_system_language: "Use your system's default language",
             title_he_language: "Change language to Hebrew",
             title_en_language: "Change language to English",
@@ -123,6 +137,13 @@ document.addEventListener('DOMContentLoaded', function () {
             dark: "כהה",
             system: "מערכת",
             language: "שפה:",
+            color_palette: "ערכת צבעים:",
+            orange: "כתום",
+            blue: "כחול",
+            green: "ירוק",
+            red: "אדום",
+            purple: "סגול",
+            pink: "ורוד",
             user_container_header: "משתמש",
             courses_container_header: "קורסים",
             general_options_container_header: "כללי",
@@ -145,6 +166,13 @@ document.addEventListener('DOMContentLoaded', function () {
             title_light_theme: "השתמש בערכת נושא בהירה",
             title_dark_theme: "השתמש בערכת נושא כהה",
             title_language: "בחר שפת תצוגה לתוסף",
+            title_color_palette: "בחר ערכת צבעים לתוסף",
+            title_color_orange: "ערכת צבעים כתומה",
+            title_color_blue: "ערכת צבעים כחולה",
+            title_color_green: "ערכת צבעים ירוקה",
+            title_color_red: "ערכת צבעים אדומה",
+            title_color_purple: "ערכת צבעים סגולה",
+            title_color_pink: "ערכת צבעים ורודה",
             title_system_language: "השתמש בשפת המערכת שלך",
             title_he_language: "שנה שפה לעברית",
             title_en_language: "שנה שפה לאנגלית",
@@ -195,6 +223,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             document.documentElement.setAttribute('data-theme', theme);
         }
+
+        // Reapply color after theme change
+        chrome.storage.local.get(['color'], function (result) {
+            const color = result.color || '#f7941e';
+            applyColor(color);
+        });
     }
 
     function applyLang(lang) {
@@ -233,6 +267,32 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('add_course_number').title = translations[lang]['title_course_number'];
         document.getElementById('add_course_button').title = translations[lang]['title_add_course'];
 
+        // Color palette tooltips
+        const colorOptions = document.querySelectorAll('.color_option');
+        colorOptions.forEach(option => {
+            const color = option.getAttribute('data-color');
+            switch (color) {
+                case '#f7941e':
+                    option.title = translations[lang]['title_color_orange'];
+                    break;
+                case '#2196f3':
+                    option.title = translations[lang]['title_color_blue'];
+                    break;
+                case '#4caf50':
+                    option.title = translations[lang]['title_color_green'];
+                    break;
+                case '#f44336':
+                    option.title = translations[lang]['title_color_red'];
+                    break;
+                case '#9c27b0':
+                    option.title = translations[lang]['title_color_purple'];
+                    break;
+                case '#e91e63':
+                    option.title = translations[lang]['title_color_pink'];
+                    break;
+            }
+        });
+
         // Selection options
         // Theme selection options
         document.querySelector('#theme option[value="system"]').title = translations[lang]['title_system_theme'];
@@ -265,8 +325,169 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function applyColor(color) {
+        // Define color mappings for light and dark themes
+        const colorMappings = {
+            '#f7941e': { // Orange
+                light: {
+                    h1Color: '#e9870e',
+                    buttonBg: '#f7941e',
+                    buttonStartColor: '#f7941e',
+                    buttonEndColor: '#ffd38064',
+                    otherColor: '#f49b55'
+                },
+                dark: {
+                    h1Color: '#f49b55',
+                    buttonBg: '#f7941e',
+                    buttonStartColor: '#f7941e',
+                    buttonEndColor: '#b86600',
+                    otherColor: '#f49b55'
+                }
+            },
+            '#2196f3': { // Blue
+                light: {
+                    h1Color: '#1976d2',
+                    buttonBg: '#2196f3',
+                    buttonStartColor: '#2196f3',
+                    buttonEndColor: '#64b5f6',
+                    otherColor: '#42a5f5'
+                },
+                dark: {
+                    h1Color: '#42a5f5',
+                    buttonBg: '#2196f3',
+                    buttonStartColor: '#2196f3',
+                    buttonEndColor: '#1565c0',
+                    otherColor: '#42a5f5'
+                }
+            },
+            '#4caf50': { // Green
+                light: {
+                    h1Color: '#388e3c',
+                    buttonBg: '#4caf50',
+                    buttonStartColor: '#4caf50',
+                    buttonEndColor: '#81c784',
+                    otherColor: '#66bb6a'
+                },
+                dark: {
+                    h1Color: '#66bb6a',
+                    buttonBg: '#4caf50',
+                    buttonStartColor: '#4caf50',
+                    buttonEndColor: '#2e7d32',
+                    otherColor: '#66bb6a'
+                }
+            },
+            '#f44336': { // Red
+                light: {
+                    h1Color: '#d32f2f',
+                    buttonBg: '#f44336',
+                    buttonStartColor: '#f44336',
+                    buttonEndColor: '#ef5350',
+                    otherColor: '#e57373'
+                },
+                dark: {
+                    h1Color: '#e57373',
+                    buttonBg: '#f44336',
+                    buttonStartColor: '#f44336',
+                    buttonEndColor: '#c62828',
+                    otherColor: '#e57373'
+                }
+            },
+            '#9c27b0': { // Purple
+                light: {
+                    h1Color: '#7b1fa2',
+                    buttonBg: '#9c27b0',
+                    buttonStartColor: '#9c27b0',
+                    buttonEndColor: '#ba68c8',
+                    otherColor: '#ab47bc'
+                },
+                dark: {
+                    h1Color: '#ab47bc',
+                    buttonBg: '#9c27b0',
+                    buttonStartColor: '#9c27b0',
+                    buttonEndColor: '#6a1b9a',
+                    otherColor: '#ab47bc'
+                }
+            },
+            '#e91e63': { // Pink
+                light: {
+                    h1Color: '#c2185b',
+                    buttonBg: '#e91e63',
+                    buttonStartColor: '#e91e63',
+                    buttonEndColor: '#f06292',
+                    otherColor: '#ec407a'
+                },
+                dark: {
+                    h1Color: '#ec407a',
+                    buttonBg: '#e91e63',
+                    buttonStartColor: '#e91e63',
+                    buttonEndColor: '#ad1457',
+                    otherColor: '#ec407a'
+                }
+            }
+        };
+
+        // Apply color CSS variables to the document
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const colorSet = colorMappings[color];
+        if (colorSet) {
+            const colors = isDark ? colorSet.dark : colorSet.light;
+
+            document.documentElement.style.setProperty('--h1-color', colors.h1Color);
+            document.documentElement.style.setProperty('--button-bg', colors.buttonBg);
+            document.documentElement.style.setProperty('--button-start-color', colors.buttonStartColor);
+            document.documentElement.style.setProperty('--button-end-color', colors.buttonEndColor);
+            document.documentElement.style.setProperty('--other-color', colors.otherColor);
+        }
+
+        // Update selected color option
+        document.querySelectorAll('.color_option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`[data-color="${color}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+
+        // Change extension icon based on color
+        changeExtensionIcon(color);
+    }
+
+    function changeExtensionIcon(color) {
+        let iconFolder;
+        // Only change to blue icon if blue is selected, otherwise use default orange
+        if (color === '#2196f3') { // Blue
+            iconFolder = 'images/icon-blue-';
+        } else if (color === '#4caf50') { // Green
+            iconFolder = 'images/icon-green-';
+        } else if (color === '#f44336') { // Red
+            iconFolder = 'images/icon-red-';
+        } else if (color === '#9c27b0') { // Purple
+            iconFolder = 'images/icon-purple-';
+        } else if (color === '#e91e63') { // Pink
+            iconFolder = 'images/icon-pink-';
+        } else {
+            iconFolder = 'images/icon-'; // Default orange for all other colors
+        }
+        let colorName = iconFolder.replace('images/icon-', '').replace('-', '');
+
+        chrome.action.setIcon({
+            path: {
+                "16": chrome.runtime.getURL(iconFolder + "16.png"),
+                "32": chrome.runtime.getURL(iconFolder + "32.png"),
+                "48": chrome.runtime.getURL(iconFolder + "48.png"),
+                "128": chrome.runtime.getURL(iconFolder + "128.png")
+            }
+        }, function () {
+            if (chrome.runtime.lastError) {
+                console.error("Error setting ", colorName, " icon:", chrome.runtime.lastError.message);
+            } else {
+                console.log("Icon changed to", colorName);
+            }
+        });
+    }
+
     function loadOptions() {
-        chrome.storage.local.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'auto_add_moodle_courses', 'enable_departmental_details'], function (result) {
+        chrome.storage.local.get(['user_name', 'id', 'theme', 'lang', 'color', 'saved_courses', 'password', 'auto_add_moodle_courses', 'enable_departmental_details'], function (result) {
             if (result.user_name) document.getElementById('user_name').value = result.user_name;
             if (result.id) document.getElementById('id').value = result.id;
             if (result.password) document.getElementById('password').value = result.password;
@@ -282,6 +503,15 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 applyLang('system');
             }
+
+            // Apply color and set default if not exists
+            const selectedColor = result.color || '#f7941e';
+            if (!result.color) {
+                // Set default color in storage if not set
+                chrome.storage.local.set({ color: selectedColor });
+            }
+            applyColor(selectedColor);
+
             if (result.saved_courses) {
                 for (const course_number in result.saved_courses) {
                     addCourseLine(course_number, result.saved_courses[course_number]);
@@ -306,6 +536,32 @@ document.addEventListener('DOMContentLoaded', function () {
         const selected_lang = this.value;
         applyLang(selected_lang);
         chrome.storage.local.set({ lang: selected_lang });
+    });
+
+    // Color palette event listeners
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.color_option')) {
+            const colorOption = e.target.closest('.color_option');
+            const selectedColor = colorOption.getAttribute('data-color');
+
+            chrome.storage.local.set({ color: selectedColor }, function () {
+                applyColor(selectedColor);
+            });
+        }
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        chrome.storage.local.get(['theme'], function (result) {
+            if (!result.theme || result.theme === 'system') {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                // Reapply color after theme change
+                chrome.storage.local.get(['color'], function (colorResult) {
+                    const color = colorResult.color || '#f7941e';
+                    applyColor(color);
+                });
+            }
+        });
     });
 
     autoAddMoodleCourses.addEventListener('change', function () {
@@ -770,19 +1026,3 @@ function IDValidator(id) {
     }
     return (sum % 10 === 0);
 }
-
-// TODO: Implement icon change logic
-// chrome.action.setIcon({
-//     path: {
-//         "16": chrome.runtime.getURL("images/icon-blue-16.png"),
-//         "32": chrome.runtime.getURL("images/icon-blue-32.png"),
-//         "48": chrome.runtime.getURL("images/icon-blue-48.png"),
-//         "128": chrome.runtime.getURL("images/icon-blue-128.png")
-//     }
-// }, function () {
-//     if (chrome.runtime.lastError) {
-//         console.error("Error setting icon:", chrome.runtime.lastError.message);
-//     } else {
-//         console.log("Icon changed to blue");
-//     }
-// });

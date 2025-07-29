@@ -40,6 +40,47 @@
     --export-button-end-color: #388e3c;
 }
 
+/* Dynamic color support - will be overridden by JavaScript */
+[data-color="blue"] {
+    --h1-color: #2196f3;
+    --button-bg: #2196f3;
+    --button-start-color: #2196f3;
+    --button-end-color: #64b5f6;
+    --other-color: #42a5f5;
+}
+
+[data-color="green"] {
+    --h1-color: #4caf50;
+    --button-bg: #4caf50;
+    --button-start-color: #4caf50;
+    --button-end-color: #81c784;
+    --other-color: #66bb6a;
+}
+
+[data-color="red"] {
+    --h1-color: #f44336;
+    --button-bg: #f44336;
+    --button-start-color: #f44336;
+    --button-end-color: #ef5350;
+    --other-color: #e57373;
+}
+
+[data-color="purple"] {
+    --h1-color: #9c27b0;
+    --button-bg: #9c27b0;
+    --button-start-color: #9c27b0;
+    --button-end-color: #ba68c8;
+    --other-color: #ab47bc;
+}
+
+[data-color="pink"] {
+    --h1-color: #e91e63;
+    --button-bg: #e91e63;
+    --button-start-color: #e91e63;
+    --button-end-color: #f06292;
+    --other-color: #ec407a;
+}
+
 [lang="he"] {
     direction: rtl;
     text-align: right;

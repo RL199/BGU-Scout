@@ -39,6 +39,47 @@
     }
 }
 
+/* Dynamic color support - will be overridden by JavaScript */
+[data-color="blue"] {
+    --h1-color: #2196f3;
+    --button-bg: #2196f3;
+    --button-start-color: #2196f3;
+    --button-end-color: #64b5f6;
+    --other-color: #42a5f5;
+}
+
+[data-color="green"] {
+    --h1-color: #4caf50;
+    --button-bg: #4caf50;
+    --button-start-color: #4caf50;
+    --button-end-color: #81c784;
+    --other-color: #66bb6a;
+}
+
+[data-color="red"] {
+    --h1-color: #f44336;
+    --button-bg: #f44336;
+    --button-start-color: #f44336;
+    --button-end-color: #ef5350;
+    --other-color: #e57373;
+}
+
+[data-color="purple"] {
+    --h1-color: #9c27b0;
+    --button-bg: #9c27b0;
+    --button-start-color: #9c27b0;
+    --button-end-color: #ba68c8;
+    --other-color: #ab47bc;
+}
+
+[data-color="pink"] {
+    --h1-color: #e91e63;
+    --button-bg: #e91e63;
+    --button-start-color: #e91e63;
+    --button-end-color: #f06292;
+    --other-color: #ec407a;
+}
+
 [data-lang="he"] {
     direction: rtl;
     text-align: right;
@@ -465,4 +506,76 @@ input:checked+.slider:before {
 
 .switch_description {
     margin-bottom: 0;
+}
+
+/* Color palette styles */
+.color_palette_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.color_option {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 8px;
+}
+
+.color_option:hover {
+    border-color: var(--button-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color_option.selected {
+    border-color: var(--button-bg);
+    background-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.color_option.selected:hover {
+    border-color: var(--button-bg);
+}
+
+.color_preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.color_preview.orange {
+    background-color: #f7941e;
+}
+
+.color_preview.blue {
+    background-color: #2196f3;
+}
+
+.color_preview.green {
+    background-color: #4caf50;
+}
+
+.color_preview.red {
+    background-color: #f44336;
+}
+
+.color_preview.purple {
+    background-color: #9c27b0;
+}
+
+.color_preview.pink {
+    background-color: #e91e63;
+}
+
+.color_option span {
+    font-size: 14px;
+    font-weight: 500;
 }

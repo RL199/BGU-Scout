@@ -144,8 +144,8 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     };
 
-    // Set theme and language
-    chrome.storage.local.get(["theme", "lang"], function (result) {
+    // Set theme, language, and color
+    chrome.storage.local.get(["theme", "lang", "color"], function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
         } else {
@@ -167,6 +167,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         document.documentElement.setAttribute("lang", lang);
         updateTexts();
+
+        // Apply color
+        if (result.color) {
+            applyColor(result.color);
+        } else {
+            applyColor('#f7941e'); // Default orange
+        }
     });
 
     function updateTexts() {
@@ -188,6 +195,121 @@ document.addEventListener("DOMContentLoaded", function () {
                 el.innerHTML = excelIcon + text;
             }
         });
+    }
+
+    function applyColor(color) {
+        // Define color mappings for light and dark themes
+        const colorMappings = {
+            '#f7941e': { // Orange
+                light: {
+                    h1Color: '#f7941e',
+                    buttonBg: '#f7941e',
+                    buttonStartColor: '#f7941e',
+                    buttonEndColor: '#ffd38064',
+                    otherColor: '#f49b55'
+                },
+                dark: {
+                    h1Color: '#f7941e',
+                    buttonBg: '#f7941e',
+                    buttonStartColor: '#f7941e',
+                    buttonEndColor: '#b86600',
+                    otherColor: '#f49b55'
+                }
+            },
+            '#2196f3': { // Blue
+                light: {
+                    h1Color: '#2196f3',
+                    buttonBg: '#2196f3',
+                    buttonStartColor: '#2196f3',
+                    buttonEndColor: '#64b5f6',
+                    otherColor: '#42a5f5'
+                },
+                dark: {
+                    h1Color: '#2196f3',
+                    buttonBg: '#2196f3',
+                    buttonStartColor: '#2196f3',
+                    buttonEndColor: '#1565c0',
+                    otherColor: '#42a5f5'
+                }
+            },
+            '#4caf50': { // Green
+                light: {
+                    h1Color: '#4caf50',
+                    buttonBg: '#4caf50',
+                    buttonStartColor: '#4caf50',
+                    buttonEndColor: '#81c784',
+                    otherColor: '#66bb6a'
+                },
+                dark: {
+                    h1Color: '#4caf50',
+                    buttonBg: '#4caf50',
+                    buttonStartColor: '#4caf50',
+                    buttonEndColor: '#2e7d32',
+                    otherColor: '#66bb6a'
+                }
+            },
+            '#f44336': { // Red
+                light: {
+                    h1Color: '#f44336',
+                    buttonBg: '#f44336',
+                    buttonStartColor: '#f44336',
+                    buttonEndColor: '#ef5350',
+                    otherColor: '#e57373'
+                },
+                dark: {
+                    h1Color: '#f44336',
+                    buttonBg: '#f44336',
+                    buttonStartColor: '#f44336',
+                    buttonEndColor: '#c62828',
+                    otherColor: '#e57373'
+                }
+            },
+            '#9c27b0': { // Purple
+                light: {
+                    h1Color: '#9c27b0',
+                    buttonBg: '#9c27b0',
+                    buttonStartColor: '#9c27b0',
+                    buttonEndColor: '#ba68c8',
+                    otherColor: '#ab47bc'
+                },
+                dark: {
+                    h1Color: '#9c27b0',
+                    buttonBg: '#9c27b0',
+                    buttonStartColor: '#9c27b0',
+                    buttonEndColor: '#6a1b9a',
+                    otherColor: '#ab47bc'
+                }
+            },
+            '#e91e63': { // Pink
+                light: {
+                    h1Color: '#e91e63',
+                    buttonBg: '#e91e63',
+                    buttonStartColor: '#e91e63',
+                    buttonEndColor: '#f06292',
+                    otherColor: '#ec407a'
+                },
+                dark: {
+                    h1Color: '#e91e63',
+                    buttonBg: '#e91e63',
+                    buttonStartColor: '#e91e63',
+                    buttonEndColor: '#ad1457',
+                    otherColor: '#ec407a'
+                }
+            }
+        };
+
+        // Apply color CSS variables to the document
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const colorSet = colorMappings[color];
+        if (colorSet) {
+            const colors = isDark ? colorSet.dark : colorSet.light;
+
+            document.documentElement.style.setProperty('--h1-color', colors.h1Color);
+            document.documentElement.style.setProperty('--button-bg', colors.buttonBg);
+            document.documentElement.style.setProperty('--button-start-color', colors.buttonStartColor);
+            document.documentElement.style.setProperty('--button-end-color', colors.buttonEndColor);
+            document.documentElement.style.setProperty('--other-color', colors.otherColor);
+        }
     }
 
     loadSavedValues();
