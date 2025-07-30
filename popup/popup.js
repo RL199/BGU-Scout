@@ -66,6 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!result.not_first_time) {
             chrome.storage.local.set({ not_first_time: true, last_key_update: 0 });
             chrome.storage.local.set({ lang: 'system', theme: 'system', enable_departmental_details: 0 });
+            // Set default course name preferred language based on system language
+            const defaultCourseLang = navigator.language.startsWith('he') ? 'he' : 'en';
+            chrome.storage.local.set({ course_name_preferred_lang: defaultCourseLang });
         }
     });
 
@@ -323,7 +326,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 "selected_exams",
                 "selected_quizzes",
                 "saved_courses",
-                "full_course_number"
+                "full_course_number",
+                "course_name_preferred_lang"
             ],
             function (result) {
                 // Set year values
@@ -364,8 +368,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     const courses = result.saved_courses;
                     for (const course_number in courses) {
                         const option = document.createElement("option");
-                        option.value = course_number
-                        option.textContent = courses[course_number];
+                        option.value = course_number;
+
+                        let courseName;
+                        const courseData = courses[course_number];
+
+                        if (courseData && courseData.names) {
+                            // Get preferred language course name
+                            const preferredLang = result.course_name_preferred_lang || 'he';
+                            courseName = courseData.names[preferredLang] || courseData.names['he'] || courseData.names['en'] || course_number;
+                        } else {
+                            courseName = course_number;
+                        }
+
+                        option.textContent = courseName;
                         courseSelect.appendChild(option);
                     }
                 }

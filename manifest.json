@@ -51,7 +51,7 @@
         },
         {
             "matches": [
-                "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department=*"
+                "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?*"
             ],
             "js": [
                 "scripts/bgu4u-content.js"

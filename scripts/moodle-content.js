@@ -53,14 +53,29 @@ function checkForCourseList(courseList, obs) {
             coursesToSave[courseNumber] = courseName;
         });
 
-        chrome.storage.local.get(['saved_courses'], function (result) {
+        chrome.storage.local.get(['saved_courses', 'course_name_preferred_lang'], function (result) {
             const savedCourses = result.saved_courses || {};
+            const preferredLang = result.course_name_preferred_lang || (navigator.language.startsWith('he') ? 'he' : 'en');
+            
             for (const courseNumber in coursesToSave) {
                 if (savedCourses[courseNumber]) {
                     delete coursesToSave[courseNumber];
                 }
             }
-            const newSavedCourses = { ...savedCourses, ...coursesToSave };
+            
+            // Convert to new format with language detection
+            const newSavedCourses = { ...savedCourses };
+            for (const courseNumber in coursesToSave) {
+                const courseName = coursesToSave[courseNumber];
+                const detectedLang = detectLanguage(courseName);
+                
+                newSavedCourses[courseNumber] = {
+                    names: {
+                        [detectedLang]: courseName
+                    }
+                };
+            }
+            
             chrome.storage.local.set({ 'saved_courses': newSavedCourses }, function () {
                 console.log('Courses saved:', newSavedCourses);
             });
@@ -94,4 +109,11 @@ function trimCourseName(courseName) {
 
     // One more normalization pass
     return courseName.replace(/\s+/g, ' ').trim();
+}
+
+// Detect language of course name
+function detectLanguage(text) {
+    // Simple Hebrew detection - if the text contains Hebrew characters
+    const hebrewRegex = /[\u0590-\u05FF]/;
+    return hebrewRegex.test(text) ? 'he' : 'en';
 }

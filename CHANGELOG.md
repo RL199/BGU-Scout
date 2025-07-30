@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0]
 
 ### Added
+- Course name language conversion feature
 - New color scheme options: Blue, Green, Pink, Purple.
 
 ### Changed
