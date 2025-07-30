@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const NewCourseNumberInput = document.getElementById('add_course_number');
     const addCourseButton = document.getElementById('add_course_button');
     const saveButton = document.getElementById('save_button');
+    const convertToHebrewButton = document.getElementById('convert_to_hebrew');
+    const convertToEnglishButton = document.getElementById('convert_to_english');
 
     let toastTimeout = null;
 
@@ -24,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let courseName;
     let result = {};
     let courseNumber = '';
+
+    let displayLang = 'en'; // Default language
 
     const removeIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
@@ -43,6 +47,12 @@ document.addEventListener('DOMContentLoaded', function () {
             adding_course_button: "Adding...",
             add_course_number: "Add Course Number:",
             saved_courses: "Saved Courses",
+            convert_to_hebrew: "Convert Courses to Hebrew",
+            convert_to_english: "Convert Courses to English",
+            converting_to_hebrew: "Converting to Hebrew...",
+            converting_to_english: "Converting to English...",
+            course_names_converted_successfully: "Course names converted successfully",
+            course_names_conversion_failed: "Failed to convert course names",
 
             // User authentication
             user_name: "User Name:",
@@ -59,6 +69,13 @@ document.addEventListener('DOMContentLoaded', function () {
             dark: "Dark",
             system: "System",
             language: "Language:",
+            color_palette: "Color Scheme:",
+            orange: "Orange",
+            blue: "Blue",
+            green: "Green",
+            red: "Red",
+            purple: "Purple",
+            pink: "Pink",
             user_container_header: "User",
             courses_container_header: "Courses",
             general_options_container_header: "General",
@@ -81,6 +98,13 @@ document.addEventListener('DOMContentLoaded', function () {
             title_light_theme: "Use light theme",
             title_dark_theme: "Use dark theme",
             title_language: "Choose the display language for the extension",
+            title_color_palette: "Choose the color scheme for the extension",
+            title_color_orange: "Orange color scheme",
+            title_color_blue: "Blue color scheme",
+            title_color_green: "Green color scheme",
+            title_color_red: "Red color scheme",
+            title_color_purple: "Purple color scheme",
+            title_color_pink: "Pink color scheme",
             title_system_language: "Use your system's default language",
             title_he_language: "Change language to Hebrew",
             title_en_language: "Change language to English",
@@ -107,6 +131,12 @@ document.addEventListener('DOMContentLoaded', function () {
             adding_course_button: "מוסיף...",
             add_course_number: "הוסף מספר קורס:",
             saved_courses: "קורסים שמורים",
+            convert_to_hebrew: "המר קורסים לעברית",
+            convert_to_english: "המר קורסים לאנגלית",
+            converting_to_hebrew: "ממיר לעברית...",
+            converting_to_english: "ממיר לאנגלית...",
+            course_names_converted_successfully: "שמות הקורסים הומרו בהצלחה",
+            course_names_conversion_failed: "המרת שמות הקורסים נכשלה",
 
             // User authentication
             user_name: "שם משתמש:",
@@ -123,6 +153,13 @@ document.addEventListener('DOMContentLoaded', function () {
             dark: "כהה",
             system: "מערכת",
             language: "שפה:",
+            color_palette: "ערכת צבעים:",
+            orange: "כתום",
+            blue: "כחול",
+            green: "ירוק",
+            red: "אדום",
+            purple: "סגול",
+            pink: "ורוד",
             user_container_header: "משתמש",
             courses_container_header: "קורסים",
             general_options_container_header: "כללי",
@@ -145,6 +182,13 @@ document.addEventListener('DOMContentLoaded', function () {
             title_light_theme: "השתמש בערכת נושא בהירה",
             title_dark_theme: "השתמש בערכת נושא כהה",
             title_language: "בחר שפת תצוגה לתוסף",
+            title_color_palette: "בחר ערכת צבעים לתוסף",
+            title_color_orange: "ערכת צבעים כתומה",
+            title_color_blue: "ערכת צבעים כחולה",
+            title_color_green: "ערכת צבעים ירוקה",
+            title_color_red: "ערכת צבעים אדומה",
+            title_color_purple: "ערכת צבעים סגולה",
+            title_color_pink: "ערכת צבעים ורודה",
             title_system_language: "השתמש בשפת המערכת שלך",
             title_he_language: "שנה שפה לעברית",
             title_en_language: "שנה שפה לאנגלית",
@@ -177,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         translations['en']['toast_message'] = enMessage;
         translations['he']['toast_message'] = hebMessage;
-        applyLang(document.documentElement.getAttribute('data-lang'));
+        applyLang(displayLang);
         let toastType = type === 'success' ? 'success' : type === 'error' ? 'error' : 'other';
         // Set toast shadow color
         document.documentElement.style.setProperty('--toast-color', `var(--${toastType}-color)`);
@@ -201,11 +245,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const prefersHebrew = navigator.language.startsWith('he');
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
+            displayLang = lang;
         }
         if (lang === 'he') {
             addButtonText = 'הוסף';
+            displayLang = 'he';
         } else {
             addButtonText = 'Add';
+            displayLang = 'en';
         }
         document.documentElement.setAttribute('data-lang', lang);
         const elements = document.querySelectorAll('[data-i18n]');
@@ -232,6 +279,32 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('auto_add_moodle_courses').title = translations[lang]['title_moodle_sync'];
         document.getElementById('add_course_number').title = translations[lang]['title_course_number'];
         document.getElementById('add_course_button').title = translations[lang]['title_add_course'];
+
+        // Color palette tooltips
+        const colorOptions = document.querySelectorAll('.color_option');
+        colorOptions.forEach(option => {
+            const color = option.getAttribute('data-color');
+            switch (color) {
+                case '#f7941e':
+                    option.title = translations[lang]['title_color_orange'];
+                    break;
+                case '#2196f3':
+                    option.title = translations[lang]['title_color_blue'];
+                    break;
+                case '#4caf50':
+                    option.title = translations[lang]['title_color_green'];
+                    break;
+                case '#f44336':
+                    option.title = translations[lang]['title_color_red'];
+                    break;
+                case '#9c27b0':
+                    option.title = translations[lang]['title_color_purple'];
+                    break;
+                case '#e91e63':
+                    option.title = translations[lang]['title_color_pink'];
+                    break;
+            }
+        });
 
         // Selection options
         // Theme selection options
@@ -265,8 +338,179 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function applyColor(color) {
+        // Define color mappings for light and dark themes
+        const colorMappings = {
+            '#f7941e': { // Orange
+                light: {
+                    h1Color: '#e9870e',
+                    buttonBg: '#f7941e',
+                    buttonStartColor: '#f7941e',
+                    buttonEndColor: '#ffd38064',
+                    otherColor: '#f49b55'
+                },
+                dark: {
+                    h1Color: '#f49b55',
+                    buttonBg: '#f7941e',
+                    buttonStartColor: '#f7941e',
+                    buttonEndColor: '#b86600',
+                    otherColor: '#f49b55'
+                }
+            },
+            '#2196f3': { // Blue
+                light: {
+                    h1Color: '#1976d2',
+                    buttonBg: '#2196f3',
+                    buttonStartColor: '#2196f3',
+                    buttonEndColor: '#64b5f6',
+                    otherColor: '#42a5f5'
+                },
+                dark: {
+                    h1Color: '#42a5f5',
+                    buttonBg: '#2196f3',
+                    buttonStartColor: '#2196f3',
+                    buttonEndColor: '#1565c0',
+                    otherColor: '#42a5f5'
+                }
+            },
+            '#4caf50': { // Green
+                light: {
+                    h1Color: '#388e3c',
+                    buttonBg: '#4caf50',
+                    buttonStartColor: '#4caf50',
+                    buttonEndColor: '#81c784',
+                    otherColor: '#66bb6a'
+                },
+                dark: {
+                    h1Color: '#66bb6a',
+                    buttonBg: '#4caf50',
+                    buttonStartColor: '#4caf50',
+                    buttonEndColor: '#2e7d32',
+                    otherColor: '#66bb6a'
+                }
+            },
+            '#f44336': { // Red
+                light: {
+                    h1Color: '#d32f2f',
+                    buttonBg: '#f44336',
+                    buttonStartColor: '#f44336',
+                    buttonEndColor: '#ef5350',
+                    otherColor: '#e57373'
+                },
+                dark: {
+                    h1Color: '#e57373',
+                    buttonBg: '#f44336',
+                    buttonStartColor: '#f44336',
+                    buttonEndColor: '#c62828',
+                    otherColor: '#e57373'
+                }
+            },
+            '#9c27b0': { // Purple
+                light: {
+                    h1Color: '#7b1fa2',
+                    buttonBg: '#9c27b0',
+                    buttonStartColor: '#9c27b0',
+                    buttonEndColor: '#ba68c8',
+                    otherColor: '#ab47bc'
+                },
+                dark: {
+                    h1Color: '#ab47bc',
+                    buttonBg: '#9c27b0',
+                    buttonStartColor: '#9c27b0',
+                    buttonEndColor: '#6a1b9a',
+                    otherColor: '#ab47bc'
+                }
+            },
+            '#e91e63': { // Pink
+                light: {
+                    h1Color: '#c2185b',
+                    buttonBg: '#e91e63',
+                    buttonStartColor: '#e91e63',
+                    buttonEndColor: '#f06292',
+                    otherColor: '#ec407a'
+                },
+                dark: {
+                    h1Color: '#ec407a',
+                    buttonBg: '#e91e63',
+                    buttonStartColor: '#e91e63',
+                    buttonEndColor: '#ad1457',
+                    otherColor: '#ec407a'
+                }
+            }
+        };
+
+        // Apply color CSS variables to the document
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const colorSet = colorMappings[color];
+        if (colorSet) {
+            const colors = isDark ? colorSet.dark : colorSet.light;
+
+            document.documentElement.style.setProperty('--h1-color', colors.h1Color);
+            document.documentElement.style.setProperty('--button-bg', colors.buttonBg);
+            document.documentElement.style.setProperty('--button-start-color', colors.buttonStartColor);
+            document.documentElement.style.setProperty('--button-end-color', colors.buttonEndColor);
+            document.documentElement.style.setProperty('--other-color', colors.otherColor);
+        }
+
+        // Update selected color option
+        document.querySelectorAll('.color_option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`[data-color="${color}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+
+        // Change extension icon based on color
+        changeExtensionIcon(color);
+    }
+
+    function changeExtensionIcon(color) {
+        let iconFolder;
+        // Only change to blue icon if blue is selected, otherwise use default orange
+        if (color === '#2196f3') { // Blue
+            iconFolder = 'images/icon-blue-';
+        } else if (color === '#4caf50') { // Green
+            iconFolder = 'images/icon-green-';
+        } else if (color === '#f44336') { // Red
+            iconFolder = 'images/icon-red-';
+        } else if (color === '#9c27b0') { // Purple
+            iconFolder = 'images/icon-purple-';
+        } else if (color === '#e91e63') { // Pink
+            iconFolder = 'images/icon-pink-';
+        } else {
+            iconFolder = 'images/icon-'; // Default orange for all other colors
+        }
+        let colorName = iconFolder.replace('images/icon-', '').replace('-', '');
+        if (!colorName) colorName = 'orange';
+
+        chrome.action.setIcon({
+            path: {
+                "16": chrome.runtime.getURL(iconFolder + "16.png"),
+                "32": chrome.runtime.getURL(iconFolder + "32.png"),
+                "48": chrome.runtime.getURL(iconFolder + "48.png"),
+                "128": chrome.runtime.getURL(iconFolder + "128.png")
+            }
+        }, function () {
+            if (chrome.runtime.lastError) {
+                console.error("Error setting ", colorName, " icon:", chrome.runtime.lastError.message);
+            }
+        });
+    }
+
     function loadOptions() {
-        chrome.storage.local.get(['user_name', 'id', 'theme', 'lang', 'saved_courses', 'password', 'auto_add_moodle_courses', 'enable_departmental_details'], function (result) {
+        chrome.storage.local.get([
+            'user_name',
+            'id',
+            'theme',
+            'lang',
+            'color',
+            'saved_courses',
+            'password',
+            'auto_add_moodle_courses',
+            'enable_departmental_details',
+            'course_name_preferred_lang'
+        ], function (result) {
             if (result.user_name) document.getElementById('user_name').value = result.user_name;
             if (result.id) document.getElementById('id').value = result.id;
             if (result.password) document.getElementById('password').value = result.password;
@@ -282,10 +526,34 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 applyLang('system');
             }
+
+            // Apply color and set default if not exists
+            const selectedColor = result.color || '#f7941e';
+            if (!result.color) {
+                // Set default color in storage if not set
+                chrome.storage.local.set({ color: selectedColor });
+            }
+            applyColor(selectedColor);
+
             if (result.saved_courses) {
                 for (const course_number in result.saved_courses) {
-                    addCourseLine(course_number, result.saved_courses[course_number]);
+                    let courseName;
+                    const courseData = result.saved_courses[course_number];
+
+                    if (courseData && courseData.names) {
+                        const preferredLang = result.course_name_preferred_lang;
+                        courseName = courseData.names[preferredLang] || courseData.names['en'] || courseData.names['he'];
+                    }
+
+                    if (courseName) {
+                        addCourseLine(course_number, courseName);
+                    }
                 }
+                // Update conversion buttons visibility after loading all courses
+                updateConversionButtonsVisibility();
+            } else {
+                // No courses, hide conversion buttons
+                updateConversionButtonsVisibility();
             }
             if (result.auto_add_moodle_courses) {
                 autoAddMoodleCourses.checked = result.auto_add_moodle_courses;
@@ -306,6 +574,32 @@ document.addEventListener('DOMContentLoaded', function () {
         const selected_lang = this.value;
         applyLang(selected_lang);
         chrome.storage.local.set({ lang: selected_lang });
+    });
+
+    // Color palette event listeners
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.color_option')) {
+            const colorOption = e.target.closest('.color_option');
+            const selectedColor = colorOption.getAttribute('data-color');
+
+            chrome.storage.local.set({ color: selectedColor }, function () {
+                applyColor(selectedColor);
+            });
+        }
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        chrome.storage.local.get(['theme'], function (result) {
+            if (!result.theme || result.theme === 'system') {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                // Reapply color after theme change
+                chrome.storage.local.get(['color'], function (colorResult) {
+                    const color = colorResult.color || '#f7941e';
+                    applyColor(color);
+                });
+            }
+        });
     });
 
     autoAddMoodleCourses.addEventListener('change', function () {
@@ -381,14 +675,14 @@ document.addEventListener('DOMContentLoaded', function () {
             saveButton.disabled = true;
             saveButton.style.opacity = '0.7';
             saveButton.style.pointerEvents = 'none';
-            saveButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['saving'];
+            saveButton.textContent = translations[displayLang]['saving'];
         } else {
             translations['en']['save'] = 'Save';
             translations['he']['save'] = 'שמור';
             saveButton.disabled = false;
             saveButton.style.opacity = '1';
             saveButton.style.pointerEvents = 'auto';
-            saveButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['save'];
+            saveButton.textContent = translations[displayLang]['save'];
         }
     }
 
@@ -485,47 +779,184 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            await chrome.storage.local.set({ allowCourseValidation: true });
-            const tabId = await openBGU4UTab(courseNumber);
+            await chrome.storage.local.set({ allowCourseValidation: 1 });
+            const storageResult = await chrome.storage.local.get(['course_name_preferred_lang']);
+            const preferredLang = storageResult.course_name_preferred_lang;
+            const tabId = await openBGU4UTab(courseNumber, preferredLang);
         } catch (error) {
             handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, false);
             return;
         }
     });
 
-    chrome.runtime.onMessage.addListener(function (message, sender) {
+    // Course name conversion event listeners
+    convertToHebrewButton.addEventListener('click', async function (e) {
+        e.preventDefault();
+        await convertCourseNames('he');
+    });
+
+    convertToEnglishButton.addEventListener('click', async function (e) {
+        e.preventDefault();
+        await convertCourseNames('en');
+    });
+
+    // Convert course names to specified language
+    async function convertCourseNames(targetLang) {
+        if (!navigator.onLine) {
+            handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', false);
+            return;
+        }
+
+        // Set converting state
+        setConvertingState(true, targetLang);
+
+        try {
+            let courseExists = false;
+            const result = await chrome.storage.local.get(['saved_courses']);
+            const savedCourses = result.saved_courses || {};
+            const coursesToConvert = [];
+
+
+
+            // Find courses that need conversion
+            for (const courseNumber in savedCourses) {
+                const courseData = savedCourses[courseNumber];
+
+                if (!courseData.names[targetLang]) {
+                    coursesToConvert.push(courseNumber);
+                }
+                else{
+                    //change course name to preferred language if it exists
+                    const courseInput = document.getElementById(`course_name_input${courseNumber}`);
+                    if (courseInput) {
+                        courseInput.value = courseData.names[targetLang];
+                        courseExists = true;
+                    }
+                }
+            }
+
+            if (coursesToConvert.length === 0) {
+                const langName = targetLang === 'he' ? 'Hebrew' : 'English';
+                const langNameHe = targetLang === 'he' ? 'עברית' : 'אנגלית';
+                if (courseExists) {
+                    await chrome.storage.local.set({ course_name_preferred_lang: targetLang });
+                    handleMessages(`Course names updated to ${langName}`, `שמות הקורסים עודכנו ל${langNameHe}`, null, false);
+                } else {
+                    handleMessages(`No courses to convert to ${langName}`, `אין קורסים להמיר ל${langNameHe}`, null, false);
+                }
+                setConvertingState(false);
+                return;
+            }
+
+            // Store conversion state
+            await chrome.storage.local.set({
+                course_name_preferred_lang: targetLang,
+                allowCourseValidation: coursesToConvert.length,
+                converting_courses: true,
+                total_courses_to_convert: coursesToConvert.length,
+                converted_courses: 0
+            });
+
+            // Open tabs for courses that need conversion
+            for (const courseNumber of coursesToConvert) {
+                await openBGU4UTab(courseNumber, targetLang);
+                // Small delay to prevent too many simultaneous requests
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+        } catch (error) {
+            console.error('Error during conversion:', error);
+            handleMessages('Conversion failed', 'ההמרה נכשלה', 'error', false);
+            setConvertingState(false);
+        }
+    }
+
+    // Set converting state for buttons
+    function setConvertingState(converting, targetLang = null) {
+        if (converting) {
+            convertToHebrewButton.disabled = true;
+            convertToEnglishButton.disabled = true;
+
+            if (targetLang === 'he') {
+                convertToHebrewButton.classList.add('converting');
+                convertToHebrewButton.textContent = translations[displayLang]['converting_to_hebrew'];
+            } else if (targetLang === 'en') {
+                convertToEnglishButton.classList.add('converting');
+                convertToEnglishButton.textContent = translations[displayLang]['converting_to_english'];
+            }
+        } else {
+            convertToHebrewButton.disabled = false;
+            convertToEnglishButton.disabled = false;
+            convertToHebrewButton.classList.remove('converting');
+            convertToEnglishButton.classList.remove('converting');
+            convertToHebrewButton.textContent = translations[displayLang]['convert_to_hebrew'];
+            convertToEnglishButton.textContent = translations[displayLang]['convert_to_english'];
+        }
+    }
+
+    chrome.runtime.onMessage.addListener(async function (message, sender) {
         const tabId = sender.tab.id;
         if (message.type === 'COURSE_FOUND') {
-            chrome.storage.local.remove('allowCourseValidation');
+            // Decrease the allowCourseValidation counter
+            const storage = await chrome.storage.local.get(['allowCourseValidation', 'converting_courses', 'total_courses_to_convert', 'converted_courses', 'course_name_preferred_lang']);
+            let remainingTabs = storage.allowCourseValidation || 0;
+            remainingTabs -= 1;
+
+            if (remainingTabs <= 0) {
+                chrome.storage.local.remove('allowCourseValidation');
+            } else {
+                chrome.storage.local.set({ allowCourseValidation: remainingTabs });
+            }
+
             if (message.courseName) {
                 courseName = message.courseName;
-                if (!result.saved_courses) {
-                    courseFormData.saved_courses = { [courseNumber]: courseName };
+                const lang = message.lang || storage.course_name_preferred_lang;
+
+                if (storage.converting_courses) {
+                    // Handle course conversion
+                    await handleCourseConversion(message.courseNumber, courseName, lang, storage);
                 } else {
-                    courseFormData.saved_courses = { ...result.saved_courses, [courseNumber]: courseName };
+                    // Handle regular course addition
+                    const defaultLang = storage.course_name_preferred_lang;
+                    const courseData = {
+                        names: {
+                            [defaultLang]: courseName
+                        }
+                    };
+
+                    if (!result.saved_courses) {
+                        courseFormData.saved_courses = { [courseNumber]: courseData };
+                    } else {
+                        courseFormData.saved_courses = { ...result.saved_courses, [courseNumber]: courseData };
+                    }
+                    chrome.storage.local.set(courseFormData);
+
+                    // Clear input
+                    NewCourseNumberInput.value = '';
+                    const event = new Event('input', {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    NewCourseNumberInput.dispatchEvent(event);
+
+                    addCourseLine(courseNumber, courseName);
+                    // mark last added course border as green
+                    const lastCourseLine = document.querySelector('.course_line:last-child');
+                    const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
+                    lastCourseNameInput.style.border = '2px solid var(--success-color)';
+                    lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
+                    setTimeout(() => {
+                        lastCourseNameInput.style.border = '2px solid var(--border-color)';
+                    }, 2000);
+
+                    handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
                 }
-                chrome.storage.local.set(courseFormData);
-                // Clear input
-                NewCourseNumberInput.value = '';
-                const event = new Event('input', {
-                    bubbles: true,
-                    cancelable: true,
-                });
-                NewCourseNumberInput.dispatchEvent(event);
-
-                addCourseLine(courseNumber, courseName);
-                // mark last added course border as green
-                const lastCourseLine = document.querySelector('.course_line:last-child');
-                const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
-                lastCourseNameInput.style.border = '2px solid var(--success-color)';
-                lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
-                setTimeout(() => {
-                    lastCourseNameInput.style.border = '2px solid var(--border-color)';
-                }, 2000);
-
-                handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
             } else {
                 handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', false);
+                if (storage.converting_courses) {
+                    setConvertingState(false);
+                    chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+                }
             }
         }
         else if (message.type === 'CONNECTION_ERROR') {
@@ -533,10 +964,14 @@ document.addEventListener('DOMContentLoaded', function () {
             chrome.storage.local.remove('allowCourseValidation');
             chrome.storage.local.remove('allowUserValidation');
             chrome.storage.local.remove('checkedUserDetails');
+            chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+            setConvertingState(false);
         }
         else if (message.type === 'COURSE_NOT_FOUND') {
             handleMessages('Course not found', 'הקורס לא נמצא', 'error', false);
             chrome.storage.local.remove('allowCourseValidation');
+            chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+            setConvertingState(false);
         }
         else if (message.type === 'LOGIN_FAILED') {
             handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', true);
@@ -556,6 +991,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    function updateConversionButtonsVisibility() {
+        const coursesList = document.getElementById("courses_list");
+        const conversionButtons = document.querySelector(".course_conversion_buttons");
+
+        if (coursesList && coursesList.childElementCount > 0) {
+            // Show conversion buttons if there are courses
+            conversionButtons.style.display = "flex";
+        } else {
+            // Hide conversion buttons if there are no courses
+            conversionButtons.style.display = "none";
+        }
+    }
+
     function addCourseLine(course_number, course_name) {
         // Get or create courses form
         let coursesList = document.getElementById("courses_list");
@@ -567,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create legend
             const coursesLegend = document.createElement("legend");
             coursesLegend.setAttribute('data-i18n', 'saved_courses');
-            coursesLegend.textContent = translations[document.documentElement.getAttribute('data-lang')]['saved_courses'];
+            coursesLegend.textContent = translations[displayLang]['saved_courses'];
 
             // Create form container
             coursesList = document.createElement("div");
@@ -597,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseNameElement.style.textAlign = 'center';
         courseNameElement.id = "course_name_input" + course_number;
         courseNameElement.setAttribute("aria-label", "Course name");
-        courseNameElement.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_course_name']);
+        courseNameElement.setAttribute("title", translations[displayLang]['title_course_name']);
 
         courseNameElement.addEventListener('input', function () {
             const hasValue = this.value.trim() !== '';
@@ -615,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseLabel.textContent = course_number;
         courseLabel.className = "course_label";
         courseLabel.setAttribute("aria-label", "Course number");
-        courseLabel.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_course_number_label'] + course_number);
+        courseLabel.setAttribute("title", translations[displayLang]['title_course_number_label'] + course_number);
 
         // Create edit button
         const editCourseNameButton = document.createElement("button");
@@ -623,14 +1071,41 @@ document.addEventListener('DOMContentLoaded', function () {
         editCourseNameButton.className = "edit_course_name_button";
         editCourseNameButton.id = "edit_course_name_button" + course_number;
         editCourseNameButton.style.display = 'none';
-        editCourseNameButton.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_edit_course']);
+        editCourseNameButton.setAttribute("title", translations[displayLang]['title_edit_course']);
         editCourseNameButton.addEventListener('click', function (e) {
             e.preventDefault();
             // save course name
             const course_name = document.getElementById("course_name_input" + course_number).value.trim();
-            chrome.storage.local.get(['saved_courses'], function (result) {
-                result.saved_courses[course_number] = course_name;
-                chrome.storage.local.set({ saved_courses: result.saved_courses });
+            chrome.storage.local.get(['saved_courses', 'course_name_preferred_lang'], function (result) {
+                const savedCourses = result.saved_courses || {};
+                let courseData = savedCourses[course_number];
+
+                if (typeof courseData === 'string') {
+                    // Convert old format to new format
+                    const oldLang = detectLanguage(courseData);
+                    const currentLang = result.course_name_preferred_lang || oldLang;
+                    courseData = {
+                        names: {
+                            [oldLang]: courseData,
+                            [currentLang]: course_name
+                        }
+                    };
+                } else if (courseData && courseData.names) {
+                    // Update existing course data
+                    const currentLang = result.course_name_preferred_lang || 'he';
+                    courseData.names[currentLang] = course_name;
+                } else {
+                    // Create new course data
+                    const defaultLang = result.course_name_preferred_lang || (navigator.language.startsWith('he') ? 'he' : 'en');
+                    courseData = {
+                        names: {
+                            [defaultLang]: course_name
+                        }
+                    };
+                }
+
+                savedCourses[course_number] = courseData;
+                chrome.storage.local.set({ saved_courses: savedCourses });
             });
             handleMessages('Course name saved', 'שם הקורס נשמר', null, false);
             this.style.display = 'none';
@@ -641,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', function () {
         removeCourseButton.innerHTML = removeIcon;
         removeCourseButton.className = "remove_course_button";
         removeCourseButton.id = "remove_course_button" + course_name;
-        removeCourseButton.setAttribute("title", translations[document.documentElement.getAttribute('data-lang')]['title_remove_course']);
+        removeCourseButton.setAttribute("title", translations[displayLang]['title_remove_course']);
 
         // Add remove functionality
         removeCourseButton.addEventListener('click', function (e) {
@@ -658,6 +1133,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (document.getElementById("courses_list").childElementCount === 0) {
                     document.getElementById("courses_fieldset").remove();
                 }
+                updateConversionButtonsVisibility();
             });
             // Show toast message of the removed course number
             handleMessages('Course ' + course_number + ' removed', 'הקורס ' + course_number + ' הוסר', null, false);
@@ -670,6 +1146,8 @@ document.addEventListener('DOMContentLoaded', function () {
         lineContainer.appendChild(editCourseNameButton);
         lineContainer.appendChild(removeCourseButton);
         coursesList.appendChild(lineContainer);
+
+        updateConversionButtonsVisibility();
     }
 
     // Handle enter key press on course number input
@@ -715,14 +1193,73 @@ document.addEventListener('DOMContentLoaded', function () {
     const AddingCourseButtonstyle = (adding) => {
         if (adding) {
             addCourseButton.classList.add('adding_course');
-            addCourseButton.innerHTML = translations[document.documentElement.getAttribute('data-lang')]['adding_course_button'];
+            addCourseButton.innerHTML = translations[displayLang]['adding_course_button'];
         } else {
             addCourseButton.classList.remove('adding_course');
-            addCourseButton.textContent = translations[document.documentElement.getAttribute('data-lang')]['add_course_button'];
+            addCourseButton.textContent = translations[displayLang]['add_course_button'];
+        }
+    }
+
+    // Handle course conversion process
+    async function handleCourseConversion(courseNumber, courseName, lang, storage) {
+        try {
+            const result = await chrome.storage.local.get(['saved_courses']);
+            const savedCourses = result.saved_courses || {};
+
+            if (savedCourses[courseNumber]) {
+                let courseData;
+                courseData = { ...savedCourses[courseNumber] };
+                courseData.names[lang] = courseName;
+
+                // Update saved courses
+                savedCourses[courseNumber] = courseData;
+                await chrome.storage.local.set({ saved_courses: savedCourses });
+
+                // Update UI
+                const courseInput = document.getElementById(`course_name_input${courseNumber}`);
+                if (courseInput) {
+                    const preferredLang = storage.course_name_preferred_lang || lang;
+                    courseInput.value = courseData.names[preferredLang] || courseName;
+                }
+            }
+
+            // Update conversion progress
+            let convertedCount = (storage.converted_courses || 0) + 1;
+            await chrome.storage.local.set({ converted_courses: convertedCount });
+
+            // Check if all courses are converted
+            if (convertedCount >= storage.total_courses_to_convert) {
+                handleMessages(
+                    "Course names converted successfully",
+                    "שמות הקורסים הומרו בהצלחה",
+                    null,
+                    false
+                );
+                await chrome.storage.local.set({course_name_preferred_lang: lang});
+                setConvertingState(false);
+                chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+            }
+        } catch (error) {
+            console.error('Error in handleCourseConversion:', error);
+            handleMessages(
+                "Failed to convert course names",
+                "המרת שמות הקורסים נכשלה",
+                'error',
+                false
+            );
+            setConvertingState(false);
+            chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses', 'allowCourseValidation']);
         }
     }
 
 });
+
+// Detect language of course name
+function detectLanguage(text) {
+    // Simple Hebrew detection - if the text contains Hebrew characters
+    const hebrewRegex = /[\u0590-\u05FF]/;
+    return hebrewRegex.test(text) ? 'he' : 'en';
+}
 
 // Open BGU tab
 async function openBGU4U22Tab() {
@@ -740,14 +1277,14 @@ async function openBGU4U22Tab() {
     }
 }
 
-async function openBGU4UTab(courseNumber) {
+async function openBGU4UTab(courseNumber, lang = 'he') {
     try {
         const ex_department = courseNumber.substring(0, 3);
         const ex_degree_level = courseNumber[4];
         const ex_course = courseNumber.substring(6, 10);
         // Create new tab
         const tab = await chrome.tabs.create({
-            url: "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=he&step=999&ex_department="
+            url: "https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=" + lang + "&step=999&ex_department="
                 + ex_department + "&ex_degree_level=" + ex_degree_level + "&ex_institution=0&ex_course=" + ex_course,
             active: false,
         });

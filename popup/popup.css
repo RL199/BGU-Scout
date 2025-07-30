@@ -40,6 +40,47 @@
     --export-button-end-color: #388e3c;
 }
 
+/* Dynamic color support - will be overridden by JavaScript */
+[data-color="blue"] {
+    --h1-color: #2196f3;
+    --button-bg: #2196f3;
+    --button-start-color: #2196f3;
+    --button-end-color: #64b5f6;
+    --other-color: #42a5f5;
+}
+
+[data-color="green"] {
+    --h1-color: #4caf50;
+    --button-bg: #4caf50;
+    --button-start-color: #4caf50;
+    --button-end-color: #81c784;
+    --other-color: #66bb6a;
+}
+
+[data-color="red"] {
+    --h1-color: #f44336;
+    --button-bg: #f44336;
+    --button-start-color: #f44336;
+    --button-end-color: #ef5350;
+    --other-color: #e57373;
+}
+
+[data-color="purple"] {
+    --h1-color: #9c27b0;
+    --button-bg: #9c27b0;
+    --button-start-color: #9c27b0;
+    --button-end-color: #ba68c8;
+    --other-color: #ab47bc;
+}
+
+[data-color="pink"] {
+    --h1-color: #e91e63;
+    --button-bg: #e91e63;
+    --button-start-color: #e91e63;
+    --button-end-color: #f06292;
+    --other-color: #ec407a;
+}
+
 [lang="he"] {
     direction: rtl;
     text-align: right;
@@ -132,44 +173,6 @@ input[type="number"] {
     font-size: 14px;
 }
 
-.radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.radio-option {
-    position: relative;
-}
-
-.radio-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.radio-option label {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 30px;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 14px;
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
-    color: var(--text-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.radio-option input[type="radio"]:checked+label {
-    background-color: var(--button-bg);
-    border-color: var(--button-bg);
-    color: var(--button-text);
-}
-
 select {
     width: 100%;
     padding: 8px;
@@ -205,8 +208,7 @@ select:focus {
 
 input:hover,
 select:hover,
-button:hover,
-.radio-option label:hover {
+button:hover {
     opacity: 0.9;
     filter: brightness(98%);
     transition: all 0.3s ease;
@@ -268,10 +270,24 @@ select:hover {
     row-gap: 0;
     column-gap: 10px;
     margin-bottom: 0;
+    flex-direction: column;
 }
 
-.year_container {
-    width: 34%;
+.multiple_graphs_container {
+    display: flex;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.year_range {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.start_year_container,
+.end_year_container {
+    width: 48%;
 }
 
 #open_graph:hover {
@@ -302,14 +318,10 @@ select:hover {
     color: var(--other-color);
 }
 
-#year.missing,
 #start_year.missing,
 #end_year.missing,
-#semester_radio.missing,
 #semester_checkbox.missing,
-#exam_radio.missing,
 #exam_checkbox.missing,
-#quiz_radio.missing,
 #quiz_checkbox.missing,
 #course_number.missing {
     border: 1px solid var(--error-color);
@@ -374,121 +386,6 @@ select:hover {
     }
 }
 
-.toggle_switch {
-    position: relative;
-    width: 52px;
-    height: 30px;
-    cursor: pointer;
-}
-
-.toggle_switch input {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    cursor: pointer;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--input-border);
-    transition: .4s;
-    border-radius: 34px;
-    box-shadow: 0 0 10px var(--input-border);
-    z-index: 1;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px;
-    background-color: #ffffff;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked+.slider {
-    background-color: var(--button-bg);
-    box-shadow: 0 0 10px var(--button-bg);
-}
-
-input:checked+.slider:before {
-    transform: translateX(22px);
-}
-
-.switch {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--input-border);
-    border-top: 1px solid var(--input-border);
-}
-
-.switch_label {
-    flex: 1;
-}
-
-.switch_label {
-    margin-bottom: 0;
-}
-
-.switch_description {
-    color: var(--sub-label-color);
-    font-size: 13px;
-    margin-top: 2px;
-    margin-bottom: 0;
-}
-
-.switch_description a {
-    color: inherit;
-    text-decoration: underline;
-}
-
-.switch_description a:visited {
-    color: inherit;
-}
-
-.switch_description a:hover {
-    color: var(--button-bg);
-}
-
-.multiple_graphs_container {
-    display: none;
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.multiple_graphs.switch {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-}
-
-.year_range {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.start_year_container,
-.end_year_container {
-    width: 48%;
-}
-
 .checkbox-group {
     display: flex;
     flex-wrap: wrap;
@@ -526,16 +423,6 @@ input:checked+.slider:before {
     background-color: var(--button-bg);
     border-color: var(--button-bg);
     color: var(--button-text);
-}
-
-#semester_checkbox,
-#exam_checkbox,
-#quiz_checkbox {
-    display: none;
-}
-
-#year_semester_container.split {
-    flex-wrap: wrap;
 }
 
 .header-container {

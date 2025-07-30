@@ -31,6 +31,35 @@
                     <option value="en" title="Change language to English">English</option>
                 </select>
             </div>
+            <div class="form_group">
+                <label for="color_palette" data-i18n="color_palette"></label>
+                <div class="color_palette_container">
+                    <div class="color_option" data-color="#f7941e" title="Orange">
+                        <div class="color_preview orange"></div>
+                        <span data-i18n="orange">Orange</span>
+                    </div>
+                    <div class="color_option" data-color="#2196f3" title="Blue">
+                        <div class="color_preview blue"></div>
+                        <span data-i18n="blue">Blue</span>
+                    </div>
+                    <div class="color_option" data-color="#4caf50" title="Green">
+                        <div class="color_preview green"></div>
+                        <span data-i18n="green">Green</span>
+                    </div>
+                    <div class="color_option" data-color="#f44336" title="Red">
+                        <div class="color_preview red"></div>
+                        <span data-i18n="red">Red</span>
+                    </div>
+                    <div class="color_option" data-color="#9c27b0" title="Purple">
+                        <div class="color_preview purple"></div>
+                        <span data-i18n="purple">Purple</span>
+                    </div>
+                    <div class="color_option" data-color="#e91e63" title="Pink">
+                        <div class="color_preview pink"></div>
+                        <span data-i18n="pink">Pink</span>
+                    </div>
+                </div>
+            </div>
             <div class="form_group switch">
                 <div class="switch_label">
                     <label class="switch_label" for="enable_departmental_details"
@@ -99,6 +128,12 @@
                 </div>
             </div>
             <form id="courses_list"></form>
+            <div class="course_conversion_buttons">
+                <button type="button" id="convert_to_hebrew" data-i18n="convert_to_hebrew" aria-label="Convert to Hebrew"
+                    title="Convert all course names to Hebrew">עברית</button>
+                <button type="button" id="convert_to_english" data-i18n="convert_to_english" aria-label="Convert to English"
+                    title="Convert all course names to English">English</button>
+            </div>
         </form>
     </div>
     <div id="toast" class="toast" data-i18n="toast_message"></div>

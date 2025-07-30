@@ -24,24 +24,8 @@
             <button type="button" id="open_options" data-i18n="options">Options</button>
             <button type="button" id="open_login" data-i18n="login">Login</button>
         </div>
-        <div class="multiple_graphs switch" id="multiple_graphs_switch">
-            <div class="switch_label">
-                <label class="switch_label" for="enable_multiple_graphs" data-i18n="enable_multiple_graphs"></label>
-                <label data-i18n="enable_multiple_graphs_description" id="enable_multiple_graphs_description"
-                    class="switch_description"></label>
-            </div>
-            <div class="toggle_switch">
-                <input type="checkbox" id="enable_multiple_graphs" name="enable_multiple_graphs"
-                    aria-label="Enable multiple graphs" role="switch" aria-checked="false">
-                <span class="slider" aria-hidden="true"></span>
-            </div>
-        </div>
         <form id="popup_form">
             <div class="form-group year_semester_container">
-                <div class="form-group year_container single_year">
-                    <label for="year" data-i18n="year">Year:</label>
-                    <input type="number" min="1970" max="2025" id="year">
-                </div>
                 <div class="form-group multiple_graphs_container">
                     <div class="year_range">
                         <div class="form-group start_year_container">
@@ -55,21 +39,7 @@
                     </div>
                 </div>
                 <div class="form-group semester_container">
-                    <label data-i18n="semester">Semester:</label>
-                    <div class="radio-group" id="semester_radio">
-                        <div class="radio-option">
-                            <input type="radio" id="first_semester_radio" name="semester_radio" value="1">
-                            <label for="first_semester_radio" data-i18n="first_semester">Fall</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" id="second_semester_radio" name="semester_radio" value="2">
-                            <label for="second_semester_radio" data-i18n="second_semester">Spring</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" id="third_semester_radio" name="semester_radio" value="3">
-                            <label for="third_semester_radio" data-i18n="third_semester">Summer</label>
-                        </div>
-                    </div>
+                    <label data-i18n="semesters">Semesters:</label>
                     <div class="checkbox-group" id="semester_checkbox">
                         <div class="checkbox-option">
                             <input type="checkbox" id="first_semester" name="semester" value="1">
@@ -87,29 +57,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label data-i18n="exam_number">Exam Number:</label>
-                <div class="radio-group" id="exam_radio">
-                    <div class="radio-option">
-                        <input type="radio" id="first_exam_radio" name="exam_quiz_radio" value="1">
-                        <label for="first_exam_radio">1</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="second_exam_radio" name="exam_quiz_radio" value="2">
-                        <label for="second_exam_radio">2</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="third_exam_radio" name="exam_quiz_radio" value="3">
-                        <label for="third_exam_radio">3</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="fourth_exam_radio" name="exam_quiz_radio" value="4">
-                        <label for="fourth_exam_radio">4</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="total_exam_radio" name="exam_quiz_radio" value="5">
-                        <label for="total_exam_radio" data-i18n="total_exam">Total</label>
-                    </div>
-                </div>
+                <label data-i18n="exam_numbers">Exam Numbers:</label>
                 <div class="checkbox-group" id="exam_checkbox">
                     <div class="checkbox-option">
                         <input type="checkbox" id="first_exam" name="exam" value="1">
@@ -134,25 +82,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label data-i18n="quiz_number">Quiz Number:</label>
-                <div class="radio-group" id="quiz_radio">
-                    <div class="radio-option">
-                        <input type="radio" id="first_quiz_radio" name="exam_quiz_radio" value="11">
-                        <label for="first_quiz_radio">1</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="second_quiz_radio" name="exam_quiz_radio" value="12">
-                        <label for="second_quiz_radio">2</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="third_quiz_radio" name="exam_quiz_radio" value="13">
-                        <label for="third_quiz_radio">3</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="fourth_quiz_radio" name="exam_quiz_radio" value="14">
-                        <label for="fourth_quiz_radio">4</label>
-                    </div>
-                </div>
+                <label data-i18n="quiz_numbers">Quiz Numbers:</label>
                 <div class="checkbox-group" id="quiz_checkbox">
                     <div class="checkbox-option">
                         <input type="checkbox" id="first_quiz" name="quiz" value="11">
@@ -209,7 +139,7 @@
                 </div>
                 <div class="links-section">
                     <div class="links-grid">
-                        <a href="https://www.linkedin.com/in/roy-levi-018779215/" target="_blank" class="link-item"
+                        <a href="https://www.linkedin.com/in/roy-levi-018779215/" target="_blank" rel="noopener noreferrer" class="link-item"
                             title="LinkedIn Profile">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                                 <path
@@ -217,7 +147,7 @@
                             </svg>
                             <span data-i18n="linkedin">LinkedIn</span>
                         </a>
-                        <a href="https://github.com/RL199/BGU-Scout" target="_blank" class="link-item"
+                        <a href="https://github.com/RL199/BGU-Scout" target="_blank" rel="noopener noreferrer" class="link-item"
                             title="GitHub Repository">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                                 <path

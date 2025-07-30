@@ -37,6 +37,53 @@
     ::-ms-reveal {
         filter: invert(100%);
     }
+
+    input:hover,
+    select:hover,
+    .color_option:hover {
+        box-shadow: 0 0px 8px rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Dynamic color support - will be overridden by JavaScript */
+[data-color="blue"] {
+    --h1-color: #2196f3;
+    --button-bg: #2196f3;
+    --button-start-color: #2196f3;
+    --button-end-color: #64b5f6;
+    --other-color: #42a5f5;
+}
+
+[data-color="green"] {
+    --h1-color: #4caf50;
+    --button-bg: #4caf50;
+    --button-start-color: #4caf50;
+    --button-end-color: #81c784;
+    --other-color: #66bb6a;
+}
+
+[data-color="red"] {
+    --h1-color: #f44336;
+    --button-bg: #f44336;
+    --button-start-color: #f44336;
+    --button-end-color: #ef5350;
+    --other-color: #e57373;
+}
+
+[data-color="purple"] {
+    --h1-color: #9c27b0;
+    --button-bg: #9c27b0;
+    --button-start-color: #9c27b0;
+    --button-end-color: #ba68c8;
+    --other-color: #ab47bc;
+}
+
+[data-color="pink"] {
+    --h1-color: #e91e63;
+    --button-bg: #e91e63;
+    --button-start-color: #e91e63;
+    --button-end-color: #f06292;
+    --other-color: #ec407a;
 }
 
 [data-lang="he"] {
@@ -143,7 +190,7 @@ label {
     margin-bottom: 0.5rem;
 }
 
-input {
+input, select {
     font-size: medium;
     width: 100%;
     padding: 0.5rem;
@@ -153,22 +200,11 @@ input {
     color: var(--text-color);
     box-sizing: border-box;
     height: 36px;
+    transition: all 0.3s ease;
 }
 
 .error {
     border-color: var(--error-color);
-}
-
-select {
-    font-size: medium;
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--input-border);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    box-sizing: border-box;
-    height: 36px;
 }
 
 input:focus,
@@ -179,8 +215,7 @@ select:focus {
 
 input:hover,
 select:hover {
-    opacity: 0.9;
-    filter: brightness(99%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 select:hover {
@@ -291,6 +326,54 @@ select:hover {
     align-items: center;
     gap: 0.3rem;
     margin-bottom: 1rem;
+}
+
+.course_conversion_buttons {
+    display: none; /* Initially hidden, shown by JavaScript when courses exist */
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+#convert_to_hebrew,
+#convert_to_english {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: opacity 0.3s, transform 0.1s;
+}
+
+#convert_to_hebrew:hover,
+#convert_to_english:hover {
+    opacity: 0.9;
+}
+
+#convert_to_hebrew:active,
+#convert_to_english:active {
+    transform: scale(0.95);
+}
+
+#convert_to_hebrew:disabled,
+#convert_to_english:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.converting {
+    opacity: 0.6;
+    cursor: not-allowed;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.8; }
 }
 
 #saved_courses_label {
@@ -465,4 +548,76 @@ input:checked+.slider:before {
 
 .switch_description {
     margin-bottom: 0;
+}
+
+/* Color palette styles */
+.color_palette_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.color_option {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 8px;
+}
+
+.color_option:hover {
+    /* border-color: var(--button-bg); */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color_option.selected {
+    border-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
+    /* color: var(--button-text); */
+}
+
+.color_option.selected:hover {
+    border-color: var(--button-bg);
+}
+
+.color_preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.color_preview.orange {
+    background-color: #f7941e;
+}
+
+.color_preview.blue {
+    background-color: #2196f3;
+}
+
+.color_preview.green {
+    background-color: #4caf50;
+}
+
+.color_preview.red {
+    background-color: #f44336;
+}
+
+.color_preview.purple {
+    background-color: #9c27b0;
+}
+
+.color_preview.pink {
+    background-color: #e91e63;
+}
+
+.color_option span {
+    font-size: 14px;
+    font-weight: 500;
 }

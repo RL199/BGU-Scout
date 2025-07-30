@@ -1,2 +1,4 @@
-/.vscode/
-/.idea/
+# IDE folders
+.vscode/
+.idea/
+.hintrc

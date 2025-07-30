@@ -1,9 +1,6 @@
-# <div align="center"><img src="images\icon-48.png" alt="BGU Scout Icon"> BGU Scout Extension</div>
+# <div align="center"><img src="images\icon-48.png" alt="BGU Scout Icon"> BGU Scout</div>
 
 <div align="center">
-  <a href="https://github.com/RL199/BGU-Scout?tab=MIT-1-ov-file">
-    <img src="https://img.shields.io/github/license/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="license">
-  </a>
   <a href="https://github.com/RL199/BGU-Scout/issues">
     <img src="https://img.shields.io/github/issues/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="issues">
   </a>
@@ -29,7 +26,7 @@
 
 ## 📚 Table of Contents
 
-- [ BGU Scout Extension](#-bgu-scout-extension)
+- [ BGU Scout](#-bgu-scout)
   - [📚 Table of Contents](#-table-of-contents)
   - [📖 Project Overview](#-project-overview)
   - [🎯 Features](#-features)
@@ -50,7 +47,6 @@
     - [Permissions](#permissions)
   - [👥 Contributing](#-contributing)
   - [📝 License](#-license)
-  - [🔍 Browser Support](#-browser-support)
   - [❓ FAQs](#-faqs)
     - [How do I install the extension?](#how-do-i-install-the-extension)
     - [Can I use this extension on other browsers?](#can-i-use-this-extension-on-other-browsers)
@@ -64,6 +60,8 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 - **Course Statistics Visualization**: Generate graphical representations of course statistics and grades.
 - **Dark/Light Mode Support**: Automatic theme switching based on system preferences or manual selection.
+- **Color Scheme Options**: Choose from multiple color themes including Blue, Green, Pink, and Purple.
+- **Multiple Course Displays**: View multiple course distributions simultaneously with enhanced capabilities.
 - **Bilingual Support**: Full Hebrew and English language support.
 - **Course Management**: Save and manage multiple courses for quick access.
 - **Quick Access**: Direct links to BGU's login portal and grade system.
@@ -91,6 +89,7 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 2. Click "Options" to configure:
    - Username, Password and ID number (BGU credentials)
    - Theme preference (Light/Dark/System)
+   - Color scheme options (Blue, Green, Pink, Purple)
    - Language preference (English/Hebrew/System)
    - Moodle Auto-Add Courses (On/Off)
    - Course numbers and names
@@ -102,10 +101,10 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 ### Generating Course Statistics
 
 1. Open the extension popup.
-2. Enter the desired year.
-3. Choose the desired semester and Exam/Quiz number.
+2. Enter the desired year span.
+3. Choose the desired semesters and Exam/Quiz numbers.
 4. Select the course name from the dropdown list.
-5. Click the "Graph" icon and wait for the data to load.
+5. Click the "Display" icon and wait for the data to load.
 6. Enjoy the graphical representation of the course statistics.
 
 ## 📸 Screenshots
@@ -133,8 +132,9 @@ Configure your extension settings and customize your experience with ease.
 - CSS3 with CSS Variables for theming
 - Vanilla JavaScript
 - Chrome Extension APIs
-  - Storage API
-  - Tabs API
+  - Storage
+  - Tabs
+  - Content Scripts
 
 ### Features Implementation
 
@@ -146,12 +146,13 @@ Configure your extension settings and customize your experience with ease.
 
 ## 🗺️ Roadmap
 
-- [X]  Improve security and privacy features.
+- [X] Improve security and privacy features.
 - [X] Add support for more devices and screen sizes.
+- [X] Add support for multiple course displays.
+- [X] Add more customization options (color schemes).
 - [ ] Improve error handling and user feedback.
 - [ ] Add support for searching courses by name.
 - [ ] Improve user experience and accessibility.
-- [ ] Add more customization options.
 - [ ] Add support for more BGU systems and services.
 - [ ] Add support for more browsers and platforms.
 - [ ] Add support for more data formats and standards.
@@ -178,11 +179,6 @@ Feel free to open issues and submit pull requests. Please ensure your code follo
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🔍 Browser Support
-
-- Chrome: Latest version
-- Chromium-based browsers (Edge, Opera, etc.): Latest versions
 
 ## ❓ FAQs
 
