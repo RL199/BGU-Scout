@@ -47,10 +47,10 @@ jobs:
             found && /^## \[/ && !/^## \[$VERSION\]/ {
               exit
             }
-            found {
+            found && NF > 0 {
               print
             }
-          " CHANGELOG.md | sed '/^$/d' | head -n -1)
+          " CHANGELOG.md)
 
           # If no specific version found, use Unreleased section
           if [ -z "$CHANGELOG_CONTENT" ]; then
@@ -62,10 +62,10 @@ jobs:
               found && /^## \[/ {
                 exit
               }
-              found {
+              found && NF > 0 {
                 print
               }
-            " CHANGELOG.md | sed '/^$/d')
+            " CHANGELOG.md)
           fi
 
           # If still empty, use a default message
