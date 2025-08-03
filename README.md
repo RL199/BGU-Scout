@@ -192,7 +192,7 @@ The extension is primarily designed for Chrome and Chromium-based browsers.
 
 ## 📞 Contact
 
-For any inquiries, please contact [roy3@post.bgu.ac.il](mailto:roy3@post.bgu.ac.il).
+For any inquiries, please contact [thisisjustadeveloper@gmail.com](mailto:thisisjustadeveloper@gmail.com).
 
 ---
 
