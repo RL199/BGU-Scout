@@ -10,11 +10,14 @@
   <a href="https://github.com/RL199/BGU-Scout/releases">
     <img src="https://img.shields.io/github/v/release/RL199/BGU-Scout?style=for-the-badge&include_prereleases&color=f7941e" alt="release">
   </a>
-  <a href="https://github.com/RL199/BGU-Scout">
-    <img src="https://img.shields.io/github/repo-size/RL199/BGU-Scout?style=for-the-badge&color=f7941e" alt="repo size">
-  </a>
   <a href="https://github.com/RL199/BGU-Scout/releases">
     <img src="https://img.shields.io/github/downloads/RL199/BGU-Scout/total?style=for-the-badge&color=f7941e" alt="downloads">
+  </a>
+</div>
+
+<div align="center">
+  <a href="https://chromewebstore.google.com/detail/bgu-scout/fdigilamlkldgalnpjmohgefpaoghhmh">
+    <img src="https://img.shields.io/badge/Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Chrome Web Store">
   </a>
 </div>
 
@@ -32,7 +35,8 @@
   - [🎯 Features](#-features)
   - [⚙️ Installation](#️-installation)
     - [Prerequisites](#prerequisites)
-    - [Steps](#steps)
+    - [Option 1: Chrome Web Store (Recommended)](#option-1-chrome-web-store-recommended)
+    - [Option 2: Manual Installation (Developer Mode)](#option-2-manual-installation-developer-mode)
   - [🔧 Configuration](#-configuration)
   - [📊 Usage](#-usage)
     - [Generating Course Statistics](#generating-course-statistics)
@@ -74,7 +78,13 @@ BGU Scout is a Chrome extension designed to assist Ben-Gurion University student
 
 - Google Chrome or a Chromium-based browser, such as Edge or Opera.
 
-### Steps
+### Option 1: Chrome Web Store (Recommended)
+
+1. Visit the [BGU Scout extension page](https://chromewebstore.google.com/detail/bgu-scout/fdigilamlkldgalnpjmohgefpaoghhmh) on the Chrome Web Store.
+2. Click "Add to Chrome" to install the extension.
+3. The extension icon will appear in your Chrome toolbar.
+
+### Option 2: Manual Installation (Developer Mode)
 
 1. Clone the repository or download the ZIP file from the [latest release](https://github.com/RL199/BGU-Scout/releases/latest/download/BGU.Scout.zip)
 2. Extract the ZIP file to a directory on your computer.
@@ -184,7 +194,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ### How do I install the extension?
 
-Follow the [Installation](#️-installation) section above.
+You can install the extension directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/bgu-scout/fdigilamlkldgalnpjmohgefpaoghhmh) or follow the manual installation steps in the [Installation](#️-installation) section above.
 
 ### Can I use this extension on other browsers?
 
@@ -192,7 +202,7 @@ The extension is primarily designed for Chrome and Chromium-based browsers.
 
 ## 📞 Contact
 
-For any inquiries, please contact [roy3@post.bgu.ac.il](mailto:roy3@post.bgu.ac.il).
+For any inquiries, please contact [thisisjustadeveloper@gmail.com](mailto:thisisjustadeveloper@gmail.com).
 
 ---
 
