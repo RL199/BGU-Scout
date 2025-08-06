@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const courseSelect = document.getElementById("course_number");
     const startYearInput = document.getElementById("start_year");
     const endYearInput = document.getElementById("end_year");
+    const mainContainer = document.querySelector(".container");
 
     // Multiple selection elements (checkboxes)
     const semesterCheckboxContainer = document.getElementById("semester_checkbox");
@@ -1175,6 +1176,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // About modal functionality
     aboutBtn.addEventListener("click", function () {
+        mainContainer.classList.add("about_modal");
         aboutModal.style.display = "block";
         document.body.style.overflow = "hidden"; // Prevent background scrolling
     });
@@ -1193,6 +1195,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function closeAboutModal() {
         aboutModal.style.display = "none";
         document.body.style.overflow = ""; // Restore scrolling
+        mainContainer.classList.remove("about_modal");
     }
 });
 

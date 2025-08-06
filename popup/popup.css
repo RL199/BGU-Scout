@@ -102,6 +102,11 @@ body {
     padding: 12px;
     padding-top: 8px;
     padding-bottom: 8px;
+    min-height:max-content;
+}
+
+.about_modal {
+    min-height: 350px;
 }
 
 h1 {
