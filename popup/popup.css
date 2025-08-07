@@ -102,7 +102,7 @@ body {
     padding: 12px;
     padding-top: 8px;
     padding-bottom: 8px;
-    min-height:max-content;
+    min-height: max-content;
 }
 
 .about_modal {
@@ -167,17 +167,7 @@ label {
 }
 
 input[type="text"],
-input[type="number"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--input-border);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    box-sizing: border-box;
-    font-size: 14px;
-}
-
+input[type="number"],
 select {
     width: 100%;
     padding: 8px;
@@ -187,10 +177,12 @@ select {
     color: var(--text-color);
     box-sizing: border-box;
     font-size: 14px;
+    transition: all 0.3s ease;
 }
 
 input[type="radio"] {
     margin: 0;
+    transition: all 0.3s ease;
 }
 
 input[type="radio"]+label {
@@ -213,7 +205,8 @@ select:focus {
 
 input:hover,
 select:hover,
-button:hover {
+button:hover,
+.link-item:hover {
     opacity: 0.9;
     filter: brightness(98%);
     transition: all 0.3s ease;
@@ -636,11 +629,6 @@ select:hover {
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-}
-
-.link-item:hover {
-    opacity: 0.9;
-    filter: brightness(98%);
 }
 
 .link-item:active {
