@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const quizCheckboxes = document.querySelectorAll('input[name="quiz"]');
 
     const courseInput = document.getElementById("course_number");
+    const courseFileBtn = document.getElementById("course_file_btn");
     const messageElement = document.getElementById("message");
     const aboutBtn = document.getElementById("about_btn");
     const aboutModal = document.getElementById("about_modal");
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const translations = {
         en: {
             loading: "Loading",
-            year: "Year:",
+            year_span: "Year Span:",
             semesters: "Semesters:",
             options: "Options",
             login: "BGU Site",
@@ -92,8 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
             select_course: "Select Course or add more in options page",
             no_user_message: "Please fill your user details in the options page.",
             no_course_message: "Please add course in the options page.",
-            start_year: "Year:",
-            end_year: "To Year:",
             exam_type: "Exam Type:",
             average: "Average",
             median: "Median",
@@ -110,10 +109,13 @@ document.addEventListener("DOMContentLoaded", function () {
             chrome_store: "Chrome Store",
             linkedin: "LinkedIn",
             github: "GitHub",
+            course_file: "Course File",
+            course_file_tooltip: "Course File",
+            course_file_error: "Error loading course file"
         },
         he: {
             loading: "טוען",
-            year: "שנה:",
+            year_span: "טווח שנים:",
             semesters: "סמסטרים:",
             options: "אפשרויות",
             login: "אתר בנ\"ג",
@@ -129,8 +131,6 @@ document.addEventListener("DOMContentLoaded", function () {
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
             no_user_message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
             no_course_message: "אנא הוסף קורס בדף האפשרויות.",
-            start_year: "משנה:",
-            end_year: "לשנה:",
             exam_type: "סוג בחינה:",
             average: "ממוצע",
             median: "חציון",
@@ -147,6 +147,9 @@ document.addEventListener("DOMContentLoaded", function () {
             chrome_store: "חנות כרום",
             linkedin: "לינקדאין",
             github: "גיטהאב",
+            course_file: "קובץ קורס",
+            course_file_tooltip: "קובץ הקורס",
+            course_file_error: "שגיאה בטעינת קובץ הקורס"
         },
     };
 
@@ -199,6 +202,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             else if (key === 'export') {
                 el.innerHTML = excelIcon + text;
+            }
+        });
+
+        // Handle title attributes for tooltips
+        const titleElements = document.querySelectorAll('[data-i18n-title]');
+        titleElements.forEach(el => {
+            const key = el.getAttribute('data-i18n-title');
+            const text = translations[lang][key];
+            if (text) {
+                el.setAttribute('title', text);
+                el.setAttribute('aria-label', text);
             }
         });
     }
@@ -587,8 +601,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let years, semesters, examTypes;
 
+            // Ensure years are in correct order (min to max)
+            const minYear = Math.min(start_year, end_year);
+            const maxYear = Math.max(start_year, end_year);
+
             years = (start_year && end_year) ?
-                Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
+                Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i) : null;
 
             // Get semester values
             semesters = selected_semesters && selected_semesters.length > 0 ?
@@ -696,8 +714,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const enable_departmental_details = (await getStorageData("enable_departmental_details")).enable_departmental_details;
         // Get selected values for the report
         let years, semesters, examTypes;
+
+        // Ensure years are in correct order (min to max)
+        const minYear = Math.min(start_year, end_year);
+        const maxYear = Math.max(start_year, end_year);
+
         years = (start_year && end_year) ?
-            Array.from({ length: end_year - start_year + 1 }, (_, i) => parseInt(start_year) + i) : null;
+            Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i) : null;
         semesters = selected_semesters && selected_semesters.length > 0 ?
             selected_semesters : null;
         examTypes = [];
@@ -974,15 +997,10 @@ document.addEventListener("DOMContentLoaded", function () {
             return false;
         }
 
-        // Validate start year <= end year
-        if (startYear > endYear) {
-            sendMessage("Please select valid year span.", "אנא בחר טווח שנים תקף.", "error");
-            startYearInput.classList.add("missing");
-            endYearInput.classList.add("missing");
-            return false;
-        }
+        const minYear = Math.min(startYear, endYear);
+        const maxYear = Math.max(startYear, endYear);
 
-        const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+        const years = Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i);
 
         // Get semester values
         const semesters = Array.from(document.querySelectorAll('input[name="semester"]:checked'))
@@ -1136,6 +1154,42 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.runtime.openOptionsPage();
     });
 
+    // Open course file page
+    courseFileBtn.addEventListener("click", async function () {
+        const selectedCourse = courseInput.value;
+        if (!selectedCourse) {
+            sendMessage(translations[lang]?.no_course_message || translations.en.no_course_message,
+                       translations[lang]?.no_course_message || translations.en.no_course_message, 'error');
+            return;
+        }
+
+        try {
+            // Validate course format (should be like "XX.X.XXXX")
+            if (selectedCourse.length < 10 || selectedCourse[3] !== '.' || selectedCourse[5] !== '.') {
+                console.error("Invalid course format:", selectedCourse);
+                return;
+            }
+
+            // Parse course number
+            const ex_department = selectedCourse.substring(0, 3);
+            const ex_degree_level = selectedCourse[4];
+            const ex_course = selectedCourse.substring(6, 10);
+
+            // Get current language for URL
+            const currentLang = lang === 'he' ? 'he' : 'en';
+
+            // Construct URL using the same format as in options.js
+            const url = `https://bgu4u.bgu.ac.il/pls/scwp/!app.ann?lang=${currentLang}&step=999&ex_department=${ex_department}&ex_degree_level=${ex_degree_level}&ex_institution=0&ex_course=${ex_course}`;
+
+            // Open URL in new tab
+            chrome.tabs.create({ url: url });
+        } catch (error) {
+            console.error("Error opening course file:", error);
+            sendMessage(translations[lang]?.course_file_error || translations.en.course_file_error,
+                        translations[lang]?.course_file_error || translations.en.course_file_error, 'error');
+        }
+    });
+
     // Mouse-tracking gradient effect function
     function applyMouseTrackingGradient(e, element, startColor, endColor) {
         const rect = element.getBoundingClientRect();
@@ -1149,6 +1203,18 @@ document.addEventListener("DOMContentLoaded", function () {
         // Update the gradient based on mouse position
         element.style.backgroundImage = `radial-gradient(circle at ${percentX * 100}% ${percentY * 100}%, ${endColor}, ${startColor})`;
     }
+
+    // Add mouse-tracking effect to the course file button
+    courseFileBtn.addEventListener('mousemove', (e) => {
+        applyMouseTrackingGradient(e, courseFileBtn,
+            getComputedStyle(document.documentElement).getPropertyValue('--button-start-color').trim(),
+            getComputedStyle(document.documentElement).getPropertyValue('--button-end-color').trim()
+        );
+    });
+
+    courseFileBtn.addEventListener('mouseleave', () => {
+        courseFileBtn.style.backgroundImage = '';
+    });
 
     // Add mouse-tracking effect to the display button
     displayBtn.addEventListener('mousemove', (e) => {

@@ -284,15 +284,55 @@ select:hover {
     margin-bottom: 0;
 }
 
+.year_span_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.semester_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .year_range {
     display: flex;
-    justify-content: space-between;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
+    width: 55%;
+}
+
+.year_range input {
+    flex: 1;
+}
+
+.year-hyphen {
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 16px;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .start_year_container,
 .end_year_container {
     width: 48%;
+}
+
+.course-file-btn {
+    padding: 6px 10px !important;
+    flex: 1 !important;
+    min-width: auto;
+    font-size: 17px;
+}
+
+.course-file-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--button-text);
 }
 
 #open_graph:hover {
