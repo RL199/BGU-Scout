@@ -8,7 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.1]
 
 ### Added
-- chrome web store link in about page
+- chrome web store link in "About" page
+- Course File button
+
+### Changed
+- In Popup page, year to year input changed to year span
+- Year span input support for both orders (left to right and right to left)
+
+### Fixed
+- "About" page not fully displaying on new user setup
 
 ## [1.3.0]
 
