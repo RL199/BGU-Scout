@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
             select_course: "Select Course or add more in options page",
             no_user_message: "Please fill your user details in the options page.",
             no_course_message: "Please add course in the options page.",
+            select_course_message: "Please select a course.",
             exam_type: "Exam Type:",
             average: "Average",
             median: "Median",
@@ -131,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
             no_user_message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
             no_course_message: "אנא הוסף קורס בדף האפשרויות.",
+            select_course_message: "אנא בחר קורס.",
             exam_type: "סוג בחינה:",
             average: "ממוצע",
             median: "חציון",
@@ -1158,8 +1160,9 @@ document.addEventListener("DOMContentLoaded", function () {
     courseFileBtn.addEventListener("click", async function () {
         const selectedCourse = courseInput.value;
         if (!selectedCourse) {
-            sendMessage(translations[lang]?.no_course_message || translations.en.no_course_message,
-                       translations[lang]?.no_course_message || translations.en.no_course_message, 'error');
+            sendMessage(translations.en.select_course_message,
+                        translations.he.select_course_message, 'error');
+            courseInput.classList.add("missing");
             return;
         }
 
