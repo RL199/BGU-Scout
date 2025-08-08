@@ -54,7 +54,8 @@ function validateCourseDetails() {
         });
     } else {
         chrome.runtime.sendMessage({
-            type: 'COURSE_NOT_FOUND'
+            type: 'COURSE_NOT_FOUND',
+            courseNumber: courseNumber
         });
     }
 }

@@ -835,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            if (coursesToConvert.length === 0) {
+            if (coursesToConvert.length === 0 ) {
                 const langName = targetLang === 'he' ? 'Hebrew' : 'English';
                 const langNameHe = targetLang === 'he' ? 'עברית' : 'אנגלית';
                 if (courseExists) {
@@ -896,82 +896,69 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chrome.runtime.onMessage.addListener(async function (message, sender) {
         const tabId = sender.tab.id;
+        const storage = await chrome.storage.local.get(['allowCourseValidation', 'converting_courses', 'total_courses_to_convert', 'converted_courses', 'course_name_preferred_lang']);
+        let remainingTabs = storage.allowCourseValidation || 0;
         if (message.type === 'COURSE_FOUND') {
-            // Decrease the allowCourseValidation counter
-            const storage = await chrome.storage.local.get(['allowCourseValidation', 'converting_courses', 'total_courses_to_convert', 'converted_courses', 'course_name_preferred_lang']);
-            let remainingTabs = storage.allowCourseValidation || 0;
             remainingTabs -= 1;
-
             if (remainingTabs <= 0) {
-                chrome.storage.local.remove('allowCourseValidation');
+                await chrome.storage.local.remove('allowCourseValidation');
             } else {
-                chrome.storage.local.set({ allowCourseValidation: remainingTabs });
+                await chrome.storage.local.set({ allowCourseValidation: remainingTabs });
             }
 
             if (message.courseName) {
-                courseName = message.courseName;
-                const lang = message.lang || storage.course_name_preferred_lang;
+                const courseName = message.courseName;
+                const courseNumber = message.courseNumber;
 
                 if (storage.converting_courses) {
                     // Handle course conversion
-                    await handleCourseConversion(message.courseNumber, courseName, lang, storage);
+                    await handleCourseConversion(courseNumber, courseName, storage);
                 } else {
                     // Handle regular course addition
-                    const defaultLang = storage.course_name_preferred_lang;
-                    const courseData = {
-                        names: {
-                            [defaultLang]: courseName
-                        }
-                    };
-
-                    if (!result.saved_courses) {
-                        courseFormData.saved_courses = { [courseNumber]: courseData };
-                    } else {
-                        courseFormData.saved_courses = { ...result.saved_courses, [courseNumber]: courseData };
-                    }
-                    chrome.storage.local.set(courseFormData);
-
-                    // Clear input
-                    NewCourseNumberInput.value = '';
-                    const event = new Event('input', {
-                        bubbles: true,
-                        cancelable: true,
-                    });
-                    NewCourseNumberInput.dispatchEvent(event);
-
-                    addCourseLine(courseNumber, courseName);
-                    // mark last added course border as green
-                    const lastCourseLine = document.querySelector('.course_line:last-child');
-                    const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
-                    lastCourseNameInput.style.border = '2px solid var(--success-color)';
-                    lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
-                    setTimeout(() => {
-                        lastCourseNameInput.style.border = '2px solid var(--border-color)';
-                    }, 2000);
-
-                    handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
+                    await handleCourseAddition(courseNumber, courseName, storage);
                 }
             } else {
                 handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', false);
                 if (storage.converting_courses) {
                     setConvertingState(false);
-                    chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+                    await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
                 }
             }
-        }
-        else if (message.type === 'CONNECTION_ERROR') {
+        } else if (message.type === 'COURSE_NOT_FOUND' && storage.converting_courses) {
+            remainingTabs -= 1;
+            if (remainingTabs <= 0) {
+                await chrome.storage.local.remove('allowCourseValidation');
+            } else {
+                await chrome.storage.local.set({ allowCourseValidation: remainingTabs });
+            }
+            handleMessages('Course ' + message.courseNumber + ' not found', 'הקורס ' + message.courseNumber + ' לא נמצא', 'error', false);
+
+            // Delete the course from storage
+            const removeCourseButton = document.getElementById("remove_course_button" + message.courseNumber);
+            if (removeCourseButton) {
+                removeCourseButton.click();
+            }
+
+            // Update conversion progress
+            let convertedCount = (storage.converted_courses || 0) + 1;
+            await chrome.storage.local.set({ converted_courses: convertedCount });
+
+            // Check if all courses are converted
+            if (convertedCount >= storage.total_courses_to_convert) {
+                handleMessages('All courses processed', 'כל הקורסים טופלו', null, false);
+                await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+                setConvertingState(false);
+            }
+        } else if (message.type === 'CONNECTION_ERROR') {
             handleMessages('Connection error', 'שגיאת חיבור', 'error', false);
             chrome.storage.local.remove('allowCourseValidation');
             chrome.storage.local.remove('allowUserValidation');
             chrome.storage.local.remove('checkedUserDetails');
             chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
-            setConvertingState(false);
         }
         else if (message.type === 'COURSE_NOT_FOUND') {
-            handleMessages('Course not found', 'הקורס לא נמצא', 'error', false);
+            handleMessages('Course ' + message.courseNumber + ' not found', 'הקורס ' + message.courseNumber + ' לא נמצא', 'error', false);
             chrome.storage.local.remove('allowCourseValidation');
-            chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
-            setConvertingState(false);
         }
         else if (message.type === 'LOGIN_FAILED') {
             handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', true);
@@ -1115,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const removeCourseButton = document.createElement("button");
         removeCourseButton.innerHTML = removeIcon;
         removeCourseButton.className = "remove_course_button";
-        removeCourseButton.id = "remove_course_button" + course_name;
+        removeCourseButton.id = "remove_course_button" + course_number;
         removeCourseButton.setAttribute("title", translations[displayLang]['title_remove_course']);
 
         // Add remove functionality
@@ -1200,8 +1187,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Handle course addition process
+    async function handleCourseAddition(courseNumber, courseName, storage) {
+        const defaultLang = storage.course_name_preferred_lang;
+        const courseData = {
+            names: {
+                [defaultLang]: courseName
+            }
+        };
+
+        if (!result.saved_courses) {
+            courseFormData.saved_courses = { [courseNumber]: courseData };
+        } else {
+            courseFormData.saved_courses = { ...result.saved_courses, [courseNumber]: courseData };
+        }
+        chrome.storage.local.set(courseFormData);
+
+        // Clear input
+        NewCourseNumberInput.value = '';
+        const event = new Event('input', {
+            bubbles: true,
+            cancelable: true,
+        });
+        NewCourseNumberInput.dispatchEvent(event);
+
+        addCourseLine(courseNumber, courseName);
+        // mark last added course border as green
+        const lastCourseLine = document.querySelector('.course_line:last-child');
+        const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
+        lastCourseNameInput.style.border = '2px solid var(--success-color)';
+        lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
+        setTimeout(() => {
+            lastCourseNameInput.style.border = '2px solid var(--border-color)';
+        }, 2000);
+
+        handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
+    }
+
     // Handle course conversion process
-    async function handleCourseConversion(courseNumber, courseName, lang, storage) {
+    async function handleCourseConversion(courseNumber, courseName, storage) {
         try {
             const result = await chrome.storage.local.get(['saved_courses']);
             const savedCourses = result.saved_courses || {};
@@ -1209,7 +1233,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (savedCourses[courseNumber]) {
                 let courseData;
                 courseData = { ...savedCourses[courseNumber] };
-                courseData.names[lang] = courseName;
+                courseData.names[storage.course_name_preferred_lang] = courseName;
 
                 // Update saved courses
                 savedCourses[courseNumber] = courseData;
@@ -1218,7 +1242,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update UI
                 const courseInput = document.getElementById(`course_name_input${courseNumber}`);
                 if (courseInput) {
-                    const preferredLang = storage.course_name_preferred_lang || lang;
+                    const preferredLang = storage.course_name_preferred_lang;
                     courseInput.value = courseData.names[preferredLang] || courseName;
                 }
             }
@@ -1229,15 +1253,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Check if all courses are converted
             if (convertedCount >= storage.total_courses_to_convert) {
-                handleMessages(
-                    "Course names converted successfully",
-                    "שמות הקורסים הומרו בהצלחה",
-                    null,
-                    false
-                );
-                await chrome.storage.local.set({course_name_preferred_lang: lang});
+                handleMessages('All courses processed', 'כל הקורסים טופלו', null, false);
                 setConvertingState(false);
-                chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
+                await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
             }
         } catch (error) {
             console.error('Error in handleCourseConversion:', error);
@@ -1248,7 +1266,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 false
             );
             setConvertingState(false);
-            chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses', 'allowCourseValidation']);
+            await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses', 'allowCourseValidation']);
         }
     }
 

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - "About" page not fully displaying on new user setup
+- Converting course names working properly when a course number is invalid.
 
 ## [1.3.0]
 
