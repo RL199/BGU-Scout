@@ -25,39 +25,33 @@
             <button type="button" id="open_login" data-i18n="login">Login</button>
         </div>
         <form id="popup_form">
-            <div class="form-group year_semester_container">
-                <div class="form-group multiple_graphs_container">
-                    <div class="year_range">
-                        <div class="form-group start_year_container">
-                            <label for="start_year" data-i18n="start_year">Start Year:</label>
-                            <input type="number" min="1970" max="2025" id="start_year">
-                        </div>
-                        <div class="form-group end_year_container">
-                            <label for="end_year" data-i18n="end_year">End Year:</label>
-                            <input type="number" min="1970" max="2025" id="end_year">
-                        </div>
+            <fieldset class="form-fieldset year-semester-fieldset">
+                <legend data-i18n="year_span">Year Span</legend>
+                <div class="year_range">
+                    <input type="number" min="1970" max="2025" id="start_year" aria-label="Start Year">
+                    <span class="year-hyphen">-</span>
+                    <input type="number" min="1970" max="2025" id="end_year" aria-label="End Year">
+                </div>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="semesters">Semesters</legend>
+                <div class="checkbox-group" id="semester_checkbox">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="first_semester" name="semester" value="1">
+                        <label for="first_semester" data-i18n="first_semester">Fall</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="second_semester" name="semester" value="2">
+                        <label for="second_semester" data-i18n="second_semester">Spring</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="third_semester" name="semester" value="3">
+                        <label for="third_semester" data-i18n="third_semester">Summer</label>
                     </div>
                 </div>
-                <div class="form-group semester_container">
-                    <label data-i18n="semesters">Semesters:</label>
-                    <div class="checkbox-group" id="semester_checkbox">
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="first_semester" name="semester" value="1">
-                            <label for="first_semester" data-i18n="first_semester">Fall</label>
-                        </div>
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="second_semester" name="semester" value="2">
-                            <label for="second_semester" data-i18n="second_semester">Spring</label>
-                        </div>
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="third_semester" name="semester" value="3">
-                            <label for="third_semester" data-i18n="third_semester">Summer</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label data-i18n="exam_numbers">Exam Numbers:</label>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="exam_numbers">Exam Numbers</legend>
                 <div class="checkbox-group" id="exam_checkbox">
                     <div class="checkbox-option">
                         <input type="checkbox" id="first_exam" name="exam" value="1">
@@ -80,9 +74,9 @@
                         <label for="total_exam" data-i18n="total_exam">Total</label>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label data-i18n="quiz_numbers">Quiz Numbers:</label>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="quiz_numbers">Quiz Numbers</legend>
                 <div class="checkbox-group" id="quiz_checkbox">
                     <div class="checkbox-option">
                         <input type="checkbox" id="first_quiz" name="quiz" value="11">
@@ -101,16 +95,23 @@
                         <label for="fourth_quiz">4</label>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="course_number" data-i18n="course_number">Course Number:</label>
-                <select id="course_number" name="course_number">
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="course_number">Course</legend>
+                <select id="course_number" name="course_number" aria-label="Course Selection" title="Select a course">
                     <option value="" data-i18n="select_course">Select a course</option>
                 </select>
-            </div>
+            </fieldset>
             <div class="buttons-container">
                 <button type="button" id="display_graph" data-i18n="display">Display</button>
                 <button type="button" id="export_excel" data-i18n="export">Export</button>
+                <button type="button" id="course_file_btn" class="course-file-btn" data-i18n-title="course_file_tooltip" title="Open Course File" aria-label="Open Course File">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+                        <path d="M8.646 6.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L10.293 9 8.646 7.354a.5.5 0 0 1 0-.708M7 9a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1h3A.5.5 0 0 1 7 9"/>
+                    </svg>
+                    <span data-i18n="course_file">Course File</span>
+                </button>
             </div>
         </form>
         <div id="message" data-i18n="message"></div>
@@ -139,6 +140,31 @@
                 </div>
                 <div class="links-section">
                     <div class="links-grid">
+                        <a href="https://chromewebstore.google.com/detail/bgu-scout/fdigilamlkldgalnpjmohgefpaoghhmh" target="_blank" rel="noopener noreferrer" class="link-item"
+                            title="Chrome Web Store">
+                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="16px"
+                                y="16px" viewBox="0 0 469.333 469.333" xml:space="preserve">
+                                <g>
+                                    <g>
+                                        <g>
+                                            <path d="M234.667,256c-54.53,0-103.049,25.805-134.315,65.737l50.723,87.742c7.975-38.844,42.426-68.146,83.592-68.146h147.574
+                            				C352.676,290.409,297.671,256,234.667,256z" />
+                                            <path
+                                                d="M458.667,0h-448C4.771,0,0,4.771,0,10.667v416c0,23.531,19.135,42.667,42.667,42.667h384
+                            				c23.531,0,42.667-19.135,42.667-42.667v-416C469.333,4.771,464.563,0,458.667,0z M181.333,42.667H288c17.646,0,32,14.354,32,32
+                            				s-14.354,32-32,32H181.333c-17.646,0-32-14.354-32-32S163.687,42.667,181.333,42.667z M425.292,448h-21.443
+                            				c0.88-7.076,1.484-14.201,1.484-21.333c0-22.638-4.526-44.215-12.565-64H290.509c17.919,15.654,29.491,38.393,29.491,64
+                            				c0,7.342-1.388,14.402-3.313,21.333h-22.072c2.44-6.849,4.051-13.931,4.051-21.333c0-35.292-28.708-64-64-64s-64,28.708-64,64
+                            				c0,7.406,1.608,14.488,4.047,21.333h-26.018L87.062,341.384C72.487,366.51,64,395.587,64,426.667
+                            				c0,7.133,0.604,14.258,1.484,21.333H44.042c-0.806-7.089-1.375-14.208-1.375-21.333c0-41.367,13.284-79.618,35.625-110.999
+                            				c0.458-0.831,1.01-1.564,1.689-2.258c34.974-47.634,91.199-78.743,154.686-78.743c77.263,0,143.845,45.978,174.275,111.923
+                            				c0.41,0.677,0.767,1.348,1.02,2.113c10.654,23.854,16.706,50.195,16.706,77.964C426.667,433.792,426.098,440.911,425.292,448z" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                            <span data-i18n="chrome_store">Chrome Store</span>
+                        </a>
                         <a href="https://www.linkedin.com/in/roy-levi-018779215/" target="_blank" rel="noopener noreferrer" class="link-item"
                             title="LinkedIn Profile">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">

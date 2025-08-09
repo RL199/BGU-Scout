@@ -102,6 +102,11 @@ body {
     padding: 12px;
     padding-top: 8px;
     padding-bottom: 8px;
+    min-height: max-content;
+}
+
+.about_modal {
+    min-height: 350px;
 }
 
 h1 {
@@ -150,8 +155,41 @@ hr {
     margin: 16px 0;
 }
 
-.form-group {
-    margin-bottom: 10px;
+/* Fieldset and legend styles */
+.form-fieldset {
+    border: 0;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 4px;
+    padding-bottom: 6px;
+    padding-left: 0;
+    padding-right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-fieldset legend {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    cursor: default;
+    color: var(--text-color);
+    padding: 0 8px;
+}
+
+.year-semester-fieldset .year_range {
+    justify-content: center;
+    width: auto;
+    min-width: 140px;
+}
+
+.form-fieldset .checkbox-group {
+    justify-content: center;
 }
 
 label {
@@ -162,17 +200,7 @@ label {
 }
 
 input[type="text"],
-input[type="number"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--input-border);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    box-sizing: border-box;
-    font-size: 14px;
-}
-
+input[type="number"],
 select {
     width: 100%;
     padding: 8px;
@@ -182,10 +210,17 @@ select {
     color: var(--text-color);
     box-sizing: border-box;
     font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+select {
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 input[type="radio"] {
     margin: 0;
+    transition: all 0.3s ease;
 }
 
 input[type="radio"]+label {
@@ -208,7 +243,8 @@ select:focus {
 
 input:hover,
 select:hover,
-button:hover {
+button:hover,
+.link-item:hover {
     opacity: 0.9;
     filter: brightness(98%);
     transition: all 0.3s ease;
@@ -264,34 +300,35 @@ select:hover {
     align-items: center;
 }
 
-.year_semester_container {
-    display: flex;
-    justify-content: space-between;
-    row-gap: 0;
-    column-gap: 10px;
-    margin-bottom: 0;
-    flex-direction: column;
-}
-
-.multiple_graphs_container {
-    display: flex;
-    width: 100%;
-    margin-bottom: 0;
-}
-
 .year_range {
     display: flex;
-    justify-content: space-between;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
 }
 
-.start_year_container,
-.end_year_container {
-    width: 48%;
+.year_range input {
+    flex: 1;
 }
 
-#open_graph:hover {
-    opacity: 1;
+.year-hyphen {
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 16px;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.course-file-btn {
+    padding: 6px 10px !important;
+    flex: 1 !important;
+    min-width: auto;
+    font-size: 17px;
+}
+
+.course-file-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--button-text);
 }
 
 .loading:active {
@@ -320,12 +357,19 @@ select:hover {
 
 #start_year.missing,
 #end_year.missing,
-#semester_checkbox.missing,
-#exam_checkbox.missing,
-#quiz_checkbox.missing,
 #course_number.missing {
     border: 1px solid var(--error-color);
     border-radius: 4px;
+}
+
+#semester_checkbox.missing,
+#exam_checkbox.missing,
+#quiz_checkbox.missing {
+    border-radius: 4px;
+}
+
+.form-fieldset.missing {
+    border-color: var(--error-color);
 }
 
 .clickMe {
@@ -591,11 +635,6 @@ select:hover {
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-}
-
-.link-item:hover {
-    opacity: 0.9;
-    filter: brightness(98%);
 }
 
 .link-item:active {

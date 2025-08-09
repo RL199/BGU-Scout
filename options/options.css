@@ -214,7 +214,8 @@ select:focus {
 }
 
 input:hover,
-select:hover {
+select:hover,
+.color_option:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -568,11 +569,6 @@ input:checked+.slider:before {
     cursor: pointer;
     transition: all 0.3s ease;
     gap: 8px;
-}
-
-.color_option:hover {
-    /* border-color: var(--button-bg); */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .color_option.selected {
