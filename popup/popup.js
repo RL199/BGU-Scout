@@ -77,8 +77,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const translations = {
         en: {
             loading: "Loading",
-            year_span: "Year Span:",
-            semesters: "Semesters:",
+            year_span: "Year Span",
+            semesters: "Semesters",
             options: "Options",
             login: "BGU Site",
             display: "Display",
@@ -86,10 +86,10 @@ document.addEventListener("DOMContentLoaded", function () {
             first_semester: "Fall",
             second_semester: "Spring",
             third_semester: "Summer",
-            exam_numbers: "Exam Numbers:",
+            exam_numbers: "Exam Numbers",
             total_exam: "Total",
-            quiz_numbers: "Quiz Numbers:",
-            course_number: "Course:",
+            quiz_numbers: "Quiz Numbers",
+            course_number: "Course",
             select_course: "Select Course or add more in options page",
             no_user_message: "Please fill your user details in the options page.",
             no_course_message: "Please add course in the options page.",
@@ -116,8 +116,8 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         he: {
             loading: "טוען",
-            year_span: "טווח שנים:",
-            semesters: "סמסטרים:",
+            year_span: "טווח שנים",
+            semesters: "סמסטרים",
             options: "אפשרויות",
             login: "אתר בנ\"ג",
             display: "הצג",
@@ -125,10 +125,10 @@ document.addEventListener("DOMContentLoaded", function () {
             first_semester: "סתיו",
             second_semester: "אביב",
             third_semester: "קיץ",
-            exam_numbers: "מספרי מבחנים:",
+            exam_numbers: "מספרי מבחנים",
             total_exam: "סה\"כ",
-            quiz_numbers: "מספרי בחנים:",
-            course_number: "קורס:",
+            quiz_numbers: "מספרי בחנים",
+            course_number: "קורס",
             select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
             no_user_message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
             no_course_message: "אנא הוסף קורס בדף האפשרויות.",
@@ -1019,23 +1019,37 @@ document.addEventListener("DOMContentLoaded", function () {
         if (years.length === 0 || semesters.length === 0 || examTypes.length === 0 || courseSelect.value === "") {
             sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
 
-            // Mark missing fields
+            // Mark missing fields and their parent fieldsets
             if (startYearInput.value === "" || endYearInput.value === "") {
                 if (startYearInput.value === "") startYearInput.classList.add("missing");
                 if (endYearInput.value === "") endYearInput.classList.add("missing");
+                // Add missing class to the year fieldset
+                const yearFieldset = startYearInput.closest('.form-fieldset');
+                if (yearFieldset) yearFieldset.classList.add("missing");
             }
 
             if (semesters.length === 0) {
                 semesterCheckboxContainer.classList.add("missing");
+                // Add missing class to the semester fieldset
+                const semesterFieldset = semesterCheckboxContainer.closest('.form-fieldset');
+                if (semesterFieldset) semesterFieldset.classList.add("missing");
             }
 
             if (examTypes.length === 0) {
                 examCheckboxContainer.classList.add("missing");
                 quizCheckboxContainer.classList.add("missing");
+                // Add missing class to exam and quiz fieldsets
+                const examFieldset = examCheckboxContainer.closest('.form-fieldset');
+                const quizFieldset = quizCheckboxContainer.closest('.form-fieldset');
+                if (examFieldset) examFieldset.classList.add("missing");
+                if (quizFieldset) quizFieldset.classList.add("missing");
             }
 
             if (courseSelect.value === "") {
                 courseInput.classList.add("missing");
+                // Add missing class to the course fieldset
+                const courseFieldset = courseInput.closest('.form-fieldset');
+                if (courseFieldset) courseFieldset.classList.add("missing");
             }
 
             return false;
@@ -1063,6 +1077,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Save year inputs
     startYearInput.addEventListener("change", function () {
         startYearInput.classList.remove("missing");
+        // Remove missing class from parent fieldset
+        const yearFieldset = startYearInput.closest('.form-fieldset');
+        if (yearFieldset && endYearInput.value !== "") {
+            yearFieldset.classList.remove("missing");
+        }
+
         const startYear = startYearInput.value;
         if (startYear < 1970 || startYear > new Date().getFullYear()) {
             return;
@@ -1073,6 +1093,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     endYearInput.addEventListener("change", function () {
         endYearInput.classList.remove("missing");
+        // Remove missing class from parent fieldset
+        const yearFieldset = endYearInput.closest('.form-fieldset');
+        if (yearFieldset && startYearInput.value !== "") {
+            yearFieldset.classList.remove("missing");
+        }
+
         const endYear = endYearInput.value;
         if (endYear < 1970 || endYear > new Date().getFullYear()) {
             return;
@@ -1086,6 +1112,10 @@ document.addEventListener("DOMContentLoaded", function () {
     semesterCheckboxes.forEach(checkbox => {
         checkbox.addEventListener("change", function () {
             semesterCheckboxContainer.classList.remove("missing");
+            // Remove missing class from parent fieldset
+            const semesterFieldset = semesterCheckboxContainer.closest('.form-fieldset');
+            if (semesterFieldset) semesterFieldset.classList.remove("missing");
+
             const selectedSemesters = Array.from(document.querySelectorAll('input[name="semester"]:checked'))
                 .map(input => input.value);
 
@@ -1100,6 +1130,12 @@ document.addEventListener("DOMContentLoaded", function () {
         checkbox.addEventListener("change", function () {
             examCheckboxContainer.classList.remove("missing");
             quizCheckboxContainer.classList.remove("missing");
+            // Remove missing class from parent fieldsets
+            const examFieldset = examCheckboxContainer.closest('.form-fieldset');
+            const quizFieldset = quizCheckboxContainer.closest('.form-fieldset');
+            if (examFieldset) examFieldset.classList.remove("missing");
+            if (quizFieldset) quizFieldset.classList.remove("missing");
+
             const selectedExams = Array.from(document.querySelectorAll('input[name="exam"]:checked'))
                 .map(input => input.value);
 
@@ -1114,6 +1150,12 @@ document.addEventListener("DOMContentLoaded", function () {
         checkbox.addEventListener("change", function () {
             examCheckboxContainer.classList.remove("missing");
             quizCheckboxContainer.classList.remove("missing");
+            // Remove missing class from parent fieldsets
+            const examFieldset = examCheckboxContainer.closest('.form-fieldset');
+            const quizFieldset = quizCheckboxContainer.closest('.form-fieldset');
+            if (examFieldset) examFieldset.classList.remove("missing");
+            if (quizFieldset) quizFieldset.classList.remove("missing");
+
             const selectedQuizzes = Array.from(document.querySelectorAll('input[name="quiz"]:checked'))
                 .map(input => input.value);
 
@@ -1125,6 +1167,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     courseInput.addEventListener("change", function () {
         courseInput.classList.remove("missing");
+        // Remove missing class from parent fieldset
+        const courseFieldset = courseInput.closest('.form-fieldset');
+        if (courseFieldset) courseFieldset.classList.remove("missing");
+
         const full_course_number = courseInput.value;
         const course_number = full_course_number.split(".");
         const department = course_number[0];

@@ -25,35 +25,33 @@
             <button type="button" id="open_login" data-i18n="login">Login</button>
         </div>
         <form id="popup_form">
-            <div class="form-group year_semester_container">
-                <div class="year_span_container">
-                    <label class="year-span-label" data-i18n="year_span">Year Span:</label>
-                    <div class="year_range">
-                        <input type="number" min="1970" max="2025" id="start_year" aria-label="Start Year">
-                        <span class="year-hyphen">-</span>
-                        <input type="number" min="1970" max="2025" id="end_year" aria-label="End Year">
+            <fieldset class="form-fieldset year-semester-fieldset">
+                <legend data-i18n="year_span">Year Span</legend>
+                <div class="year_range">
+                    <input type="number" min="1970" max="2025" id="start_year" aria-label="Start Year">
+                    <span class="year-hyphen">-</span>
+                    <input type="number" min="1970" max="2025" id="end_year" aria-label="End Year">
+                </div>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="semesters">Semesters</legend>
+                <div class="checkbox-group" id="semester_checkbox">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="first_semester" name="semester" value="1">
+                        <label for="first_semester" data-i18n="first_semester">Fall</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="second_semester" name="semester" value="2">
+                        <label for="second_semester" data-i18n="second_semester">Spring</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="third_semester" name="semester" value="3">
+                        <label for="third_semester" data-i18n="third_semester">Summer</label>
                     </div>
                 </div>
-                <div class="form-group semester_container">
-                    <label data-i18n="semesters">Semesters:</label>
-                    <div class="checkbox-group" id="semester_checkbox">
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="first_semester" name="semester" value="1">
-                            <label for="first_semester" data-i18n="first_semester">Fall</label>
-                        </div>
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="second_semester" name="semester" value="2">
-                            <label for="second_semester" data-i18n="second_semester">Spring</label>
-                        </div>
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="third_semester" name="semester" value="3">
-                            <label for="third_semester" data-i18n="third_semester">Summer</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label data-i18n="exam_numbers">Exam Numbers:</label>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="exam_numbers">Exam Numbers</legend>
                 <div class="checkbox-group" id="exam_checkbox">
                     <div class="checkbox-option">
                         <input type="checkbox" id="first_exam" name="exam" value="1">
@@ -76,9 +74,9 @@
                         <label for="total_exam" data-i18n="total_exam">Total</label>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label data-i18n="quiz_numbers">Quiz Numbers:</label>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="quiz_numbers">Quiz Numbers</legend>
                 <div class="checkbox-group" id="quiz_checkbox">
                     <div class="checkbox-option">
                         <input type="checkbox" id="first_quiz" name="quiz" value="11">
@@ -97,13 +95,13 @@
                         <label for="fourth_quiz">4</label>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="course_number" data-i18n="course_number">Course Number:</label>
-                <select id="course_number" name="course_number">
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend data-i18n="course_number">Course</legend>
+                <select id="course_number" name="course_number" aria-label="Course Selection" title="Select a course">
                     <option value="" data-i18n="select_course">Select a course</option>
                 </select>
-            </div>
+            </fieldset>
             <div class="buttons-container">
                 <button type="button" id="display_graph" data-i18n="display">Display</button>
                 <button type="button" id="export_excel" data-i18n="export">Export</button>
@@ -145,7 +143,7 @@
                         <a href="https://chromewebstore.google.com/detail/bgu-scout/fdigilamlkldgalnpjmohgefpaoghhmh" target="_blank" rel="noopener noreferrer" class="link-item"
                             title="Chrome Web Store">
                             <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="16px"
-                                y="16px" viewBox="0 0 469.333 469.333" style="enable-background:new 0 0 469.333 469.333;" xml:space="preserve">
+                                y="16px" viewBox="0 0 469.333 469.333" xml:space="preserve">
                                 <g>
                                     <g>
                                         <g>
