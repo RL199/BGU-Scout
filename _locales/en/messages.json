@@ -472,7 +472,7 @@
     "description": "Error message when failing to retrieve courses"
   },
   "course_names_updated": {
-    "message": "Course names updated",
+    "message": "Course names updated to",
     "description": "Success message when course names are updated"
   },
   "no_courses_to_convert": {
@@ -518,5 +518,25 @@
   "excel_export_success": {
     "message": "Excel export successful!",
     "description": "Success message for Excel export"
+  },
+  "website_not_loaded": {
+    "message": "Website not loaded",
+    "description": "Error message when website fails to load"
+  },
+  "user_details_saved_success": {
+    "message": "User details saved",
+    "description": "Success message when user details are saved"
+  },
+  "course_name_saved": {
+    "message": "Course name saved",
+    "description": "Success message when course name is saved"
+  },
+  "course_removed": {
+    "message": "Course removed",
+    "description": "Success message when course is removed"
+  },
+  "course_added": {
+    "message": "Course added",
+    "description": "Success message when course is added"
   }
 }

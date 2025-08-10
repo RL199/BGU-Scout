@@ -738,7 +738,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const preferredLang = storageResult.course_name_preferred_lang;
             const tabId = await openBGU4UTab(courseNumber, preferredLang);
         } catch (error) {
-            handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, false);
+            handleMessages(getMessage('error_opening_tab'), error, false);
             return;
         }
     });
@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Convert course names to specified language
     async function convertCourseNames(targetLang) {
         if (!navigator.onLine) {
-            handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', false);
+            handleMessages(getMessage('no_internet_connection'), 'error', false);
             return;
         }
 
@@ -790,13 +790,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (coursesToConvert.length === 0) {
-                const langName = targetLang === 'he' ? 'Hebrew' : 'English';
-                const langNameHe = targetLang === 'he' ? 'עברית' : 'אנגלית';
+                const langNameEng = targetLang === 'he' ? 'Hebrew' : 'English';
+                const langNameHeb = targetLang === 'he' ? 'עברית' : 'אנגלית';
                 if (courseExists) {
                     await chrome.storage.local.set({ course_name_preferred_lang: targetLang });
-                    handleMessages(`Course names updated to ${langName}`, `שמות הקורסים עודכנו ל${langNameHe}`, null, false);
+                    if (targetLang === 'he') {
+                        handleMessages(getMessage('course_names_updated') + langNameHeb, null, false);
+                    } else {
+                        handleMessages(getMessage('course_names_updated') + langNameEng, null, false);
+                    }
                 } else {
-                    handleMessages(`No courses to convert to ${langName}`, `אין קורסים להמיר ל${langNameHe}`, null, false);
+                    handleMessages(getMessage('no_courses_to_convert'), null, false);
                 }
                 setConvertingState(false);
                 return;
@@ -820,7 +824,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } catch (error) {
             console.error('Error during conversion:', error);
-            handleMessages('Conversion failed', 'ההמרה נכשלה', 'error', false);
+            handleMessages(getMessage('conversion_failed'), 'error', false);
             setConvertingState(false);
         }
     }
@@ -872,7 +876,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     await handleCourseAddition(courseNumber, courseName, storage);
                 }
             } else {
-                handleMessages('Course number is invalid', 'מספר הקורס לא תקין', 'error', false);
+                handleMessages(getMessage('invalid_course_number'), 'error', false);
                 if (storage.converting_courses) {
                     setConvertingState(false);
                     await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
@@ -885,7 +889,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 await chrome.storage.local.set({ allowCourseValidation: remainingTabs });
             }
-            handleMessages('Course ' + message.courseNumber + ' not found', 'הקורס ' + message.courseNumber + ' לא נמצא', 'error', false);
+            handleMessages(getMessage('course_not_found') + ": " + message.courseNumber, 'error', false);
 
             // Delete the course from storage
             const removeCourseButton = document.getElementById("remove_course_button" + message.courseNumber);
@@ -899,33 +903,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Check if all courses are converted
             if (convertedCount >= storage.total_courses_to_convert) {
-                handleMessages('All courses processed', 'כל הקורסים טופלו', null, false);
+                handleMessages(getMessage('all_courses_processed'), null, false);
                 await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
                 setConvertingState(false);
             }
         } else if (message.type === 'CONNECTION_ERROR') {
-            handleMessages('Connection error', 'שגיאת חיבור', 'error', false);
+            handleMessages(getMessage('connection_error'), 'error', false);
             chrome.storage.local.remove('allowCourseValidation');
             chrome.storage.local.remove('allowUserValidation');
             chrome.storage.local.remove('checkedUserDetails');
             chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
         }
         else if (message.type === 'COURSE_NOT_FOUND') {
-            handleMessages('Course ' + message.courseNumber + ' not found', 'הקורס ' + message.courseNumber + ' לא נמצא', 'error', false);
+            handleMessages(getMessage('course_not_found') + ": " + message.courseNumber, 'error', false);
             chrome.storage.local.remove('allowCourseValidation');
         }
         else if (message.type === 'LOGIN_FAILED') {
-            handleMessages('Invalid user details', 'פרטי משתמש לא תקינים', 'error', true);
+            handleMessages(getMessage('invalid_user_details'), 'error', true);
             chrome.storage.local.remove('allowUserValidation');
             chrome.storage.local.remove('checkedUserDetails');
         }
         else if (message.type === 'FORM_FIELDS_NOT_FOUND') {
-            handleMessages('Website not loaded', 'האתר לא נטען', 'error', true);
+            handleMessages(getMessage('website_not_loaded'), 'error', true);
             chrome.storage.local.remove('allowUserValidation');
             chrome.storage.local.remove('checkedUserDetails');
         }
         else if (message.type === 'LOGIN_SUCCESS') {
-            handleMessages('User details saved', 'פרטי המשתמש נשמרו', null, true);
+            handleMessages(getMessage('user_details_saved_success'), null, true);
             chrome.storage.local.set(userFormData);
             chrome.storage.local.remove('allowUserValidation');
             chrome.storage.local.remove('checkedUserDetails');
@@ -1048,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 savedCourses[course_number] = courseData;
                 chrome.storage.local.set({ saved_courses: savedCourses });
             });
-            handleMessages('Course name saved', 'שם הקורס נשמר', null, false);
+            handleMessages(getMessage('course_name_saved'), null, false);
             this.style.display = 'none';
         });
 
@@ -1077,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateConversionButtonsVisibility();
             });
             // Show toast message of the removed course number
-            handleMessages('Course ' + course_number + ' removed', 'הקורס ' + course_number + ' הוסר', null, false);
+            handleMessages(getMessage('course_removed') + ": " + course_number, null, false);
         });
 
         // Append elements
@@ -1175,7 +1179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             lastCourseNameInput.style.border = '2px solid var(--border-color)';
         }, 2000);
 
-        handleMessages('Course ' + courseNumber + ' added', 'הקורס ' + courseNumber + ' נוסף', null, false);
+        handleMessages(getMessage('course_added') + ": " + courseName, null, false);
     }
 
     // Handle course conversion process
@@ -1207,7 +1211,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Check if all courses are converted
             if (convertedCount >= storage.total_courses_to_convert) {
-                handleMessages('All courses processed', 'כל הקורסים טופלו', null, false);
+                handleMessages(getMessage('all_courses_processed'), null, false);
                 setConvertingState(false);
                 await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
             }

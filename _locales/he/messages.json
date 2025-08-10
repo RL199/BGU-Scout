@@ -472,7 +472,7 @@
     "description": "הודעת שגיאה כאשר נכשל לאחזר קורסים"
   },
   "course_names_updated": {
-    "message": "שמות הקורסים עודכנו",
+    "message": "שמות הקורסים עודכנו ל",
     "description": "הודעת הצלחה כאשר שמות הקורסים מתעדכנים"
   },
   "no_courses_to_convert": {
@@ -518,5 +518,25 @@
   "excel_export_success": {
     "message": "ייצוא לאקסל הושלם בהצלחה!",
     "description": "הודעת הצלחה עבור ייצוא אקסל"
+  },
+  "website_not_loaded": {
+    "message": "האתר לא נטען",
+    "description": "הודעת שגיאה כאשר האתר לא נטען"
+  },
+  "user_details_saved_success": {
+    "message": "פרטי המשתמש נשמרו",
+    "description": "הודעת הצלחה כאשר פרטי המשתמש נשמרים"
+  },
+  "course_name_saved": {
+    "message": "שם הקורס נשמר",
+    "description": "הודעת הצלחה כאשר שם הקורס נשמר"
+  },
+  "course_removed": {
+    "message": "הקורס הוסר",
+    "description": "הודעת הצלחה כאשר הקורס מוסר"
+  },
+  "course_added": {
+    "message": "הקורס נוסף",
+    "description": "הודעת הצלחה כאשר הקורס נוסף"
   }
 }
