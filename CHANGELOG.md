@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.1]
 
 ### Added
-- "Don't close the window" message when loading course files
+- "Don't close the window" message when loading course files.
+
+### Fixed
+- button glow effect not using theme colors.
 
 ## [1.4.0]
 
