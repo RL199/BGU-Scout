@@ -112,7 +112,8 @@ document.addEventListener("DOMContentLoaded", function () {
             github: "GitHub",
             course_file: "Course File",
             course_file_tooltip: "Course File",
-            course_file_error: "Error loading course file"
+            course_file_error: "Error loading course file",
+            dont_close_window: "Please don't close the window"
         },
         he: {
             loading: "טוען",
@@ -151,7 +152,8 @@ document.addEventListener("DOMContentLoaded", function () {
             github: "גיטהאב",
             course_file: "קובץ קורס",
             course_file_tooltip: "קובץ הקורס",
-            course_file_error: "שגיאה בטעינת קובץ הקורס"
+            course_file_error: "שגיאה בטעינת קובץ הקורס",
+            dont_close_window: "אנא אל תסגור את החלון"
         },
     };
 
@@ -476,6 +478,8 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.add("loading");
             button.disabled = true;
 
+            sendMessage(translations['en'].dont_close_window, translations['he'].dont_close_window, 'info');
+
             const loadingPaths = [
                 '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
                 '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
@@ -494,6 +498,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (loading && isExcel) {
             button.classList.add("loading");
             button.disabled = true;
+
+            sendMessage(translations['en'].dont_close_window, translations['he'].dont_close_window, 'info');
 
             const loadingPaths = [
                 'transform = "matrix(0.96592611, 0.25881901, -0.25881901, 0.96592611, 7.9e-7, 5.3e-7)"', // 15 degrees
@@ -524,6 +530,10 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.remove("loading");
             button.disabled = false;
             clearInterval(button.loadingInterval);
+
+            // Hide the message
+            messageElement.style.display = "none";
+            messageElement.classList.remove('info');
 
             if (isExcel) {
                 button.innerHTML = excelIcon + translations[lang].export;
