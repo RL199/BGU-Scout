@@ -498,29 +498,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Also update the favicon for the options page
-        updateOptionsFavicon(color);
+        updateFavicon(color);
     }
 
-    function updateOptionsFavicon(color) {
+    function updateFavicon(color) {
         const favicon = document.getElementById('favicon');
         if (favicon) {
             let iconFolder;
             if (color === '#2196f3') { // Blue
-                iconFolder = 'images/icon-blue-';
+                iconFolder = '../images/icon-blue-';
             } else if (color === '#4caf50') { // Green
-                iconFolder = 'images/icon-green-';
+                iconFolder = '../images/icon-green-';
             } else if (color === '#f44336') { // Red
-                iconFolder = 'images/icon-red-';
+                iconFolder = '../images/icon-red-';
             } else if (color === '#9c27b0') { // Purple
-                iconFolder = 'images/icon-purple-';
+                iconFolder = '../images/icon-purple-';
             } else if (color === '#e91e63') { // Pink
-                iconFolder = 'images/icon-pink-';
+                iconFolder = '../images/icon-pink-';
             } else {
-                iconFolder = 'images/icon-'; // Default orange for all other colors
+                iconFolder = '../images/icon-'; // Default orange for all other colors
             }
 
-            const iconUrl = chrome.runtime.getURL(iconFolder + "16.png");
-            favicon.href = iconUrl;
+            favicon.href = iconFolder + "16.png";
         }
     }
 
