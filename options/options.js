@@ -1,17 +1,45 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Form elements
     const userForm = document.getElementById('user_form');
     const coursesForm = document.getElementById('courses_form');
     const themeSelect = document.getElementById('theme');
     const langSelect = document.getElementById('language');
     const autoAddMoodleCourses = document.getElementById('auto_add_moodle_courses');
-    const toast = document.getElementById('toast');
-    const NewCourseNumberInput = document.getElementById('add_course_number');
-    const addCourseButton = document.getElementById('add_course_button');
+    const enableDepartmentalDetails = document.getElementById('enable_departmental_details');
+    const userNameEl = document.getElementById('user_name');
+    const passwordEl = document.getElementById('password');
+    const idEl = document.getElementById('id');
+    const forgotPasswordEl = document.getElementById('forgot_password');
+    const courseNumberEl = document.getElementById('add_course_number');
+
+    // Button elements
     const saveButton = document.getElementById('save_button');
+    const addCourseButton = document.getElementById('add_course_button');
     const convertToHebrewButton = document.getElementById('convert_to_hebrew');
     const convertToEnglishButton = document.getElementById('convert_to_english');
+
+    // UI elements
+    const toast = document.getElementById('toast');
+    const NewCourseNumberInput = document.getElementById('add_course_number');
+
+    // Header elements
+    const generalHeader = document.querySelector('h1[data-i18n="general_options_container_header"]');
+    const userHeader = document.querySelector('h1[data-i18n="user_container_header"]');
+    const coursesHeader = document.querySelector('h1[data-i18n="courses_container_header"]');
+
+    // Option elements
+    const systemThemeEl = document.querySelector('#theme option[value="system"]');
+    const lightThemeEl = document.querySelector('#theme option[value="light"]');
+    const darkThemeEl = document.querySelector('#theme option[value="dark"]');
+    const systemLangEl = document.querySelector('#language option[value="system"]');
+    const heLangEl = document.querySelector('#language option[value="he"]');
+    const enLangEl = document.querySelector('#language option[value="en"]');
+
+    // Other elements
+    const disclaimerEl = document.querySelector('.disclaimer');
+    const favicon = document.getElementById('favicon');
 
     let toastTimeout = null;
 
@@ -28,6 +56,49 @@ document.addEventListener('DOMContentLoaded', function () {
     let courseNumber = '';
 
     let displayLang = 'en'; // Default language
+    let translations = {}; // Store loaded translations
+
+    // Load translations from JSON files
+    async function loadTranslations(lang) {
+        try {
+            const response = await fetch(chrome.runtime.getURL(`_locales/${lang}/messages.json`));
+            const data = await response.json();
+            translations[lang] = data;
+        } catch (error) {
+            console.error(`Failed to load translations for ${lang}:`, error);
+            // Fallback to English if loading fails
+            if (lang !== 'en') {
+                await loadTranslations('en');
+            }
+        }
+    }
+
+    // Initialize i18n system with custom translation loader
+    function getMessage(key, substitutions = null, forceLang = null) {
+        const lang = forceLang || displayLang;
+
+        // First try custom loaded translations
+        if (translations[lang] && translations[lang][key]) {
+            let message = translations[lang][key].message;
+
+            // Handle substitutions if provided
+            if (substitutions) {
+                if (Array.isArray(substitutions)) {
+                    substitutions.forEach((sub, index) => {
+                        message = message.replace(`$${index + 1}`, sub);
+                    });
+                } else {
+                    message = message.replace('$1', substitutions);
+                }
+            }
+
+            return message;
+        }
+
+        // Fallback to Chrome's built-in i18n
+        const result = chrome.i18n.getMessage(key, substitutions);
+        return result || key;
+    }
 
     const removeIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" id="remove_icon" viewBox="0 0 16 16">
@@ -40,188 +111,16 @@ document.addEventListener('DOMContentLoaded', function () {
             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
         </svg>`;
 
-    const translations = {
-        en: {
-            // Course-related messages
-            add_course_button: "Add",
-            adding_course_button: "Adding...",
-            add_course_number: "Add Course Number:",
-            saved_courses: "Saved Courses",
-            convert_to_hebrew: "Convert Courses to Hebrew",
-            convert_to_english: "Convert Courses to English",
-            converting_to_hebrew: "Converting to Hebrew...",
-            converting_to_english: "Converting to English...",
-            course_names_converted_successfully: "Course names converted successfully",
-            course_names_conversion_failed: "Failed to convert course names",
-
-            // User authentication
-            user_name: "User Name:",
-            password: "Password:",
-            id: "ID Number:",
-            forgot_password: "Forgot Password",
-            save: "Save",
-            saving: "Saving...",
-
-            // Interface settings
-            options: "Options",
-            theme: "Color Theme:",
-            light: "Light",
-            dark: "Dark",
-            system: "System",
-            language: "Language:",
-            color_palette: "Color Scheme:",
-            orange: "Orange",
-            blue: "Blue",
-            green: "Green",
-            red: "Red",
-            purple: "Purple",
-            pink: "Pink",
-            user_container_header: "User",
-            courses_container_header: "Courses",
-            general_options_container_header: "General",
-
-            // Feature toggles
-            auto_add_moodle_courses: "Auto-Add Moodle Courses:",
-            enable_departmental_details: "Enable Departmental Details: ",
-            auto_add_moodle_courses_description: "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
-            enable_departmental_details_description: "See grade distribution for each department separately",
-
-            // System messages
-            toast_message: "",
-            disclaimer: `Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.
-            Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.`,
-
-            // Tooltips
-            title_general_header: "General settings for the extension",
-            title_theme: "Choose the color theme for the extension interface",
-            title_system_theme: "Use your system's default theme",
-            title_light_theme: "Use light theme",
-            title_dark_theme: "Use dark theme",
-            title_language: "Choose the display language for the extension",
-            title_color_palette: "Choose the color scheme for the extension",
-            title_color_orange: "Orange color scheme",
-            title_color_blue: "Blue color scheme",
-            title_color_green: "Green color scheme",
-            title_color_red: "Red color scheme",
-            title_color_purple: "Purple color scheme",
-            title_color_pink: "Pink color scheme",
-            title_system_language: "Use your system's default language",
-            title_he_language: "Change language to Hebrew",
-            title_en_language: "Change language to English",
-            title_enable_departmental: "Toggle to see grade distribution for each department separately",
-            title_user_header: "User account settings",
-            title_username: "Enter your BGU username",
-            title_password: "Enter your BGU password",
-            title_id: "Enter your ID number",
-            title_save: "Save your user details",
-            title_forgot_password: "Go to password reset page",
-            title_disclaimer: "Important information about data privacy",
-            title_courses_header: "Manage your course list",
-            title_moodle_sync: "Automatically add courses from your Moodle page",
-            title_course_number: "Enter a course number in format XXX.X.XXXX",
-            title_add_course: "Add this course to your tracked courses",
-            title_edit_course: "Save course name changes",
-            title_remove_course: "Remove this course",
-            title_course_name: "Edit course name",
-            title_course_number_label: "Course number: "
-        },
-        he: {
-            // Course-related messages
-            add_course_button: "הוסף",
-            adding_course_button: "מוסיף...",
-            add_course_number: "הוסף מספר קורס:",
-            saved_courses: "קורסים שמורים",
-            convert_to_hebrew: "המר קורסים לעברית",
-            convert_to_english: "המר קורסים לאנגלית",
-            converting_to_hebrew: "ממיר לעברית...",
-            converting_to_english: "ממיר לאנגלית...",
-            course_names_converted_successfully: "שמות הקורסים הומרו בהצלחה",
-            course_names_conversion_failed: "המרת שמות הקורסים נכשלה",
-
-            // User authentication
-            user_name: "שם משתמש:",
-            password: "סיסמה:",
-            id: "מספר תעודת זהות:",
-            forgot_password: "שכחתי סיסמה",
-            save: "שמור",
-            saving: "שומר...",
-
-            // Interface settings
-            options: "אפשרויות",
-            theme: "ערכת נושא:",
-            light: "בהיר",
-            dark: "כהה",
-            system: "מערכת",
-            language: "שפה:",
-            color_palette: "ערכת צבעים:",
-            orange: "כתום",
-            blue: "כחול",
-            green: "ירוק",
-            red: "אדום",
-            purple: "סגול",
-            pink: "ורוד",
-            user_container_header: "משתמש",
-            courses_container_header: "קורסים",
-            general_options_container_header: "כללי",
-
-            // Feature toggles
-            auto_add_moodle_courses: "הוספת קורסים אוטומטית מהמודל:",
-            enable_departmental_details: "אפשר פירוט מחלקתי: ",
-            auto_add_moodle_courses_description: "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף אוטומטית קורסים מוצגים",
-            enable_departmental_details_description: "לראות את התפלגות הציונים לכל מחלקה בנפרד",
-
-            // System messages
-            toast_message: "",
-            disclaimer: `לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.
-            הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.`,
-
-            // Tooltips
-            title_general_header: "הגדרות כלליות של התוסף",
-            title_theme: "בחר ערכת נושא לממשק התוסף",
-            title_system_theme: "השתמש בערכת הנושא של המערכת שלך",
-            title_light_theme: "השתמש בערכת נושא בהירה",
-            title_dark_theme: "השתמש בערכת נושא כהה",
-            title_language: "בחר שפת תצוגה לתוסף",
-            title_color_palette: "בחר ערכת צבעים לתוסף",
-            title_color_orange: "ערכת צבעים כתומה",
-            title_color_blue: "ערכת צבעים כחולה",
-            title_color_green: "ערכת צבעים ירוקה",
-            title_color_red: "ערכת צבעים אדומה",
-            title_color_purple: "ערכת צבעים סגולה",
-            title_color_pink: "ערכת צבעים ורודה",
-            title_system_language: "השתמש בשפת המערכת שלך",
-            title_he_language: "שנה שפה לעברית",
-            title_en_language: "שנה שפה לאנגלית",
-            title_enable_departmental: "הפעל כדי לראות התפלגות ציונים לכל מחלקה בנפרד",
-            title_user_header: "הגדרות חשבון משתמש",
-            title_username: "הזן את שם המשתמש שלך ב-BGU",
-            title_password: "הזן את הסיסמה שלך ב-BGU",
-            title_id: "הזן את מספר תעודת הזהות שלך",
-            title_save: "שמור את פרטי המשתמש שלך",
-            title_forgot_password: "עבור לדף איפוס סיסמה",
-            title_disclaimer: "מידע חשוב על פרטיות הנתונים",
-            title_courses_header: "נהל את רשימת הקורסים שלך",
-            title_moodle_sync: "הוסף אוטומטית קורסים מדף המודל שלך",
-            title_course_number: "הזן מספר קורס בפורמט XXX.X.XXXX",
-            title_add_course: "הוסף קורס זה לקורסים המעוקבים שלך",
-            title_edit_course: "שמור שינויים בשם הקורס",
-            title_remove_course: "הסר קורס זה",
-            title_course_name: "ערוך את שם הקורס",
-            title_course_number_label: "מספר קורס: "
-        }
-    };
-
     // Load saved options
     loadOptions();
 
-    function showToast(enMessage, hebMessage, type) {
+    function showToast(message, type) {
         if (toastTimeout) {
             clearTimeout(toastTimeout);
         }
 
-        translations['en']['toast_message'] = enMessage;
-        translations['he']['toast_message'] = hebMessage;
-        applyLang(displayLang);
+        toast.textContent = message;
+
         let toastType = type === 'success' ? 'success' : type === 'error' ? 'error' : 'other';
         // Set toast shadow color
         document.documentElement.style.setProperty('--toast-color', `var(--${toastType}-color)`);
@@ -241,44 +140,79 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function applyLang(lang) {
+    async function applyLang(lang) {
         const prefersHebrew = navigator.language.startsWith('he');
         if (lang === 'system') {
             lang = prefersHebrew ? 'he' : 'en';
             displayLang = lang;
         }
         if (lang === 'he') {
-            addButtonText = 'הוסף';
             displayLang = 'he';
         } else {
-            addButtonText = 'Add';
             displayLang = 'en';
         }
+
+        // Load translations for the selected language
+        await loadTranslations(displayLang);
+
+        document.documentElement.setAttribute('lang', lang);
         document.documentElement.setAttribute('data-lang', lang);
-        const elements = document.querySelectorAll('[data-i18n]');
-        elements.forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            el.innerHTML = translations[lang][key];
+
+        // Update all elements with data-i18n attributes
+        const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+        elementsToTranslate.forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            const translatedText = getMessage(key);
+            if (translatedText && translatedText !== key) {
+                // Use innerHTML for elements that contain HTML markup
+                if (key === 'auto_add_moodle_courses_description' || key === 'enable_departmental_details_description' || key === 'disclaimer') {
+                    element.innerHTML = translatedText;
+                } else {
+                    element.textContent = translatedText;
+                }
+            }
         });
 
-        // Update title attributes
-        document.querySelector('h1[data-i18n="general_options_container_header"]').title = translations[lang]['title_general_header'];
-        document.querySelector('h1[data-i18n="user_container_header"]').title = translations[lang]['title_user_header'];
-        document.querySelector('h1[data-i18n="courses_container_header"]').title = translations[lang]['title_courses_header'];
+        // Update title attributes and other special content
+        document.title = `${getMessage('extension_name')} ${getMessage('options')}`;
 
-        // Form elements
-        document.getElementById('theme').title = translations[lang]['title_theme'];
-        document.getElementById('language').title = translations[lang]['title_language'];
-        document.getElementById('enable_departmental_details').title = translations[lang]['title_enable_departmental'];
-        document.getElementById('user_name').title = translations[lang]['title_username'];
-        document.getElementById('password').title = translations[lang]['title_password'];
-        document.getElementById('id').title = translations[lang]['title_id'];
-        document.getElementById('save_button').title = translations[lang]['title_save'];
-        document.getElementById('forgot_password').title = translations[lang]['title_forgot_password'];
-        document.querySelector('.disclaimer').title = translations[lang]['title_disclaimer'];
-        document.getElementById('auto_add_moodle_courses').title = translations[lang]['title_moodle_sync'];
-        document.getElementById('add_course_number').title = translations[lang]['title_course_number'];
-        document.getElementById('add_course_button').title = translations[lang]['title_add_course'];
+        // Additional text updates that might not have data-i18n attributes
+        updateSpecialElements();
+    }
+
+    function updateSpecialElements() {
+        // Update any elements that need special handling
+        const elementsWithTitleAttr = document.querySelectorAll('[data-i18n-title]');
+        elementsWithTitleAttr.forEach(el => {
+            const key = el.getAttribute('data-i18n-title');
+            const text = getMessage(key);
+            if (text && text !== key) {
+                el.setAttribute('title', text);
+                el.setAttribute('aria-label', text);
+            }
+        });
+
+        // Update button text that's set dynamically
+        addButtonText = getMessage('add_course_button');
+
+        // Update title attributes for tooltips that aren't in the HTML
+        if (generalHeader) generalHeader.title = getMessage('title_general_header');
+        if (userHeader) userHeader.title = getMessage('title_user_header');
+        if (coursesHeader) coursesHeader.title = getMessage('title_courses_header');
+
+        // Form elements - using chrome.i18n.getMessage for tooltips
+        if (themeSelect) themeSelect.title = getMessage('title_theme');
+        if (langSelect) langSelect.title = getMessage('title_language');
+        if (enableDepartmentalDetails) enableDepartmentalDetails.title = getMessage('title_enable_departmental');
+        if (userNameEl) userNameEl.title = getMessage('title_username');
+        if (passwordEl) passwordEl.title = getMessage('title_password');
+        if (idEl) idEl.title = getMessage('title_id');
+        if (saveButton) saveButton.title = getMessage('title_save');
+        if (forgotPasswordEl) forgotPasswordEl.title = getMessage('title_forgot_password');
+        if (disclaimerEl) disclaimerEl.title = getMessage('title_disclaimer');
+        if (autoAddMoodleCourses) autoAddMoodleCourses.title = getMessage('title_moodle_sync');
+        if (courseNumberEl) courseNumberEl.title = getMessage('title_course_number');
+        if (addCourseButton) addCourseButton.title = getMessage('title_add_course');
 
         // Color palette tooltips
         const colorOptions = document.querySelectorAll('.color_option');
@@ -286,60 +220,62 @@ document.addEventListener('DOMContentLoaded', function () {
             const color = option.getAttribute('data-color');
             switch (color) {
                 case '#f7941e':
-                    option.title = translations[lang]['title_color_orange'];
+                    option.title = getMessage('title_color_orange');
                     break;
                 case '#2196f3':
-                    option.title = translations[lang]['title_color_blue'];
+                    option.title = getMessage('title_color_blue');
                     break;
                 case '#4caf50':
-                    option.title = translations[lang]['title_color_green'];
+                    option.title = getMessage('title_color_green');
                     break;
                 case '#f44336':
-                    option.title = translations[lang]['title_color_red'];
+                    option.title = getMessage('title_color_red');
                     break;
                 case '#9c27b0':
-                    option.title = translations[lang]['title_color_purple'];
+                    option.title = getMessage('title_color_purple');
                     break;
                 case '#e91e63':
-                    option.title = translations[lang]['title_color_pink'];
+                    option.title = getMessage('title_color_pink');
                     break;
             }
         });
 
         // Selection options
         // Theme selection options
-        document.querySelector('#theme option[value="system"]').title = translations[lang]['title_system_theme'];
-        document.querySelector('#theme option[value="light"]').title = translations[lang]['title_light_theme'];
-        document.querySelector('#theme option[value="dark"]').title = translations[lang]['title_dark_theme'];
+        if (systemThemeEl) systemThemeEl.title = getMessage('title_system_theme');
+        if (lightThemeEl) lightThemeEl.title = getMessage('title_light_theme');
+        if (darkThemeEl) darkThemeEl.title = getMessage('title_dark_theme');
+
         // Language selection options
-        document.querySelector('#language option[value="system"]').title = translations[lang]['title_system_language'];
-        document.querySelector('#language option[value="he"]').title = translations[lang]['title_he_language'];
-        document.querySelector('#language option[value="en"]').title = translations[lang]['title_en_language'];
+        if (systemLangEl) systemLangEl.title = getMessage('title_system_language');
+        if (heLangEl) heLangEl.title = getMessage('title_he_language');
+        if (enLangEl) enLangEl.title = getMessage('title_en_language');
+
         // Update tooltips for dynamically created course elements
         const courseNameInputs = document.querySelectorAll('.course_name_input');
         courseNameInputs.forEach(input => {
-            input.title = translations[lang]['title_course_name'];
+            input.title = getMessage('title_course_name');
         });
 
         const courseLabels = document.querySelectorAll('.course_label');
         courseLabels.forEach(label => {
             const courseNumber = label.textContent;
-            label.title = translations[lang]['title_course_number_label'] + courseNumber;
+            const labelText = getMessage('title_course_number_label');
+            label.title = labelText + courseNumber;
         });
 
         const editCourseButtons = document.querySelectorAll('.edit_course_name_button');
         editCourseButtons.forEach(button => {
-            button.title = translations[lang]['title_edit_course'];
+            button.title = getMessage('title_edit_course');
         });
 
         const removeCourseButtons = document.querySelectorAll('.remove_course_button');
         removeCourseButtons.forEach(button => {
-            button.title = translations[lang]['title_remove_course'];
+            button.title = getMessage('title_remove_course');
         });
     }
 
     function applyColor(color) {
-        // Define color mappings for light and dark themes
         const colorMappings = {
             '#f7941e': { // Orange
                 light: {
@@ -502,7 +438,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateFavicon(color) {
-        const favicon = document.getElementById('favicon');
         if (favicon) {
             let iconFolder;
             if (color === '#2196f3') { // Blue
@@ -523,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function loadOptions() {
+    async function loadOptions() {
         chrome.storage.local.get([
             'user_name',
             'id',
@@ -535,10 +470,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'auto_add_moodle_courses',
             'enable_departmental_details',
             'course_name_preferred_lang'
-        ], function (result) {
-            if (result.user_name) document.getElementById('user_name').value = result.user_name;
-            if (result.id) document.getElementById('id').value = result.id;
-            if (result.password) document.getElementById('password').value = result.password;
+        ], async function (result) {
+            if (result.user_name) userNameEl.value = result.user_name;
+            if (result.id) idEl.value = result.id;
+            if (result.password) passwordEl.value = result.password;
             if (result.theme) {
                 themeSelect.value = result.theme;
                 applyTheme(result.theme);
@@ -547,9 +482,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (result.lang) {
                 langSelect.value = result.lang;
-                applyLang(result.lang);
+                await applyLang(result.lang);
             } else {
-                applyLang('system');
+                await applyLang('system');
             }
 
             // Apply color and set default if not exists
@@ -584,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 autoAddMoodleCourses.checked = result.auto_add_moodle_courses;
             }
             if (result.enable_departmental_details) {
-                enable_departmental_details.checked = result.enable_departmental_details;
+                enableDepartmentalDetails.checked = result.enable_departmental_details;
             }
         });
     }
@@ -595,9 +530,9 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.storage.local.set({ theme: selectedTheme });
     });
 
-    langSelect.addEventListener('change', function () {
+    langSelect.addEventListener('change', async function () {
         const selected_lang = this.value;
-        applyLang(selected_lang);
+        await applyLang(selected_lang);
         chrome.storage.local.set({ lang: selected_lang });
     });
 
@@ -631,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.storage.local.set({ auto_add_moodle_courses: this.checked });
     });
 
-    enable_departmental_details.addEventListener('change', function () {
+    enableDepartmentalDetails.addEventListener('change', function () {
         chrome.storage.local.set({ enable_departmental_details: (this.checked ? 1 : 0) });
     });
 
@@ -642,41 +577,38 @@ document.addEventListener('DOMContentLoaded', function () {
         setSaveLoading(true);
 
         if (!navigator.onLine) {
-            handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', true);
+            handleMessages(getMessage('no_internet_connection'), 'error', true);
             return;
         }
 
         userFormData = {};
-        const idElement = document.getElementById('id');
-        const passwordElement = document.getElementById('password');
-        const userNameElement = document.getElementById('user_name');
-        const id = idElement.value.trim();
-        const password = passwordElement.value.trim();
-        const userName = userNameElement.value.trim();
+        const id = idEl.value.trim();
+        const password = passwordEl.value.trim();
+        const userName = userNameEl.value.trim();
         userFormData.id = id;
         userFormData.password = password;
         userFormData.user_name = userName;
 
-        idElement.classList.remove('error');
-        passwordElement.classList.remove('error');
-        userNameElement.classList.remove('error');
+        idEl.classList.remove('error');
+        passwordEl.classList.remove('error');
+        userNameEl.classList.remove('error');
         if (!id || !password || !userName) {
-            handleMessages('Please fill all fields', 'אנא מלא את כל השדות', 'error', true);
-            if (!id) idElement.classList.add('error');
-            if (!password) passwordElement.classList.add('error');
-            if (!userName) userNameElement.classList.add('error');
+            handleMessages(getMessage('fill_all_fields'), 'error', true);
+            if (!id) idEl.classList.add('error');
+            if (!password) passwordEl.classList.add('error');
+            if (!userName) userNameEl.classList.add('error');
             return;
         }
 
         const userDetails = await chrome.storage.local.get(['id', 'password', 'user_name']);
         if (userDetails.id === id && userDetails.password === password && userDetails.user_name === userName) {
-            handleMessages('User details already saved', 'פרטי המשתמש כבר נשמרו', null, true);
+            handleMessages(getMessage('user_details_saved'), null, true);
             return;
         }
 
         if (!IDValidator(id)) {
-            handleMessages('Invalid ID', 'תעודת זהות לא תקינה', 'error', true);
-            idElement.classList.add('error');
+            handleMessages(getMessage('invalid_id'), 'error', true);
+            idEl.classList.add('error');
             return;
         }
 
@@ -687,27 +619,24 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const tabId = await openBGU4U22Tab();
             } catch (error) {
-                handleMessages('Error opening BGU tab', 'שגיאה בפתיחת הטאב', error, true);
+                handleMessages(getMessage('error_opening_tab'), error, true);
             }
         } catch (error) {
-            handleMessages('Error saving', 'שגיאה בשמירה', error, true);
+            handleMessages(getMessage('error_saving'), error, true);
         }
     });
 
     function setSaveLoading(loading) {
-        const saveButton = document.getElementById('save_button');
         if (loading) {
             saveButton.disabled = true;
             saveButton.style.opacity = '0.7';
             saveButton.style.pointerEvents = 'none';
-            saveButton.textContent = translations[displayLang]['saving'];
+            saveButton.textContent = getMessage('saving');
         } else {
-            translations['en']['save'] = 'Save';
-            translations['he']['save'] = 'שמור';
             saveButton.disabled = false;
             saveButton.style.opacity = '1';
             saveButton.style.pointerEvents = 'auto';
-            saveButton.textContent = translations[displayLang]['save'];
+            saveButton.textContent = getMessage('save');
         }
     }
 
@@ -771,7 +700,7 @@ document.addEventListener('DOMContentLoaded', function () {
         AddingCourseButtonstyle(true);
 
         if (!navigator.onLine) {
-            handleMessages('No internet connection', 'אין חיבור לאינטרנט', 'error', false);
+            handleMessages(getMessage('no_internet_connection'), 'error', false);
             return;
         }
 
@@ -787,7 +716,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // check if course number is only digits and 2 points
         if (!courseNumber.match(/^\d{3}\.\d{1}\.\d{4}$/)) {
-            handleMessages('Invalid course number', 'מספר קורס לא תקין', 'error', false);
+            handleMessages(getMessage('invalid_course_number'), 'error', false);
             return;
         }
 
@@ -795,11 +724,11 @@ document.addEventListener('DOMContentLoaded', function () {
             result = await chrome.storage.local.get(['saved_courses']);
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
-                handleMessages('Course ' + courseNumber + ' already exists', 'הקורס ' + courseNumber + ' כבר קיים', null, false);
+                handleMessages(getMessage('course_already_exists') + ' ' + courseNumber, null, false);
                 return;
             }
         } catch (error) {
-            handleMessages('Error getting saved courses', 'שגיאה בקבלת הקורסים', error, false);
+            handleMessages(getMessage('error_getting_courses'), error, false);
             return;
         }
 
@@ -850,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!courseData.names[targetLang]) {
                     coursesToConvert.push(courseNumber);
                 }
-                else{
+                else {
                     //change course name to preferred language if it exists
                     const courseInput = document.getElementById(`course_name_input${courseNumber}`);
                     if (courseInput) {
@@ -860,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            if (coursesToConvert.length === 0 ) {
+            if (coursesToConvert.length === 0) {
                 const langName = targetLang === 'he' ? 'Hebrew' : 'English';
                 const langNameHe = targetLang === 'he' ? 'עברית' : 'אנגלית';
                 if (courseExists) {
@@ -904,18 +833,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (targetLang === 'he') {
                 convertToHebrewButton.classList.add('converting');
-                convertToHebrewButton.textContent = translations[displayLang]['converting_to_hebrew'];
+                convertToHebrewButton.textContent = getMessage('converting_to_hebrew');
             } else if (targetLang === 'en') {
                 convertToEnglishButton.classList.add('converting');
-                convertToEnglishButton.textContent = translations[displayLang]['converting_to_english'];
+                convertToEnglishButton.textContent = getMessage('converting_to_english');
             }
         } else {
             convertToHebrewButton.disabled = false;
             convertToEnglishButton.disabled = false;
             convertToHebrewButton.classList.remove('converting');
             convertToEnglishButton.classList.remove('converting');
-            convertToHebrewButton.textContent = translations[displayLang]['convert_to_hebrew'];
-            convertToEnglishButton.textContent = translations[displayLang]['convert_to_english'];
+            convertToHebrewButton.textContent = getMessage('convert_to_hebrew');
+            convertToEnglishButton.textContent = getMessage('convert_to_english');
         }
     }
 
@@ -1027,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create legend
             const coursesLegend = document.createElement("legend");
             coursesLegend.setAttribute('data-i18n', 'saved_courses');
-            coursesLegend.textContent = translations[displayLang]['saved_courses'];
+            coursesLegend.textContent = getMessage('saved_courses');
 
             // Create form container
             coursesList = document.createElement("div");
@@ -1057,7 +986,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseNameElement.style.textAlign = 'center';
         courseNameElement.id = "course_name_input" + course_number;
         courseNameElement.setAttribute("aria-label", "Course name");
-        courseNameElement.setAttribute("title", translations[displayLang]['title_course_name']);
+        courseNameElement.setAttribute("title", getMessage('title_course_name'));
 
         courseNameElement.addEventListener('input', function () {
             const hasValue = this.value.trim() !== '';
@@ -1075,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseLabel.textContent = course_number;
         courseLabel.className = "course_label";
         courseLabel.setAttribute("aria-label", "Course number");
-        courseLabel.setAttribute("title", translations[displayLang]['title_course_number_label'] + course_number);
+        courseLabel.setAttribute("title", getMessage('title_course_number_label') + course_number);
 
         // Create edit button
         const editCourseNameButton = document.createElement("button");
@@ -1083,7 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editCourseNameButton.className = "edit_course_name_button";
         editCourseNameButton.id = "edit_course_name_button" + course_number;
         editCourseNameButton.style.display = 'none';
-        editCourseNameButton.setAttribute("title", translations[displayLang]['title_edit_course']);
+        editCourseNameButton.setAttribute("title", getMessage('title_edit_course'));
         editCourseNameButton.addEventListener('click', function (e) {
             e.preventDefault();
             // save course name
@@ -1128,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', function () {
         removeCourseButton.innerHTML = removeIcon;
         removeCourseButton.className = "remove_course_button";
         removeCourseButton.id = "remove_course_button" + course_number;
-        removeCourseButton.setAttribute("title", translations[displayLang]['title_remove_course']);
+        removeCourseButton.setAttribute("title", getMessage('title_remove_course'));
 
         // Add remove functionality
         removeCourseButton.addEventListener('click', function (e) {
@@ -1182,33 +1111,33 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.create({ url: url });
     });
 
-    const handleMessages = (enMessage, hebMessage, error, isSave) => {
+    const handleMessages = (message, error, isSave) => {
 
         if (isSave) setSaveLoading(false);
         else AddingCourseButtonstyle(false);
 
         let type;
         if (error && error === 'error') {
-            console.log(enMessage);
+            console.log(message);
             type = 'error';
         } else if (error) {
             console.log(error);
             type = 'error';
         } else {
-            console.log(enMessage);
+            console.log(message);
             type = 'success';
         }
 
-        showToast(enMessage, hebMessage, type);
+        showToast(message, type);
     };
 
     const AddingCourseButtonstyle = (adding) => {
         if (adding) {
             addCourseButton.classList.add('adding_course');
-            addCourseButton.innerHTML = translations[displayLang]['adding_course_button'];
+            addCourseButton.innerHTML = getMessage('adding_course_button');
         } else {
             addCourseButton.classList.remove('adding_course');
-            addCourseButton.textContent = translations[displayLang]['add_course_button'];
+            addCourseButton.textContent = getMessage('add_course_button');
         }
     }
 
