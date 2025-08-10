@@ -1,0 +1,522 @@
+{
+  "extension_name": {
+    "message": "BGU Scout",
+    "description": "Name of the extension"
+  },
+  "extension_description": {
+    "message": "Show BGU grade distributions in a more convenient way",
+    "description": "Description of the extension"
+  },
+  "general_options_container_header": {
+    "message": "General",
+    "description": "Header for general settings section"
+  },
+  "user_container_header": {
+    "message": "User",
+    "description": "Header for user settings section"
+  },
+  "courses_container_header": {
+    "message": "Courses",
+    "description": "Header for courses section"
+  },
+  "theme": {
+    "message": "Color Theme:",
+    "description": "Label for theme selection"
+  },
+  "light": {
+    "message": "Light",
+    "description": "Light theme option"
+  },
+  "dark": {
+    "message": "Dark",
+    "description": "Dark theme option"
+  },
+  "system": {
+    "message": "System",
+    "description": "System theme option"
+  },
+  "language": {
+    "message": "Language:",
+    "description": "Label for language selection"
+  },
+  "color_palette": {
+    "message": "Color Scheme:",
+    "description": "Label for color palette selection"
+  },
+  "orange": {
+    "message": "Orange",
+    "description": "Orange color option"
+  },
+  "blue": {
+    "message": "Blue",
+    "description": "Blue color option"
+  },
+  "green": {
+    "message": "Green",
+    "description": "Green color option"
+  },
+  "red": {
+    "message": "Red",
+    "description": "Red color option"
+  },
+  "purple": {
+    "message": "Purple",
+    "description": "Purple color option"
+  },
+  "pink": {
+    "message": "Pink",
+    "description": "Pink color option"
+  },
+  "enable_departmental_details": {
+    "message": "Enable Departmental Details: ",
+    "description": "Label for departmental details toggle"
+  },
+  "enable_departmental_details_description": {
+    "message": "See grade distribution for each department separately",
+    "description": "Description for departmental details toggle"
+  },
+  "user_name": {
+    "message": "User Name:",
+    "description": "Label for username field"
+  },
+  "password": {
+    "message": "Password:",
+    "description": "Label for password field"
+  },
+  "id": {
+    "message": "ID Number:",
+    "description": "Label for ID field"
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button text"
+  },
+  "saving": {
+    "message": "Saving...",
+    "description": "Text shown while saving"
+  },
+  "forgot_password": {
+    "message": "Forgot Password",
+    "description": "Forgot password link text"
+  },
+  "disclaimer": {
+    "message": "Disclaimer: This extension is not affiliated with Ben-Gurion University of the Negev.\n            Your details are not stored outside the extension, they are only used for automatic filling of the login form on the BGU4U website.",
+    "description": "Privacy disclaimer text"
+  },
+  "auto_add_moodle_courses": {
+    "message": "Auto-Add Moodle Courses:",
+    "description": "Label for Moodle courses auto-add toggle"
+  },
+  "auto_add_moodle_courses_description": {
+    "message": "Visit <a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>Moodle courses page</a> to auto-add displayed courses",
+    "description": "Description for Moodle courses auto-add toggle"
+  },
+  "add_course_number": {
+    "message": "Add Course Number:",
+    "description": "Label for add course field"
+  },
+  "add_course_button": {
+    "message": "Add",
+    "description": "Add course button text"
+  },
+  "adding_course_button": {
+    "message": "Adding...",
+    "description": "Text shown while adding course"
+  },
+  "convert_to_hebrew": {
+    "message": "Convert Courses to Hebrew",
+    "description": "Convert to Hebrew button text"
+  },
+  "convert_to_english": {
+    "message": "Convert Courses to English",
+    "description": "Convert to English button text"
+  },
+  "converting_to_hebrew": {
+    "message": "Converting to Hebrew...",
+    "description": "Text shown while converting to Hebrew"
+  },
+  "converting_to_english": {
+    "message": "Converting to English...",
+    "description": "Text shown while converting to English"
+  },
+  "course_names_converted_successfully": {
+    "message": "Course names converted successfully",
+    "description": "Success message for course conversion"
+  },
+  "course_names_conversion_failed": {
+    "message": "Failed to convert course names",
+    "description": "Error message for course conversion"
+  },
+  "saved_courses": {
+    "message": "Saved Courses",
+    "description": "Label for saved courses section"
+  },
+  "options": {
+    "message": "Options",
+    "description": "Options button text"
+  },
+  "login": {
+    "message": "BGU Site",
+    "description": "Login button text"
+  },
+  "display": {
+    "message": "Display",
+    "description": "Display button text"
+  },
+  "export": {
+    "message": "Export",
+    "description": "Export button text"
+  },
+  "loading": {
+    "message": "Loading",
+    "description": "Loading text"
+  },
+  "year_span": {
+    "message": "Year Span",
+    "description": "Year span label"
+  },
+  "semesters": {
+    "message": "Semesters",
+    "description": "Semesters label"
+  },
+  "first_semester": {
+    "message": "Fall",
+    "description": "First semester label"
+  },
+  "second_semester": {
+    "message": "Spring",
+    "description": "Second semester label"
+  },
+  "third_semester": {
+    "message": "Summer",
+    "description": "Third semester label"
+  },
+  "exam_numbers": {
+    "message": "Exam Numbers",
+    "description": "Exam numbers label"
+  },
+  "total_exam": {
+    "message": "Total",
+    "description": "Total exam label"
+  },
+  "quiz_numbers": {
+    "message": "Quiz Numbers",
+    "description": "Quiz numbers label"
+  },
+  "course_number": {
+    "message": "Course",
+    "description": "Course label"
+  },
+  "select_course": {
+    "message": "Select Course or add more in options page",
+    "description": "Select course option text"
+  },
+  "no_user_message": {
+    "message": "Please fill your user details in the options page.",
+    "description": "Message when user details are missing"
+  },
+  "no_course_message": {
+    "message": "Please add course in the options page.",
+    "description": "Message when no courses are available"
+  },
+  "select_course_message": {
+    "message": "Please select a course.",
+    "description": "Message when no course is selected"
+  },
+  "exam_type": {
+    "message": "Exam Type:",
+    "description": "Exam type label"
+  },
+  "average": {
+    "message": "Average",
+    "description": "Average label"
+  },
+  "median": {
+    "message": "Median",
+    "description": "Median label"
+  },
+  "std_dev": {
+    "message": "Standard Deviation",
+    "description": "Standard deviation label"
+  },
+  "pass_rate": {
+    "message": "Pass Rate",
+    "description": "Pass rate label"
+  },
+  "total_students": {
+    "message": "Total Students",
+    "description": "Total students label"
+  },
+  "final_grades": {
+    "message": "Final Grades",
+    "description": "Final grades label"
+  },
+  "exam": {
+    "message": "Exam",
+    "description": "Exam label"
+  },
+  "quiz": {
+    "message": "Quiz",
+    "description": "Quiz label"
+  },
+  "lecturers": {
+    "message": "Lecturers",
+    "description": "Lecturers label"
+  },
+  "about_title": {
+    "message": "About BGU Scout",
+    "description": "About dialog title"
+  },
+  "version": {
+    "message": "Version",
+    "description": "Version label"
+  },
+  "creator": {
+    "message": "Creator",
+    "description": "Creator label"
+  },
+  "chrome_store": {
+    "message": "Chrome Store",
+    "description": "Chrome store link text"
+  },
+  "linkedin": {
+    "message": "LinkedIn",
+    "description": "LinkedIn link text"
+  },
+  "github": {
+    "message": "GitHub",
+    "description": "GitHub link text"
+  },
+  "course_file": {
+    "message": "Course File",
+    "description": "Course file button text"
+  },
+  "course_file_tooltip": {
+    "message": "Course File",
+    "description": "Course file button tooltip"
+  },
+  "course_file_error": {
+    "message": "Error loading course file",
+    "description": "Course file error message"
+  },
+  "dont_close_window": {
+    "message": "Please don't close the window",
+    "description": "Warning message about not closing window"
+  },
+  "toast_message": {
+    "message": "",
+    "description": "Generic toast message"
+  },
+  "title_color_palette": {
+    "message": "Choose the color scheme for the extension",
+    "description": "Tooltip for color palette selection"
+  },
+  "title_general_header": {
+    "message": "General settings for the extension",
+    "description": "Tooltip for general settings header"
+  },
+  "title_user_header": {
+    "message": "User account settings",
+    "description": "Tooltip for user settings header"
+  },
+  "title_courses_header": {
+    "message": "Manage your course list",
+    "description": "Tooltip for courses header"
+  },
+  "title_theme": {
+    "message": "Choose the color theme for the extension interface",
+    "description": "Tooltip for theme selection"
+  },
+  "title_system_theme": {
+    "message": "Use your system's default theme",
+    "description": "Tooltip for system theme option"
+  },
+  "title_light_theme": {
+    "message": "Use light theme",
+    "description": "Tooltip for light theme option"
+  },
+  "title_dark_theme": {
+    "message": "Use dark theme",
+    "description": "Tooltip for dark theme option"
+  },
+  "title_language": {
+    "message": "Choose the display language for the extension",
+    "description": "Tooltip for language selection"
+  },
+  "title_color_orange": {
+    "message": "Orange color scheme",
+    "description": "Tooltip for orange color option"
+  },
+  "title_color_blue": {
+    "message": "Blue color scheme",
+    "description": "Tooltip for blue color option"
+  },
+  "title_color_green": {
+    "message": "Green color scheme",
+    "description": "Tooltip for green color option"
+  },
+  "title_color_red": {
+    "message": "Red color scheme",
+    "description": "Tooltip for red color option"
+  },
+  "title_color_purple": {
+    "message": "Purple color scheme",
+    "description": "Tooltip for purple color option"
+  },
+  "title_color_pink": {
+    "message": "Pink color scheme",
+    "description": "Tooltip for pink color option"
+  },
+  "title_system_language": {
+    "message": "Use your system's default language",
+    "description": "Tooltip for system language option"
+  },
+  "title_he_language": {
+    "message": "Change language to Hebrew",
+    "description": "Tooltip for Hebrew language option"
+  },
+  "title_en_language": {
+    "message": "Change language to English",
+    "description": "Tooltip for English language option"
+  },
+  "title_enable_departmental": {
+    "message": "Toggle to see grade distribution for each department separately",
+    "description": "Tooltip for departmental details toggle"
+  },
+  "title_username": {
+    "message": "Enter your BGU username",
+    "description": "Tooltip for username field"
+  },
+  "title_password": {
+    "message": "Enter your BGU password",
+    "description": "Tooltip for password field"
+  },
+  "title_id": {
+    "message": "Enter your ID number",
+    "description": "Tooltip for ID field"
+  },
+  "title_save": {
+    "message": "Save your user details",
+    "description": "Tooltip for save button"
+  },
+  "title_forgot_password": {
+    "message": "Go to password reset page",
+    "description": "Tooltip for forgot password link"
+  },
+  "title_disclaimer": {
+    "message": "Important information about data privacy",
+    "description": "Tooltip for privacy disclaimer"
+  },
+  "title_moodle_sync": {
+    "message": "Automatically add courses from your Moodle page",
+    "description": "Tooltip for Moodle sync toggle"
+  },
+  "title_course_number": {
+    "message": "Enter a course number in format XXX.X.XXXX",
+    "description": "Tooltip for course number field"
+  },
+  "title_add_course": {
+    "message": "Add this course to your tracked courses",
+    "description": "Tooltip for add course button"
+  },
+  "title_edit_course": {
+    "message": "Save course name changes",
+    "description": "Tooltip for edit course button"
+  },
+  "title_remove_course": {
+    "message": "Remove this course",
+    "description": "Tooltip for remove course button"
+  },
+  "title_course_name": {
+    "message": "Edit course name",
+    "description": "Tooltip for course name input"
+  },
+  "title_course_number_label": {
+    "message": "Course number: ",
+    "description": "Tooltip prefix for course number label"
+  },
+  "no_internet_connection": {
+    "message": "No internet connection",
+    "description": "Error message when internet is not available"
+  },
+  "fill_all_fields": {
+    "message": "Please fill all fields",
+    "description": "Error message when required fields are empty"
+  },
+  "user_details_saved": {
+    "message": "User details already saved",
+    "description": "Message when user details are already saved"
+  },
+  "invalid_id": {
+    "message": "Invalid ID",
+    "description": "Error message for invalid ID format"
+  },
+  "error_opening_tab": {
+    "message": "Error opening BGU tab",
+    "description": "Error message when tab fails to open"
+  },
+  "error_saving": {
+    "message": "Error saving",
+    "description": "Generic error saving message"
+  },
+  "invalid_course_number": {
+    "message": "Invalid course number",
+    "description": "Error message for invalid course number format"
+  },
+  "course_already_exists": {
+    "message": "Course already exists",
+    "description": "Message when trying to add existing course"
+  },
+  "error_getting_courses": {
+    "message": "Error getting saved courses",
+    "description": "Error message when failing to retrieve courses"
+  },
+  "course_names_updated": {
+    "message": "Course names updated",
+    "description": "Success message when course names are updated"
+  },
+  "no_courses_to_convert": {
+    "message": "No courses to convert",
+    "description": "Message when no courses need conversion"
+  },
+  "conversion_failed": {
+    "message": "Conversion failed",
+    "description": "Error message when conversion fails"
+  },
+  "course_not_found": {
+    "message": "Course not found",
+    "description": "Error message when course is not found"
+  },
+  "all_courses_processed": {
+    "message": "All courses processed",
+    "description": "Success message when all courses are processed"
+  },
+  "connection_error": {
+    "message": "Connection error",
+    "description": "Error message for connection issues"
+  },
+  "invalid_user_details": {
+    "message": "Invalid user details",
+    "description": "Error message for invalid user credentials"
+  },
+  "no_statistics_data": {
+    "message": "No statistics data found for the selected criteria",
+    "description": "Error message when no statistics data is available"
+  },
+  "excel_creation_failed": {
+    "message": "Failed to create Excel file",
+    "description": "Error message when Excel file creation fails"
+  },
+  "invalid_years": {
+    "message": "Please select valid years",
+    "description": "Error message for invalid year selection"
+  },
+  "fill_required_fields": {
+    "message": "Please fill in all the required fields",
+    "description": "Error message when required fields are missing"
+  },
+  "excel_export_success": {
+    "message": "Excel export successful!",
+    "description": "Success message for Excel export"
+  }
+}

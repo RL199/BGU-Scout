@@ -31,6 +31,49 @@ document.addEventListener("DOMContentLoaded", function () {
         new Promise((resolve) => chrome.storage.local.get(key, resolve));
 
     let lang;
+    let translations = {}; // Store loaded translations
+
+    // Load translations from JSON files
+    async function loadTranslations(lang) {
+        try {
+            const response = await fetch(chrome.runtime.getURL(`_locales/${lang}/messages.json`));
+            const data = await response.json();
+            translations[lang] = data;
+        } catch (error) {
+            console.error(`Failed to load translations for ${lang}:`, error);
+            // Fallback to English if loading fails
+            if (lang !== 'en') {
+                await loadTranslations('en');
+            }
+        }
+    }
+
+    // Initialize i18n system with custom translation loader
+    function getMessage(key, substitutions = null, forceLang = null) {
+        const currentLang = forceLang || lang;
+
+        // First try custom loaded translations
+        if (translations[currentLang] && translations[currentLang][key]) {
+            let message = translations[currentLang][key].message;
+
+            // Handle substitutions if provided
+            if (substitutions) {
+                if (Array.isArray(substitutions)) {
+                    substitutions.forEach((sub, index) => {
+                        message = message.replace(`$${index + 1}`, sub);
+                    });
+                } else {
+                    message = message.replace('$1', substitutions);
+                }
+            }
+
+            return message;
+        }
+
+        // Fallback to Chrome's built-in i18n
+        const result = chrome.i18n.getMessage(key, substitutions);
+        return result || key;
+    }
 
     const optionsIcon = `
                 <svg xmlns="http://www.w3.org/2000/svg" id="options_icon" viewBox="0 0 16 16">
@@ -74,91 +117,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const translations = {
-        en: {
-            loading: "Loading",
-            year_span: "Year Span",
-            semesters: "Semesters",
-            options: "Options",
-            login: "BGU Site",
-            display: "Display",
-            export: "Export",
-            first_semester: "Fall",
-            second_semester: "Spring",
-            third_semester: "Summer",
-            exam_numbers: "Exam Numbers",
-            total_exam: "Total",
-            quiz_numbers: "Quiz Numbers",
-            course_number: "Course",
-            select_course: "Select Course or add more in options page",
-            no_user_message: "Please fill your user details in the options page.",
-            no_course_message: "Please add course in the options page.",
-            select_course_message: "Please select a course.",
-            exam_type: "Exam Type:",
-            average: "Average",
-            median: "Median",
-            std_dev: "Standard Deviation",
-            pass_rate: "Pass Rate",
-            total_students: "Total Students",
-            final_grades: "Final Grades",
-            exam: "Exam",
-            quiz: "Quiz",
-            lecturers: "Lecturers",
-            about_title: "About BGU Scout",
-            version: "Version",
-            creator: "Creator",
-            chrome_store: "Chrome Store",
-            linkedin: "LinkedIn",
-            github: "GitHub",
-            course_file: "Course File",
-            course_file_tooltip: "Course File",
-            course_file_error: "Error loading course file",
-            dont_close_window: "Please don't close the window"
-        },
-        he: {
-            loading: "טוען",
-            year_span: "טווח שנים",
-            semesters: "סמסטרים",
-            options: "אפשרויות",
-            login: "אתר בנ\"ג",
-            display: "הצג",
-            export: "ייצא",
-            first_semester: "סתיו",
-            second_semester: "אביב",
-            third_semester: "קיץ",
-            exam_numbers: "מספרי מבחנים",
-            total_exam: "סה\"כ",
-            quiz_numbers: "מספרי בחנים",
-            course_number: "קורס",
-            select_course: "בחר קורס או הוסף עוד בדף האפשרויות",
-            no_user_message: "אנא מלא את פרטי המשתמש בדף האפשרויות.",
-            no_course_message: "אנא הוסף קורס בדף האפשרויות.",
-            select_course_message: "אנא בחר קורס.",
-            exam_type: "סוג בחינה:",
-            average: "ממוצע",
-            median: "חציון",
-            std_dev: "סטיית תקן",
-            pass_rate: "אחוז עוברים",
-            total_students: "סה\"כ סטודנטים",
-            final_grades: "ציון סופי",
-            exam: "מבחן",
-            quiz: "בוחן",
-            lecturers: "מרצים",
-            about_title: "אודות BGU Scout",
-            version: "גרסה",
-            creator: "יוצר",
-            chrome_store: "חנות כרום",
-            linkedin: "לינקדאין",
-            github: "גיטהאב",
-            course_file: "קובץ קורס",
-            course_file_tooltip: "קובץ הקורס",
-            course_file_error: "שגיאה בטעינת קובץ הקורס",
-            dont_close_window: "אנא אל תסגור את החלון"
-        },
-    };
-
     // Set theme, language, and color
-    chrome.storage.local.get(["theme", "lang", "color"], function (result) {
+    chrome.storage.local.get(["theme", "lang", "color"], async function (result) {
         if (result.theme && result.theme !== "system") {
             document.documentElement.setAttribute("data-theme", result.theme);
         } else {
@@ -179,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
         document.documentElement.setAttribute("lang", lang);
-        updateTexts();
+        await updateTexts();
 
         // Apply color
         if (result.color) {
@@ -189,31 +149,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    function updateTexts() {
-        const elements = document.querySelectorAll('[data-i18n]');
-        elements.forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            const text = translations[lang][key];
-            el.innerHTML = text;
-            if (key === 'options') {
-                el.innerHTML = optionsIcon + text;
-            }
-            else if (key === 'login') {
-                el.innerHTML = loginIcon + text;
-            }
-            else if (key === 'display') {
-                el.innerHTML = displayIcon + text;
-            }
-            else if (key === 'export') {
-                el.innerHTML = excelIcon + text;
+    async function updateTexts() {
+        // Load translations for the current language first
+        await loadTranslations(lang);
+
+        // Update all elements with data-i18n attributes
+        const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+        elementsToTranslate.forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            const translatedText = getMessage(key);
+            if (translatedText && translatedText !== key) {
+                element.textContent = translatedText;
             }
         });
+
+        // Handle special cases with icons that need to be preserved
+        if (openOptionsBtn) openOptionsBtn.innerHTML = optionsIcon + getMessage('options');
+
+        if (openLoginBtn) openLoginBtn.innerHTML = loginIcon + getMessage('login');
+
+        if (displayBtn) displayBtn.innerHTML = displayIcon + getMessage('display');
+
+        if (exportExcelBtn) exportExcelBtn.innerHTML = excelIcon + getMessage('export');
+
+        // Update title
+        document.title = getMessage('extension_name');
 
         // Handle title attributes for tooltips
         const titleElements = document.querySelectorAll('[data-i18n-title]');
         titleElements.forEach(el => {
             const key = el.getAttribute('data-i18n-title');
-            const text = translations[lang][key];
+            const text = getMessage(key);
             if (text) {
                 el.setAttribute('title', text);
                 el.setAttribute('aria-label', text);
@@ -438,24 +404,22 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!result.user_name || !result.id || !result.password) {
             popupForm.style.display = "none";
             messageElement.style.display = "block";
-            message = translations[lang].no_user_message;
+            message = getMessage('no_user_message');
             messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
         }
         if (!result.saved_courses || Object.keys(result.saved_courses).length === 0) {
             popupForm.style.display = "none";
             messageElement.style.display = "block";
-            message = message + "<br>" + translations[lang].no_course_message;
+            message = message + "<br>" + getMessage('no_course_message');
             messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
         }
     });
 
 
-    function sendMessage(enMessage, heMessage, type) {
-        translations['en'].message = enMessage;
-        translations['he'].message = heMessage;
-        messageElement.innerHTML = translations[lang].message;
+    function sendMessage(message, type) {
+        messageElement.innerHTML = message;
         messageElement.style.display = "flex";
         messageElement.classList.add(type);
         setTimeout(() => {
@@ -478,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.add("loading");
             button.disabled = true;
 
-            sendMessage(translations['en'].dont_close_window, translations['he'].dont_close_window, 'info');
+            sendMessage(getMessage('dont_close_window'), 'info');
 
             const loadingPaths = [
                 '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
@@ -488,7 +452,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let currentIndex = 0;
             const interval = setInterval(() => {
-                button.innerHTML = loadingDisplayIcon + loadingPaths[currentIndex] + '</svg> ' + translations[lang].loading;
+                button.innerHTML = loadingDisplayIcon + loadingPaths[currentIndex] + '</svg> ' + getMessage('loading');
 
                 currentIndex = (currentIndex + 1) % loadingPaths.length;
             }, 300);
@@ -499,7 +463,7 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.add("loading");
             button.disabled = true;
 
-            sendMessage(translations['en'].dont_close_window, translations['he'].dont_close_window, 'info');
+            sendMessage(getMessage('dont_close_window'), 'info');
 
             const loadingPaths = [
                 'transform = "matrix(0.96592611, 0.25881901, -0.25881901, 0.96592611, 7.9e-7, 5.3e-7)"', // 15 degrees
@@ -518,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let currentIndex = 0;
             const interval = setInterval(() => {
-                button.innerHTML = excelLoadingIcon + loadingPaths[currentIndex] + ' style = "transform-origin: 7.99621px 9.99569px;"/> </svg> ' + translations[lang].loading;
+                button.innerHTML = excelLoadingIcon + loadingPaths[currentIndex] + ' style = "transform-origin: 7.99621px 9.99569px;"/> </svg> ' + getMessage('loading');
 
                 currentIndex = (currentIndex + 1) % loadingPaths.length;
             }, 100);
@@ -536,9 +500,9 @@ document.addEventListener("DOMContentLoaded", function () {
             messageElement.classList.remove('info');
 
             if (isExcel) {
-                button.innerHTML = excelIcon + translations[lang].export;
+                button.innerHTML = excelIcon + getMessage('export');
             } else {
-                button.innerHTML = displayIcon + translations[lang].display;
+                button.innerHTML = displayIcon + getMessage('display');
             }
         }
     }
@@ -642,11 +606,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             } catch (error) {
                 if (error.message === 'Probably invalid user details') {
-                    sendMessage("Probably invalid user details. Please check your user details in the options page.", "כנראה פרטי משתמש לא תקינים. אנא בדוק את פרטי המשתמש בדף האפשרויות.", "error");
+                    sendMessage(getMessage('invalid_user_details'), "error");
                     setLoadingButtonStyle(false);
                     return;
                 }
-                sendMessage("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.", "error");
+                sendMessage(getMessage('connection_error'), "error");
                 setLoadingButtonStyle(false);
                 console.error(error);
                 return;
@@ -707,7 +671,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 await waitForKey();
             }
         } catch (error) {
-            sendMessage("Failed to generate key. Please try again.", "נכשל ביצירת מפתח. אנא נסה שוב.", "error");
+            sendMessage(getMessage('connection_error'), "error");
             setLoadingButtonStyle(false);
             console.error(error);
             return;
@@ -774,7 +738,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const statisticsResults = await Promise.all(statisticsPromises);
         const statisticsData = statisticsResults.filter(result => result !== null);
         if (statisticsData.length === 0) {
-            sendMessage("No statistics data found for the selected criteria.", "לא נמצאו נתוני סטטיסטיקה עבור הקריטריונים שנבחרו.", "error");
+            sendMessage(getMessage('no_statistics_data'), "error");
             setLoadingButtonStyle(false, true);
             return;
         }
@@ -823,58 +787,58 @@ document.addEventListener("DOMContentLoaded", function () {
             // Define column schema with proper styling
             const schema = [
                 {
-                    column: translations[lang].year || 'Year',
+                    column: getMessage('year'),
                     type: String,
                     value: row => row.year,
                     width: 12
                 },
                 {
-                    column: translations[lang].semester || 'Semester',
+                    column: getMessage('semester'),
                     type: String,
                     value: row => row.semesterName,
                     width: 15
                 },
                 {
-                    column: translations[lang].exam_type || 'Exam Type',
+                    column: getMessage('exam_type'),
                     type: String,
                     value: row => row.examTypeName,
                     width: 20
                 },
                 {
-                    column: translations[lang].average || 'Average',
+                    column: getMessage('average'),
                     type: Number,
                     format: '0.00',
                     value: row => row.average,
                     width: 12
                 },
                 {
-                    column: translations[lang].median || 'Median',
+                    column: getMessage('median'),
                     type: Number,
                     format: '0.00',
                     value: row => row.median,
                     width: 12
                 },
                 {
-                    column: translations[lang].std_dev || 'Standard Deviation',
+                    column: getMessage('std_dev'),
                     type: String,
                     value: row => row.stdDev,
                     width: 15
                 },
                 {
-                    column: translations[lang].pass_rate || 'Pass Rate (%)',
+                    column: getMessage('pass_rate'),
                     type: Number,
                     format: '0.00%',
                     value: row => row.passRate / 100,
                     width: 15
                 },
                 {
-                    column: translations[lang].total_students || 'Total Students',
+                    column: getMessage('total_students'),
                     type: Number,
                     value: row => row.totalStudents,
                     width: 15
                 },
                 {
-                    column: translations[lang].lecturers || 'Lecturers',
+                    column: getMessage('lecturers'),
                     type: Number,
                     value: row => row.lecturers,
                     width: 15
@@ -897,19 +861,19 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Get semester name
                             let semesterName = '';
                             switch (semester) {
-                                case '1': semesterName = translations[lang].first_semester; break;
-                                case '2': semesterName = translations[lang].second_semester; break;
-                                case '3': semesterName = translations[lang].third_semester; break;
+                                case '1': semesterName = getMessage('first_semester'); break;
+                                case '2': semesterName = getMessage('second_semester'); break;
+                                case '3': semesterName = getMessage('third_semester'); break;
                             }
 
                             // Get exam type name
                             let examTypeName = '';
                             if (examType <= 5) {
                                 examTypeName = examType == 5
-                                    ? (translations[lang].final_grades)
-                                    : `${translations[lang].exam} ${examType}`;
+                                    ? (getMessage('final_grades'))
+                                    : `${getMessage('exam')} ${examType}`;
                             } else {
-                                examTypeName = `${translations[lang].quiz} ${examType - 10}`;
+                                examTypeName = `${getMessage('quiz')} ${examType - 10}`;
                             }
 
                             // Add data object
@@ -961,9 +925,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // Helper functions for localization
             function getSemesterName(semesterCode, language) {
                 switch (semesterCode) {
-                    case '1': return translations[language].first_semester;
-                    case '2': return translations[language].second_semester;
-                    case '3': return translations[language].third_semester;
+                    case '1': return getMessage('first_semester');
+                    case '2': return getMessage('second_semester');
+                    case '3': return getMessage('third_semester');
                     default: return 'Unknown';
                 }
             }
@@ -971,23 +935,22 @@ document.addEventListener("DOMContentLoaded", function () {
             function getExamTypeName(examTypeCode, language) {
                 if (examTypeCode <= 5) {
                     return examTypeCode == 5
-                        ? (translations[language].final_grades)
-                        : `${translations[language].exam} ${examTypeCode}`;
+                        ? (getMessage('final_grades'))
+                        : `${getMessage('exam')} ${examTypeCode}`;
                 } else {
-                    return `${translations[language].quiz} ${examTypeCode - 10}`;
+                    return `${getMessage('quiz')} ${examTypeCode - 10}`;
                 }
             }
 
             // Show success message
             sendMessage(
-                "Excel export successful!",
-                "ייצוא לאקסל הושלם בהצלחה!",
+                getMessage('excel_export_success'),
                 "success"
             );
 
         } catch (error) {
             console.error("Excel export error:", error);
-            sendMessage("Failed to create Excel file.", "נכשל ביצירת קובץ אקסל.", "error");
+            sendMessage(getMessage('excel_creation_failed'), "error");
         } finally {
             setLoadingButtonStyle(false, true);
         }
@@ -1003,7 +966,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (startYear < 1970 || endYear < 1970 ||
             startYear > new Date().getFullYear() ||
             endYear > new Date().getFullYear()) {
-            sendMessage("Please select valid years.", "אנא בחר שנים תקפות.", "error");
+            sendMessage(getMessage('invalid_years'), "error");
             startYearInput.classList.add("missing");
             endYearInput.classList.add("missing");
             return false;
@@ -1027,7 +990,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Check if all required fields are provided
         if (years.length === 0 || semesters.length === 0 || examTypes.length === 0 || courseSelect.value === "") {
-            sendMessage("Please fill in all the required fields.", "אנא מלא את כל השדות הנדרשים.", "error");
+            sendMessage(getMessage('fill_required_fields'), "error");
 
             // Mark missing fields and their parent fieldsets
             if (startYearInput.value === "" || endYearInput.value === "") {
@@ -1216,8 +1179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     courseFileBtn.addEventListener("click", async function () {
         const selectedCourse = courseInput.value;
         if (!selectedCourse) {
-            sendMessage(translations.en.select_course_message,
-                        translations.he.select_course_message, 'error');
+            sendMessage(getMessage('select_course_message'), 'error');
             courseInput.classList.add("missing");
             return;
         }
@@ -1244,8 +1206,7 @@ document.addEventListener("DOMContentLoaded", function () {
             chrome.tabs.create({ url: url });
         } catch (error) {
             console.error("Error opening course file:", error);
-            sendMessage(translations[lang]?.course_file_error || translations.en.course_file_error,
-                        translations[lang]?.course_file_error || translations.en.course_file_error, 'error');
+            sendMessage(getMessage('course_file_error'), 'error');
         }
     });
 
