@@ -1,0 +1,542 @@
+{
+  "extension_name": {
+    "message": "BGU Scout",
+    "description": "שם התוסף"
+  },
+  "extension_description": {
+    "message": "הצגת התפלגות ציונים באוניברסיטת בן גוריון בצורה נוחה יותר",
+    "description": "תיאור התוסף"
+  },
+  "general_options_container_header": {
+    "message": "כללי",
+    "description": "כותרת למקטע הגדרות כלליות"
+  },
+  "user_container_header": {
+    "message": "משתמש",
+    "description": "כותרת למקטע הגדרות משתמש"
+  },
+  "courses_container_header": {
+    "message": "קורסים",
+    "description": "כותרת למקטע קורסים"
+  },
+  "theme": {
+    "message": "ערכת נושא:",
+    "description": "תווית לבחירת ערכת נושא"
+  },
+  "light": {
+    "message": "בהיר",
+    "description": "אפשרות ערכת נושא בהירה"
+  },
+  "dark": {
+    "message": "כהה",
+    "description": "אפשרות ערכת נושא כהה"
+  },
+  "system": {
+    "message": "מערכת",
+    "description": "אפשרות ערכת נושא של המערכת"
+  },
+  "language": {
+    "message": "שפה:",
+    "description": "תווית לבחירת שפה"
+  },
+  "color_palette": {
+    "message": "ערכת צבעים:",
+    "description": "תווית לבחירת ערכת צבעים"
+  },
+  "orange": {
+    "message": "כתום",
+    "description": "אפשרות צבע כתום"
+  },
+  "blue": {
+    "message": "כחול",
+    "description": "אפשרות צבע כחול"
+  },
+  "green": {
+    "message": "ירוק",
+    "description": "אפשרות צבע ירוק"
+  },
+  "red": {
+    "message": "אדום",
+    "description": "אפשרות צבע אדום"
+  },
+  "purple": {
+    "message": "סגול",
+    "description": "אפשרות צבע סגול"
+  },
+  "pink": {
+    "message": "ורוד",
+    "description": "אפשרות צבע ורוד"
+  },
+  "enable_departmental_details": {
+    "message": "אפשר פירוט מחלקתי: ",
+    "description": "תווית למתג פרטים מחלקתיים"
+  },
+  "enable_departmental_details_description": {
+    "message": "לראות את התפלגות הציונים לכל מחלקה בנפרד",
+    "description": "תיאור למתג פרטים מחלקתיים"
+  },
+  "user_name": {
+    "message": "שם משתמש:",
+    "description": "תווית לשדה שם משתמש"
+  },
+  "password": {
+    "message": "סיסמה:",
+    "description": "תווית לשדה סיסמה"
+  },
+  "id": {
+    "message": "מספר תעודת זהות:",
+    "description": "תווית לשדה תעודת זהות"
+  },
+  "save": {
+    "message": "שמור",
+    "description": "טקסט כפתור שמירה"
+  },
+  "saving": {
+    "message": "שומר...",
+    "description": "טקסט המוצג בעת שמירה"
+  },
+  "forgot_password": {
+    "message": "שכחתי סיסמה",
+    "description": "טקסט קישור שכחתי סיסמה"
+  },
+  "disclaimer": {
+    "message": "לידיעתך: התוסף הזה אינו קשור לאוניברסיטת בן-גוריון בנגב.\n            הפרטים שלך לא נשמרים מחוץ לתוסף, הם משמשים רק למילוי אוטומטי של טופס ההתחברות באתר BGU4U.",
+    "description": "טקסט הצהרת פרטיות"
+  },
+  "auto_add_moodle_courses": {
+    "message": "הוספת קורסים אוטומטית מהמודל:",
+    "description": "תווית למתג הוספה אוטומטית של קורסי מודל"
+  },
+  "auto_add_moodle_courses_description": {
+    "message": "בקר ב<a href='https://moodle.bgu.ac.il/moodle/my/' target='_blank' rel='noopener noreferrer'>דף הקורסים במודל</a> כדי להוסיף אוטומטית קורסים מוצגים",
+    "description": "תיאור למתג הוספה אוטומטית של קורסי מודל"
+  },
+  "add_course_number": {
+    "message": "הוסף מספר קורס:",
+    "description": "תווית לשדה הוספת קורס"
+  },
+  "add_course_button": {
+    "message": "הוסף",
+    "description": "טקסט כפתור הוספת קורס"
+  },
+  "adding_course_button": {
+    "message": "מוסיף...",
+    "description": "טקסט המוצג בעת הוספת קורס"
+  },
+  "convert_to_hebrew": {
+    "message": "המר קורסים לעברית",
+    "description": "טקסט כפתור המרה לעברית"
+  },
+  "convert_to_english": {
+    "message": "המר קורסים לאנגלית",
+    "description": "טקסט כפתור המרה לאנגלית"
+  },
+  "converting_to_hebrew": {
+    "message": "ממיר לעברית...",
+    "description": "טקסט המוצג בעת המרה לעברית"
+  },
+  "converting_to_english": {
+    "message": "ממיר לאנגלית...",
+    "description": "טקסט המוצג בעת המרה לאנגלית"
+  },
+  "course_names_converted_successfully": {
+    "message": "שמות הקורסים הומרו בהצלחה",
+    "description": "הודעת הצלחה להמרת קורסים"
+  },
+  "course_names_conversion_failed": {
+    "message": "המרת שמות הקורסים נכשלה",
+    "description": "הודעת שגיאה להמרת קורסים"
+  },
+  "saved_courses": {
+    "message": "קורסים שמורים",
+    "description": "תווית למקטע קורסים שמורים"
+  },
+  "options": {
+    "message": "אפשרויות",
+    "description": "טקסט כפתור אפשרויות"
+  },
+  "login": {
+    "message": "אתר בנ\"ג",
+    "description": "טקסט כפתור כניסה"
+  },
+  "display": {
+    "message": "הצג",
+    "description": "טקסט כפתור הצגה"
+  },
+  "export": {
+    "message": "ייצא",
+    "description": "טקסט כפתור ייצוא"
+  },
+  "loading": {
+    "message": "טוען",
+    "description": "טקסט טעינה"
+  },
+  "year_span": {
+    "message": "טווח שנים",
+    "description": "תווית טווח שנים"
+  },
+  "semesters": {
+    "message": "סמסטרים",
+    "description": "תווית סמסטרים"
+  },
+  "first_semester": {
+    "message": "סתיו",
+    "description": "תווית סמסטר ראשון"
+  },
+  "second_semester": {
+    "message": "אביב",
+    "description": "תווית סמסטר שני"
+  },
+  "third_semester": {
+    "message": "קיץ",
+    "description": "תווית סמסטר קיץ"
+  },
+  "exam_numbers": {
+    "message": "מספרי מבחן",
+    "description": "תווית מספרי מבחן"
+  },
+  "total_exam": {
+    "message": "סה\"כ",
+    "description": "תווית מבחן סה\"כ"
+  },
+  "quiz_numbers": {
+    "message": "מספרי בוחן",
+    "description": "תווית מספרי בוחן"
+  },
+  "course_number": {
+    "message": "קורס",
+    "description": "תווית קורס"
+  },
+  "select_course": {
+    "message": "בחר קורס או הוסף עוד בעמוד האפשרויות",
+    "description": "טקסט אפשרות בחירת קורס"
+  },
+  "no_user_message": {
+    "message": "אנא מלא את פרטי המשתמש שלך בעמוד האפשרויות.",
+    "description": "הודעה כאשר פרטי משתמש חסרים"
+  },
+  "no_course_message": {
+    "message": "אנא הוסף קורס בעמוד האפשרויות.",
+    "description": "הודעה כאשר אין קורסים זמינים"
+  },
+  "select_course_message": {
+    "message": "אנא בחר קורס.",
+    "description": "הודעה כאשר לא נבחר קורס"
+  },
+  "exam_type": {
+    "message": "סוג מבחן:",
+    "description": "תווית סוג מבחן"
+  },
+  "average": {
+    "message": "ממוצע",
+    "description": "תווית ממוצע"
+  },
+  "median": {
+    "message": "חציון",
+    "description": "תווית חציון"
+  },
+  "std_dev": {
+    "message": "סטיית תקן",
+    "description": "תווית סטיית תקן"
+  },
+  "pass_rate": {
+    "message": "אחוז עוברים",
+    "description": "תווית אחוז עוברים"
+  },
+  "total_students": {
+    "message": "סה\"כ סטודנטים",
+    "description": "תווית סה\"כ סטודנטים"
+  },
+  "final_grades": {
+    "message": "ציונים סופיים",
+    "description": "תווית ציונים סופיים"
+  },
+  "exam": {
+    "message": "מבחן",
+    "description": "תווית מבחן"
+  },
+  "quiz": {
+    "message": "בוחן",
+    "description": "תווית בוחן"
+  },
+  "lecturers": {
+    "message": "מרצים",
+    "description": "תווית מרצים"
+  },
+  "about_title": {
+    "message": "אודות BGU Scout",
+    "description": "כותרת דיאלוג אודות"
+  },
+  "version": {
+    "message": "גרסה",
+    "description": "תווית גרסה"
+  },
+  "creator": {
+    "message": "יוצר",
+    "description": "תווית יוצר"
+  },
+  "chrome_store": {
+    "message": "חנות כרום",
+    "description": "טקסט קישור לחנות כרום"
+  },
+  "linkedin": {
+    "message": "לינקדאין",
+    "description": "טקסט קישור ללינקדאין"
+  },
+  "github": {
+    "message": "גיטהאב",
+    "description": "טקסט קישור לגיטהאב"
+  },
+  "course_file": {
+    "message": "קובץ קורס",
+    "description": "טקסט כפתור קובץ קורס"
+  },
+  "course_file_tooltip": {
+    "message": "קובץ קורס",
+    "description": "רמז כלי לכפתור קובץ קורס"
+  },
+  "course_file_error": {
+    "message": "שגיאה בטעינת קובץ הקורס",
+    "description": "הודעת שגיאה של קובץ קורס"
+  },
+  "dont_close_window": {
+    "message": "אנא אל תסגור את החלון",
+    "description": "הודעת אזהרה על אי-סגירת חלון"
+  },
+  "toast_message": {
+    "message": "",
+    "description": "הודעת טוסט כללית"
+  },
+  "title_color_palette": {
+    "message": "בחר ערכת צבעים לתוסף",
+    "description": "רמז כלי לבחירת ערכת צבעים"
+  },
+  "title_general_header": {
+    "message": "הגדרות כלליות של התוסף",
+    "description": "רמז כלי לכותרת הגדרות כלליות"
+  },
+  "title_user_header": {
+    "message": "הגדרות חשבון משתמש",
+    "description": "רמז כלי לכותרת הגדרות משתמש"
+  },
+  "title_courses_header": {
+    "message": "נהל את רשימת הקורסים שלך",
+    "description": "רמז כלי לכותרת קורסים"
+  },
+  "title_theme": {
+    "message": "בחר ערכת נושא לממשק התוסף",
+    "description": "רמז כלי לבחירת ערכת נושא"
+  },
+  "title_system_theme": {
+    "message": "השתמש בערכת הנושא של המערכת שלך",
+    "description": "רמז כלי לאפשרות ערכת נושא של המערכת"
+  },
+  "title_light_theme": {
+    "message": "השתמש בערכת נושא בהירה",
+    "description": "רמז כלי לאפשרות ערכת נושא בהירה"
+  },
+  "title_dark_theme": {
+    "message": "השתמש בערכת נושא כהה",
+    "description": "רמז כלי לאפשרות ערכת נושא כהה"
+  },
+  "title_language": {
+    "message": "בחר שפת תצוגה לתוסף",
+    "description": "רמז כלי לבחירת שפה"
+  },
+  "title_color_orange": {
+    "message": "ערכת צבעים כתומה",
+    "description": "רמז כלי לאפשרות צבע כתום"
+  },
+  "title_color_blue": {
+    "message": "ערכת צבעים כחולה",
+    "description": "רמז כלי לאפשרות צבע כחול"
+  },
+  "title_color_green": {
+    "message": "ערכת צבעים ירוקה",
+    "description": "רמז כלי לאפשרות צבע ירוק"
+  },
+  "title_color_red": {
+    "message": "ערכת צבעים אדומה",
+    "description": "רמז כלי לאפשרות צבע אדום"
+  },
+  "title_color_purple": {
+    "message": "ערכת צבעים סגולה",
+    "description": "רמז כלי לאפשרות צבע סגול"
+  },
+  "title_color_pink": {
+    "message": "ערכת צבעים ורודה",
+    "description": "רמז כלי לאפשרות צבע ורוד"
+  },
+  "title_system_language": {
+    "message": "השתמש בשפת המערכת שלך",
+    "description": "רמז כלי לאפשרות שפת המערכת"
+  },
+  "title_he_language": {
+    "message": "שנה שפה לעברית",
+    "description": "רמז כלי לאפשרות שפה עברית"
+  },
+  "title_en_language": {
+    "message": "שנה שפה לאנגלית",
+    "description": "רמז כלי לאפשרות שפה אנגלית"
+  },
+  "title_enable_departmental": {
+    "message": "הפעל כדי לראות התפלגות ציונים לכל מחלקה בנפרד",
+    "description": "רמז כלי למתג פרטים מחלקתיים"
+  },
+  "title_username": {
+    "message": "הזן את שם המשתמש שלך ב-BGU",
+    "description": "רמז כלי לשדה שם משתמש"
+  },
+  "title_password": {
+    "message": "הזן את הסיסמה שלך ב-BGU",
+    "description": "רמז כלי לשדה סיסמה"
+  },
+  "title_id": {
+    "message": "הזן את מספר תעודת הזהות שלך",
+    "description": "רמז כלי לשדה תעודת זהות"
+  },
+  "title_save": {
+    "message": "שמור את פרטי המשתמש שלך",
+    "description": "רמז כלי לכפתור שמירה"
+  },
+  "title_forgot_password": {
+    "message": "עבור לעמוד איפוס סיסמה",
+    "description": "רמז כלי לקישור שכחתי סיסמה"
+  },
+  "title_disclaimer": {
+    "message": "מידע חשוב על פרטיות הנתונים",
+    "description": "רמז כלי להצהרת פרטיות"
+  },
+  "title_moodle_sync": {
+    "message": "הוסף אוטומטית קורסים מדף המודל שלך",
+    "description": "רמז כלי למתג סנכרון מודל"
+  },
+  "title_course_number": {
+    "message": "הזן מספר קורס בפורמט XXX.X.XXXX",
+    "description": "רמז כלי לשדה מספר קורס"
+  },
+  "title_add_course": {
+    "message": "הוסף קורס זה לקורסים המעוקבים שלך",
+    "description": "רמז כלי לכפתור הוספת קורס"
+  },
+  "title_edit_course": {
+    "message": "שמור שינויים בשם הקורס",
+    "description": "רמז כלי לכפתור עריכת קורס"
+  },
+  "title_remove_course": {
+    "message": "הסר קורס זה",
+    "description": "רמז כלי לכפתור הסרת קורס"
+  },
+  "title_course_name": {
+    "message": "ערוך את שם הקורס",
+    "description": "רמז כלי לשדה שם קורס"
+  },
+  "title_course_number_label": {
+    "message": "מספר קורס: ",
+    "description": "קידומת רמז כלי לתווית מספר קורס"
+  },
+  "no_internet_connection": {
+    "message": "אין חיבור לאינטרנט",
+    "description": "הודעת שגיאה כאשר האינטרנט לא זמין"
+  },
+  "fill_all_fields": {
+    "message": "אנא מלא את כל השדות",
+    "description": "הודעת שגיאה כאשר שדות נדרשים ריקים"
+  },
+  "user_details_saved": {
+    "message": "פרטי המשתמש כבר נשמרו",
+    "description": "הודעה כאשר פרטי המשתמש כבר נשמרו"
+  },
+  "invalid_id": {
+    "message": "תעודת זהות לא תקינה",
+    "description": "הודעת שגיאה עבור פורמט תעודת זהות לא תקין"
+  },
+  "error_opening_tab": {
+    "message": "שגיאה בפתיחת הטאב",
+    "description": "הודעת שגיאה כאשר הטאב לא נפתח"
+  },
+  "error_saving": {
+    "message": "שגיאה בשמירה",
+    "description": "הודעת שגיאה כללית בשמירה"
+  },
+  "invalid_course_number": {
+    "message": "מספר קורס לא תקין",
+    "description": "הודעת שגיאה עבור פורמט מספר קורס לא תקין"
+  },
+  "course_already_exists": {
+    "message": "הקורס כבר קיים",
+    "description": "הודעה בעת ניסיון להוסיף קורס קיים"
+  },
+  "error_getting_courses": {
+    "message": "שגיאה בקבלת הקורסים",
+    "description": "הודעת שגיאה כאשר נכשל לאחזר קורסים"
+  },
+  "course_names_updated": {
+    "message": "שמות הקורסים עודכנו ל",
+    "description": "הודעת הצלחה כאשר שמות הקורסים מתעדכנים"
+  },
+  "no_courses_to_convert": {
+    "message": "אין קורסים להמיר",
+    "description": "הודעה כאשר אין קורסים הזקוקים להמרה"
+  },
+  "conversion_failed": {
+    "message": "ההמרה נכשלה",
+    "description": "הודעת שגיאה כאשר ההמרה נכשלת"
+  },
+  "course_not_found": {
+    "message": "הקורס לא נמצא",
+    "description": "הודעת שגיאה כאשר הקורס לא נמצא"
+  },
+  "all_courses_processed": {
+    "message": "כל הקורסים טופלו",
+    "description": "הודעת הצלחה כאשר כל הקורסים מעובדים"
+  },
+  "connection_error": {
+    "message": "שגיאת חיבור",
+    "description": "הודעת שגיאה עבור בעיות חיבור"
+  },
+  "invalid_user_details": {
+    "message": "פרטי משתמש לא תקינים",
+    "description": "הודעת שגיאה עבור פרטי משתמש לא תקינים"
+  },
+  "no_statistics_data": {
+    "message": "לא נמצאו נתוני סטטיסטיקה עבור הקריטריונים שנבחרו",
+    "description": "הודעת שגיאה כאשר לא נמצאו נתוני סטטיסטיקה"
+  },
+  "excel_creation_failed": {
+    "message": "נכשל ביצירת קובץ אקסל",
+    "description": "הודעת שגיאה כאשר יצירת קובץ אקסל נכשלת"
+  },
+  "invalid_years": {
+    "message": "אנא בחר שנים תקפות",
+    "description": "הודעת שגיאה עבור בחירת שנים לא תקפות"
+  },
+  "fill_required_fields": {
+    "message": "אנא מלא את כל השדות הנדרשים",
+    "description": "הודעת שגיאה כאשר שדות נדרשים חסרים"
+  },
+  "excel_export_success": {
+    "message": "ייצוא לאקסל הושלם בהצלחה!",
+    "description": "הודעת הצלחה עבור ייצוא אקסל"
+  },
+  "website_not_loaded": {
+    "message": "האתר לא נטען",
+    "description": "הודעת שגיאה כאשר האתר לא נטען"
+  },
+  "user_details_saved_success": {
+    "message": "פרטי המשתמש נשמרו",
+    "description": "הודעת הצלחה כאשר פרטי המשתמש נשמרים"
+  },
+  "course_name_saved": {
+    "message": "שם הקורס נשמר",
+    "description": "הודעת הצלחה כאשר שם הקורס נשמר"
+  },
+  "course_removed": {
+    "message": "הקורס הוסר",
+    "description": "הודעת הצלחה כאשר הקורס מוסר"
+  },
+  "course_added": {
+    "message": "הקורס נוסף",
+    "description": "הודעת הצלחה כאשר הקורס נוסף"
+  }
+}
