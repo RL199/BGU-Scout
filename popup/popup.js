@@ -442,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.add("loading");
             button.disabled = true;
 
-            sendMessage(getMessage('dont_close_window'), 'info');
+            sendMessage(getMessage('dont_close_window'), 'other');
 
             const loadingPaths = [
                 '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
@@ -463,7 +463,7 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.add("loading");
             button.disabled = true;
 
-            sendMessage(getMessage('dont_close_window'), 'info');
+            sendMessage(getMessage('dont_close_window'), 'other');
 
             const loadingPaths = [
                 'transform = "matrix(0.96592611, 0.25881901, -0.25881901, 0.96592611, 7.9e-7, 5.3e-7)"', // 15 degrees
