@@ -790,15 +790,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (coursesToConvert.length === 0) {
-                const langNameEng = targetLang === 'he' ? 'Hebrew' : 'English';
-                const langNameHeb = targetLang === 'he' ? 'עברית' : 'אנגלית';
                 if (courseExists) {
-                    await chrome.storage.local.set({ course_name_preferred_lang: targetLang });
-                    if (targetLang === 'he') {
-                        handleMessages(getMessage('course_names_updated') + langNameHeb, null, false);
-                    } else {
-                        handleMessages(getMessage('course_names_updated') + langNameEng, null, false);
-                    }
+                    courseConversionCompleteMessage(targetLang);
                 } else {
                     handleMessages(getMessage('no_courses_to_convert'), null, false);
                 }
@@ -903,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Check if all courses are converted
             if (convertedCount >= storage.total_courses_to_convert) {
-                handleMessages(getMessage('all_courses_processed'), null, false);
+                courseConversionCompleteMessage(storage.course_name_preferred_lang);
                 await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
                 setConvertingState(false);
             }
@@ -935,6 +928,17 @@ document.addEventListener('DOMContentLoaded', function () {
             chrome.storage.local.remove('checkedUserDetails');
         }
     });
+
+    async function courseConversionCompleteMessage(targetLang) {
+        const langNameEng = targetLang === 'he' ? 'Hebrew' : 'English';
+        const langNameHeb = targetLang === 'he' ? 'עברית' : 'אנגלית';
+        await chrome.storage.local.set({ course_name_preferred_lang: targetLang });
+        if (displayLang === 'he') {
+            handleMessages(getMessage('course_names_updated') + langNameHeb, null, false);
+        } else {
+            handleMessages(getMessage('course_names_updated') + " " + langNameEng, null, false);
+        }
+    }
 
     function updateConversionButtonsVisibility() {
         const coursesList = document.getElementById("courses_list");
@@ -1211,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Check if all courses are converted
             if (convertedCount >= storage.total_courses_to_convert) {
-                handleMessages(getMessage('all_courses_processed'), null, false);
+                courseConversionCompleteMessage(storage.course_name_preferred_lang);
                 setConvertingState(false);
                 await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
             }
