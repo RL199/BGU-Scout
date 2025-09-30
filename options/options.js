@@ -405,19 +405,19 @@ document.addEventListener('DOMContentLoaded', function () {
         let iconFolder;
         // Only change to blue icon if blue is selected, otherwise use default orange
         if (color === '#2196f3') { // Blue
-            iconFolder = 'images/icon-blue-';
+            iconFolder = 'extension-icons/icon-blue-';
         } else if (color === '#4caf50') { // Green
-            iconFolder = 'images/icon-green-';
+            iconFolder = 'extension-icons/icon-green-';
         } else if (color === '#f44336') { // Red
-            iconFolder = 'images/icon-red-';
+            iconFolder = 'extension-icons/icon-red-';
         } else if (color === '#9c27b0') { // Purple
-            iconFolder = 'images/icon-purple-';
+            iconFolder = 'extension-icons/icon-purple-';
         } else if (color === '#e91e63') { // Pink
-            iconFolder = 'images/icon-pink-';
+            iconFolder = 'extension-icons/icon-pink-';
         } else {
-            iconFolder = 'images/icon-'; // Default orange for all other colors
+            iconFolder = 'extension-icons/icon-'; // Default orange for all other colors
         }
-        let colorName = iconFolder.replace('images/icon-', '').replace('-', '');
+        let colorName = iconFolder.replace('/icon-', '').replace('-', '');
         if (!colorName) colorName = 'orange';
 
         chrome.action.setIcon({
@@ -441,17 +441,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (favicon) {
             let iconFolder;
             if (color === '#2196f3') { // Blue
-                iconFolder = '../images/icon-blue-';
+                iconFolder = '../extension-icons/icon-blue-';
             } else if (color === '#4caf50') { // Green
-                iconFolder = '../images/icon-green-';
+                iconFolder = '../extension-icons/icon-green-';
             } else if (color === '#f44336') { // Red
-                iconFolder = '../images/icon-red-';
+                iconFolder = '../extension-icons/icon-red-';
             } else if (color === '#9c27b0') { // Purple
-                iconFolder = '../images/icon-purple-';
+                iconFolder = '../extension-icons/icon-purple-';
             } else if (color === '#e91e63') { // Pink
-                iconFolder = '../images/icon-pink-';
+                iconFolder = '../extension-icons/icon-pink-';
             } else {
-                iconFolder = '../images/icon-'; // Default orange for all other colors
+                iconFolder = '../extension-icons/icon-'; // Default orange for all other colors
             }
 
             favicon.href = iconFolder + "16.png";

@@ -1,4 +1,4 @@
-# <div align="center"><img src="images\icon-48.png" alt="BGU Scout Icon"> BGU Scout</div>
+# <div align="center"><img src="extension-icons\icon-48.png" alt="BGU Scout Icon"> BGU Scout</div>
 
 <div align="center">
   <a href="https://github.com/RL199/BGU-Scout/issues">

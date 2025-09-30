@@ -81,7 +81,7 @@ jobs:
         if: steps.check_tag.outputs.exists == 'false'
         run: |
           mkdir -p build
-          zip -r build/BGU.Scout.zip . -x "*.git*" "*.github*" "*.idea*" "*.vscode*" "Screenshots/*" "build/*" "*.DS_Store" "*.md" "icons/*"
+          zip -r build/BGU.Scout.zip . -x "*.git*" "*.github*" "*.idea*" "*.vscode*" "Screenshots/*" "build/*" "*.DS_Store" "*.md" "svg-assets/*"
 
       - name: Upload to Chrome Web Store
         if: steps.check_tag.outputs.exists == 'false'
@@ -106,10 +106,10 @@ jobs:
             ${{ steps.get_changelog.outputs.changelog }}
 
             ## Installation
-            
+
             **Option 1: Chrome Web Store (Recommended)**
             The extension has been automatically published to the [Chrome Web Store](https://chromewebstore.google.com/detail/bgu-scout/fdigilamlkldgalnpjmohgefpaoghhmh).
-            
+
             **Option 2: Manual Installation**
             1. Download the ZIP file
             2. Extract it to a folder
