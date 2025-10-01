@@ -213,6 +213,20 @@ select {
     transition: all 0.3s ease;
 }
 
+input[type="number"] {
+    max-width: 50px;
+}
+
+/* hide arrows in number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 select {
     padding-left: 2px;
     padding-right: 2px;
