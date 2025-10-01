@@ -155,9 +155,9 @@
     "message": "אפשרויות",
     "description": "טקסט כפתור אפשרויות"
   },
-  "login": {
-    "message": "אתר בנ\"ג",
-    "description": "טקסט כפתור כניסה"
+  "bgu_sites": {
+    "message": "אתרי בנ\"ג",
+    "description": "טקסט כפתור אתרי בנ\"ג"
   },
   "display": {
     "message": "הצג",
@@ -538,5 +538,49 @@
   "course_added": {
     "message": "הקורס נוסף",
     "description": "הודעת הצלחה כאשר הקורס נוסף"
+  },
+  "bgu_sites_title": {
+    "message": "אתרי בנ\"ג",
+    "description": "כותרת למודל אתרי בנ\"ג"
+  },
+  "moodle": {
+    "message": "מודל",
+    "description": "טקסט קישור למודל"
+  },
+  "student_services": {
+    "message": "מנהל תלמידים",
+    "description": "טקסט קישור למנהל תלמידים"
+  },
+  "gezer": {
+    "message": "גזר",
+    "description": "טקסט קישור לגזר"
+  },
+  "student_portal": {
+    "message": "פורטל סטודנטים",
+    "description": "טקסט קישור לפורטל סטודנטים"
+  },
+  "bgu_website": {
+    "message": "אונ' בן גוריון",
+    "description": "טקסט קישור לאתר אוניברסיטת בן גוריון"
+  },
+  "course_registration": {
+    "message": "רישום לקורסים",
+    "description": "טקסט קישור לרישום לקורסים"
+  },
+  "course_files": {
+    "message": "קובץ הקורסים",
+    "description": "טקסט קישור לקובץ הקורסים"
+  },
+  "academic_repositories": {
+    "message": "מאגרים אקדמיים",
+    "description": "טקסט קישור למאגרים אקדמיים"
+  },
+  "student_union": {
+    "message": "אתר האגודה",
+    "description": "טקסט קישור לאגודה הסטודנטיאלית"
+  },
+  "campus_guru": {
+    "message": "Campus Guru",
+    "description": "טקסט קישור ל-Campus Guru"
   }
 }

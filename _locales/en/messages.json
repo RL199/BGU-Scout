@@ -155,9 +155,9 @@
     "message": "Options",
     "description": "Options button text"
   },
-  "login": {
-    "message": "BGU Site",
-    "description": "Login button text"
+  "bgu_sites": {
+    "message": "BGU Sites",
+    "description": "BGU Sites button text"
   },
   "display": {
     "message": "Display",
@@ -538,5 +538,49 @@
   "course_added": {
     "message": "Course added",
     "description": "Success message when course is added"
+  },
+  "bgu_sites_title": {
+    "message": "BGU Sites",
+    "description": "Title for BGU sites modal"
+  },
+  "moodle": {
+    "message": "Moodle",
+    "description": "Moodle site link text"
+  },
+  "student_services": {
+    "message": "Student Services",
+    "description": "Student Services site link text"
+  },
+  "gezer": {
+    "message": "Gezer",
+    "description": "Gezer site link text"
+  },
+  "student_portal": {
+    "message": "Student Portal",
+    "description": "Student Portal site link text"
+  },
+  "bgu_website": {
+    "message": "BGU Website",
+    "description": "BGU Website link text"
+  },
+  "course_registration": {
+    "message": "Course Registration",
+    "description": "Course Registration site link text"
+  },
+  "course_files": {
+    "message": "Course Files",
+    "description": "Course Files site link text"
+  },
+  "academic_repositories": {
+    "message": "Academic Repositories",
+    "description": "Academic Repositories site link text"
+  },
+  "student_union": {
+    "message": "Student Union",
+    "description": "Student Union site link text"
+  },
+  "campus_guru": {
+    "message": "Campus Guru",
+    "description": "Campus Guru site link text"
   }
 }

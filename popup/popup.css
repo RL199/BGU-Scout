@@ -134,7 +134,7 @@ button {
     color: var(--button-text);
     border: none;
     border-radius: 4px;
-    padding: 8px 16px;
+    padding: 8px 14px;
     cursor: pointer;
     font-size: large;
     font-weight: bold;
@@ -254,7 +254,7 @@ select:hover {
     cursor: pointer;
 }
 
-#login_icon,
+#sites_icon,
 #display_icon,
 #options_icon {
     fill: var(--button-text);
@@ -319,7 +319,6 @@ select:hover {
 }
 
 .course-file-btn {
-    padding: 6px 10px !important;
     flex: 1 !important;
     min-width: auto;
     font-size: 17px;
@@ -525,7 +524,7 @@ select:hover {
 .modal-header {
     background: linear-gradient(135deg, var(--h1-color), var(--button-bg));
     color: var(--button-text);
-    padding: 10px 20px;
+    padding: 8px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -570,7 +569,7 @@ select:hover {
 }
 
 .modal-body {
-    padding: 24px 20px;
+    padding: 12px 16px;
 }
 
 .about-section {
@@ -620,7 +619,7 @@ select:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px 8px;
+    padding: 8px 8px;
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
