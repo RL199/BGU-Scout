@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated icons folder names for better clarity.
 - "BGU Site" button in popup page changed to "BGU Sites" and opens list of useful links.
+- Popup Page Year Span input width adjusted for better appearance.
 
 ## [1.4.2]
 
