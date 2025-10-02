@@ -256,12 +256,16 @@ select:focus {
     border-color: var(--button-bg);
 }
 
-input:hover,
-select:hover,
 button:hover,
 .link-item:hover {
     opacity: 0.9;
     filter: brightness(98%);
+    transition: all 0.3s ease;
+}
+
+input:hover,
+select:hover {
+    box-shadow: 0 0px 8px rgba(255, 255, 255, 0.15);
     transition: all 0.3s ease;
 }
 
