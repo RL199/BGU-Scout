@@ -410,15 +410,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let message = "";
         const popupForm = document.getElementById("popup_form");
         if (!result.user_name || !result.id || !result.password) {
-            popupForm.style.display = "none";
-            messageElement.style.display = "block";
+            popupForm.classList.add("hidden");
+            messageElement.classList.add("visible-block");
             message = getMessage('no_user_message');
             messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
         }
         if (!result.saved_courses || Object.keys(result.saved_courses).length === 0) {
-            popupForm.style.display = "none";
-            messageElement.style.display = "block";
+            popupForm.classList.add("hidden");
+            messageElement.classList.add("visible-block");
             message = message + "<br>" + getMessage('no_course_message');
             messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
@@ -430,15 +430,15 @@ document.addEventListener("DOMContentLoaded", function () {
         messageElement.classList.remove('error', 'other', 'success');
 
         messageElement.innerHTML = message;
-        messageElement.style.display = "flex";
+        messageElement.classList.add("visible-flex");
         messageElement.classList.add(type);
     }
 
     // Open BGU sites modal
     openSitesBtn.addEventListener("click", function () {
         mainContainer.classList.add("about_modal");
-        sitesModal.style.display = "block";
-        document.body.style.overflow = "hidden"; // Prevent background scrolling
+        sitesModal.classList.add("show");
+        document.body.classList.add("modal-open"); // Prevent background scrolling
     });
 
     async function setLoadingButtonStyle(loading, isExcel = false) {
@@ -503,7 +503,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Hide the message if loading
             if (button.classList.contains("loading")) {
-                messageElement.style.display = "none";
+                messageElement.classList.add("hidden");
                 messageElement.classList.remove('info');
             }
 
@@ -1271,8 +1271,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // About modal functionality
     aboutBtn.addEventListener("click", function () {
         mainContainer.classList.add("about_modal");
-        aboutModal.style.display = "block";
-        document.body.style.overflow = "hidden"; // Prevent background scrolling
+        aboutModal.classList.add("show");
+        document.body.classList.add("modal-open"); // Prevent background scrolling
     });
 
     closeModalBtn.addEventListener("click", function () {
@@ -1287,8 +1287,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function closeAboutModal() {
-        aboutModal.style.display = "none";
-        document.body.style.overflow = ""; // Restore scrolling
+        aboutModal.classList.remove("show");
+        document.body.classList.remove("modal-open"); // Restore scrolling
         mainContainer.classList.remove("about_modal");
     }
 
@@ -1305,8 +1305,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function closeSitesModal() {
-        sitesModal.style.display = "none";
-        document.body.style.overflow = ""; // Restore scrolling
+        sitesModal.classList.remove("show");
+        document.body.classList.remove("modal-open"); // Restore scrolling
         mainContainer.classList.remove("about_modal");
     }
 });

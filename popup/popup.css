@@ -677,3 +677,26 @@ select:hover {
     left: auto;
     right: 0;
 }
+
+/* Display state classes */
+.hidden {
+    display: none !important;
+}
+
+.visible-block {
+    display: block !important;
+}
+
+.visible-flex {
+    display: flex !important;
+}
+
+/* Body overflow control */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Modal display classes */
+.modal.show {
+    display: block;
+}
