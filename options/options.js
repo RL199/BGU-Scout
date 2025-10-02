@@ -629,13 +629,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function setSaveLoading(loading) {
         if (loading) {
             saveButton.disabled = true;
-            saveButton.style.opacity = '0.7';
-            saveButton.style.pointerEvents = 'none';
+            saveButton.classList.add('button-loading');
             saveButton.textContent = getMessage('saving');
         } else {
             saveButton.disabled = false;
-            saveButton.style.opacity = '1';
-            saveButton.style.pointerEvents = 'auto';
+            saveButton.classList.remove('button-loading');
             saveButton.textContent = getMessage('save');
         }
     }
@@ -677,20 +675,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const hasValue = this.value.trim() !== '';
 
         if (hasValue) {
-            NewCourseNumberInput.style.width = 'calc(100% - 110px)';
-            NewCourseNumberInput.style.transition = 'width 0.07s ease-in-out';
+            NewCourseNumberInput.classList.add('expanded');
+            NewCourseNumberInput.classList.remove('full-width');
             addCourseButton.textContent = addButtonText;
-            addCourseButton.style.width = '26.55%';
-            setTimeout(() => { addCourseButton.style.display = 'inline-block'; addCourseButton.disabled = false; }, 70);
+            addCourseButton.classList.add('expanded');
+            setTimeout(() => { 
+                addCourseButton.classList.add('button-visible');
+                addCourseButton.classList.remove('button-hidden');
+                addCourseButton.disabled = false; 
+            }, 70);
         } else {
-            addCourseButton.style.display = 'none';
+            addCourseButton.classList.add('button-hidden');
+            addCourseButton.classList.remove('button-visible');
             addCourseButton.disabled = true;
             addCourseButton.textContent = '';
             setTimeout(() => {
-                addCourseButton.style.display = 'none';
+                addCourseButton.classList.add('button-hidden');
+                addCourseButton.classList.remove('button-visible');
                 addCourseButton.disabled = true;
                 addCourseButton.textContent = '';
-                NewCourseNumberInput.style.width = '100%';
+                NewCourseNumberInput.classList.add('full-width');
+                NewCourseNumberInput.classList.remove('expanded');
             }, 70);
         }
     });
@@ -946,10 +951,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (coursesList && coursesList.childElementCount > 0) {
             // Show conversion buttons if there are courses
-            conversionButtons.style.display = "flex";
+            conversionButtons.classList.add('button-visible');
+            conversionButtons.classList.remove('button-hidden');
         } else {
             // Hide conversion buttons if there are no courses
-            conversionButtons.style.display = "none";
+            conversionButtons.classList.add('button-hidden');
+            conversionButtons.classList.remove('button-visible');
         }
     }
 
@@ -991,7 +998,6 @@ document.addEventListener('DOMContentLoaded', function () {
         courseNameElement.type = "text";
         courseNameElement.value = course_name;
         courseNameElement.className = "course_name_input";
-        courseNameElement.style.textAlign = 'center';
         courseNameElement.id = "course_name_input" + course_number;
         courseNameElement.setAttribute("aria-label", "Course name");
         courseNameElement.setAttribute("title", getMessage('title_course_name'));
@@ -1001,9 +1007,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const courseNumber = this.id.replace('course_name_input', '');
             const editCourseNameButton = document.getElementById("edit_course_name_button" + courseNumber);
             if (hasValue) {
-                editCourseNameButton.style.display = 'inline-block';
+                editCourseNameButton.classList.add('visible');
+                editCourseNameButton.classList.remove('hidden');
             } else {
-                editCourseNameButton.style.display = 'none';
+                editCourseNameButton.classList.add('hidden');
+                editCourseNameButton.classList.remove('visible');
             }
         });
 
@@ -1017,9 +1025,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create edit button
         const editCourseNameButton = document.createElement("button");
         editCourseNameButton.innerHTML = editIcon;
-        editCourseNameButton.className = "edit_course_name_button";
+        editCourseNameButton.className = "edit_course_name_button hidden";
         editCourseNameButton.id = "edit_course_name_button" + course_number;
-        editCourseNameButton.style.display = 'none';
         editCourseNameButton.setAttribute("title", getMessage('title_edit_course'));
         editCourseNameButton.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1057,7 +1064,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 chrome.storage.local.set({ saved_courses: savedCourses });
             });
             handleMessages(getMessage('course_name_saved'), null, false);
-            this.style.display = 'none';
+            this.classList.add('hidden');
+            this.classList.remove('visible');
         });
 
         // Create remove button
