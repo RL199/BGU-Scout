@@ -371,7 +371,7 @@ select:hover {
 
 #start_year.missing,
 #end_year.missing,
-#course_number.missing {
+.form-fieldset.missing {
     border: 1px solid var(--error-color);
     border-radius: 4px;
 }
@@ -380,10 +380,6 @@ select:hover {
 #exam_checkbox.missing,
 #quiz_checkbox.missing {
     border-radius: 4px;
-}
-
-.form-fieldset.missing {
-    border-color: var(--error-color);
 }
 
 .clickMe {

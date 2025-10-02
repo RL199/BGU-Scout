@@ -427,13 +427,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function sendMessage(message, type) {
+        messageElement.classList.remove('error', 'other', 'success');
+
         messageElement.innerHTML = message;
         messageElement.style.display = "flex";
         messageElement.classList.add(type);
-        setTimeout(() => {
-            messageElement.style.display = "none";
-            messageElement.classList.remove(type);
-        }, 10000);
     }
 
     // Open BGU sites modal
@@ -503,9 +501,11 @@ document.addEventListener("DOMContentLoaded", function () {
             button.disabled = false;
             clearInterval(button.loadingInterval);
 
-            // Hide the message
-            messageElement.style.display = "none";
-            messageElement.classList.remove('info');
+            // Hide the message if loading
+            if (button.classList.contains("loading")) {
+                messageElement.style.display = "none";
+                messageElement.classList.remove('info');
+            }
 
             if (isExcel) {
                 button.innerHTML = excelIcon + getMessage('export');

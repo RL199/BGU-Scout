@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "BGU Site" button in popup page changed to "BGU Sites" and opens list of useful links.
 - Popup Page Year Span input width adjusted for better appearance.
 
+### Fixed
+- Popup page error message not displaying correctly.
+
 ## [1.4.2]
 
 ### Fixed
