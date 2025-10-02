@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Popup page error message not displaying correctly.
+- Options page course name input border not updating correctly.
 
 ## [1.4.2]
 

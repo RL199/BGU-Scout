@@ -617,3 +617,7 @@ input:checked+.slider:before {
     font-size: 14px;
     font-weight: 500;
 }
+
+.success-border {
+    border: 2px solid var(--success-color) !important;
+}

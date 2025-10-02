@@ -1177,10 +1177,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // mark last added course border as green
         const lastCourseLine = document.querySelector('.course_line:last-child');
         const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
-        lastCourseNameInput.style.border = '2px solid var(--success-color)';
-        lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
+        lastCourseNameInput.classList.add('success-border');
         setTimeout(() => {
-            lastCourseNameInput.style.border = '2px solid var(--border-color)';
+            lastCourseNameInput.classList.remove('success-border');
         }, 2000);
 
         handleMessages(getMessage('course_added') + ": " + courseName, null, false);
