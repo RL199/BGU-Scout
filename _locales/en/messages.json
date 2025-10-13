@@ -79,13 +79,25 @@
     "message": "User Name:",
     "description": "Label for username field"
   },
+  "username_placeholder": {
+    "message": "username123",
+    "description": "Placeholder text for username input"
+  },
   "password": {
     "message": "Password:",
     "description": "Label for password field"
   },
+  "password_placeholder": {
+    "message": "password123",
+    "description": "Placeholder text for password input"
+  },
   "id": {
     "message": "ID Number:",
     "description": "Label for ID field"
+  },
+  "id_placeholder": {
+    "message": "012345678",
+    "description": "Placeholder text for ID input"
   },
   "save": {
     "message": "Save",
@@ -112,12 +124,16 @@
     "description": "Description for Moodle courses auto-add toggle"
   },
   "add_course_number": {
-    "message": "Add Course Number:",
+    "message": "Add Course (Number or Name):",
     "description": "Label for add course field"
   },
   "add_course_button": {
     "message": "Add",
     "description": "Add course button text"
+  },
+  "add_course_placeholder": {
+    "message": "206.1.1031 or Earth Materials",
+    "description": "Placeholder text for add course input"
   },
   "adding_course_button": {
     "message": "Adding...",
@@ -155,9 +171,9 @@
     "message": "Options",
     "description": "Options button text"
   },
-  "login": {
-    "message": "BGU Site",
-    "description": "Login button text"
+  "bgu_sites": {
+    "message": "BGU Sites",
+    "description": "BGU Sites button text"
   },
   "display": {
     "message": "Display",
@@ -412,7 +428,7 @@
     "description": "Tooltip for Moodle sync toggle"
   },
   "title_course_number": {
-    "message": "Enter a course number in format XXX.X.XXXX",
+    "message": "Enter a course number (XXX.X.XXXX) or search by course name in English or Hebrew",
     "description": "Tooltip for course number field"
   },
   "title_add_course": {
@@ -538,5 +554,49 @@
   "course_added": {
     "message": "Course added",
     "description": "Success message when course is added"
+  },
+  "bgu_sites_title": {
+    "message": "BGU Sites",
+    "description": "Title for BGU sites modal"
+  },
+  "moodle": {
+    "message": "Moodle",
+    "description": "Moodle site link text"
+  },
+  "student_services": {
+    "message": "Student Services",
+    "description": "Student Services site link text"
+  },
+  "gezer": {
+    "message": "Gezer",
+    "description": "Gezer site link text"
+  },
+  "student_portal": {
+    "message": "Student Portal",
+    "description": "Student Portal site link text"
+  },
+  "bgu_website": {
+    "message": "BGU Website",
+    "description": "BGU Website link text"
+  },
+  "course_registration": {
+    "message": "Course Registration",
+    "description": "Course Registration site link text"
+  },
+  "course_files": {
+    "message": "Course Files",
+    "description": "Course Files site link text"
+  },
+  "academic_repositories": {
+    "message": "Academic Repositories",
+    "description": "Academic Repositories site link text"
+  },
+  "student_union": {
+    "message": "Student Union",
+    "description": "Student Union site link text"
+  },
+  "campus_guru": {
+    "message": "Campus Guru",
+    "description": "Campus Guru site link text"
   }
 }

@@ -55,8 +55,225 @@ document.addEventListener('DOMContentLoaded', function () {
     let result = {};
     let courseNumber = '';
 
+    // Autocomplete variables
+    let bguCoursesData = [];
+    let autocompleteDropdown = document.getElementById('autocomplete-dropdown');
+    let selectedCourseData = null;
+    let selectedDropdownIndex = -1;
+    let isLoadingCourses = false;
+
     let displayLang = 'en'; // Default language
     let translations = {}; // Store loaded translations
+
+    // Load BGU courses data
+    async function loadBGUCoursesData() {
+        if (bguCoursesData.length > 0) return; // Already loaded
+        if (isLoadingCourses) return; // Already loading
+
+        isLoadingCourses = true;
+        try {
+            const response = await fetch(chrome.runtime.getURL('bgu-courses.json'));
+            bguCoursesData = await response.json();
+        } catch (error) {
+            console.error('Error loading BGU courses data:', error);
+            bguCoursesData = [];
+        } finally {
+            isLoadingCourses = false;
+        }
+    }
+
+    // Search courses by query (course number or name)
+    function searchCourses(query) {
+        if (!query || query.trim().length < 1) return [];
+
+        const searchTerm = query.toLowerCase().trim();
+        const results = [];
+        const maxResults = 3;
+
+        // Check if it looks like a course number (contains digits and dots/dashes)
+        const looksLikeCourseNumber = /[\d.-]/.test(searchTerm);
+
+        for (let i = 0; i < bguCoursesData.length; i++) {
+            const course = bguCoursesData[i];
+            const courseNumber = (course.courseNumber || '');
+            const courseNameEn = (course.courseNameEn || '');
+            const courseNameHe = (course.courseNameHe || '');
+
+            // Priority matching: exact starts-with match
+            if (courseNumber.startsWith(searchTerm)) {
+                results.push({ ...course, matchType: 'number', priority: 1 });
+            }
+            // Course number contains (for partial matches like "205" matching "205.1.1234")
+            else if (looksLikeCourseNumber && courseNumber.includes(searchTerm)) {
+                results.push({ ...course, matchType: 'number', priority: 2 });
+            }
+            // English name starts with
+            else if (courseNameEn.startsWith(searchTerm)) {
+                results.push({ ...course, matchType: 'nameEn', priority: 3 });
+            }
+            // Hebrew name starts with
+            else if (courseNameHe.startsWith(searchTerm)) {
+                results.push({ ...course, matchType: 'nameHe', priority: 4 });
+            }
+            // English name contains
+            else if (courseNameEn.includes(searchTerm)) {
+                results.push({ ...course, matchType: 'nameEn', priority: 5 });
+            }
+            // Hebrew name contains
+            else if (courseNameHe.includes(searchTerm)) {
+                results.push({ ...course, matchType: 'nameHe', priority: 6 });
+            }
+        }
+
+        // Sort by priority
+        results.sort((a, b) => a.priority - b.priority);
+
+        // Limit to max results
+        if (results.length > maxResults) {
+            return results.slice(0, maxResults);
+        }
+
+        return results;
+    }
+
+    // Show autocomplete dropdown
+    function showAutocomplete(courses) {
+        if (courses.length === 0) {
+            hideAutocomplete();
+            return;
+        }
+
+        autocompleteDropdown.innerHTML = '';
+        selectedDropdownIndex = -1;
+
+        courses.forEach((course, index) => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.dataset.index = index;
+            item.dataset.courseNumber = course.courseNumber;
+            item.dataset.courseNameEn = course.courseNameEn || '';
+            item.dataset.courseNameHe = course.courseNameHe || '';
+
+            const numberDiv = document.createElement('div');
+            numberDiv.className = 'autocomplete-item-number';
+            numberDiv.textContent = course.courseNumber;
+
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'autocomplete-item-name';
+
+            // Show the matched name prominently
+            if (course.matchType === 'nameHe' && course.courseNameHe) {
+                nameDiv.textContent = course.courseNameHe;
+                if (course.courseNameEn) {
+                    const secondaryDiv = document.createElement('div');
+                    secondaryDiv.className = 'autocomplete-item-secondary';
+                    secondaryDiv.textContent = course.courseNameEn;
+                    item.appendChild(numberDiv);
+                    item.appendChild(nameDiv);
+                    item.appendChild(secondaryDiv);
+                } else {
+                    item.appendChild(numberDiv);
+                    item.appendChild(nameDiv);
+                }
+            } else if (course.matchType === 'nameEn' && course.courseNameEn) {
+                nameDiv.textContent = course.courseNameEn;
+                if (course.courseNameHe) {
+                    const secondaryDiv = document.createElement('div');
+                    secondaryDiv.className = 'autocomplete-item-secondary';
+                    secondaryDiv.textContent = course.courseNameHe;
+                    item.appendChild(numberDiv);
+                    item.appendChild(nameDiv);
+                    item.appendChild(secondaryDiv);
+                } else {
+                    item.appendChild(numberDiv);
+                    item.appendChild(nameDiv);
+                }
+            } else {
+                // For course number matches, show preferred language
+                const preferredName = displayLang === 'he' && course.courseNameHe ?
+                    course.courseNameHe : (course.courseNameEn || course.courseNameHe);
+                const secondaryName = displayLang === 'he' ?
+                    course.courseNameEn : course.courseNameHe;
+
+                if (preferredName) {
+                    nameDiv.textContent = preferredName;
+                    item.appendChild(numberDiv);
+                    item.appendChild(nameDiv);
+
+                    if (secondaryName) {
+                        const secondaryDiv = document.createElement('div');
+                        secondaryDiv.className = 'autocomplete-item-secondary';
+                        secondaryDiv.textContent = secondaryName;
+                        item.appendChild(secondaryDiv);
+                    }
+                } else {
+                    item.appendChild(numberDiv);
+                }
+            }
+
+            item.addEventListener('click', () => selectCourse(course));
+            autocompleteDropdown.appendChild(item);
+        });
+
+        autocompleteDropdown.classList.add('show');
+    }
+
+    // Hide autocomplete dropdown
+    function hideAutocomplete() {
+        autocompleteDropdown.classList.remove('show');
+        autocompleteDropdown.innerHTML = '';
+        selectedDropdownIndex = -1;
+    }
+
+    // Select a course from dropdown
+    function selectCourse(course) {
+        selectedCourseData = {
+            courseNumber: course.courseNumber,
+            courseNameEn: course.courseNameEn || '',
+            courseNameHe: course.courseNameHe || ''
+        };
+
+        NewCourseNumberInput.value = course.courseNumber;
+        hideAutocomplete();
+
+        addCourseButton.click();
+    }
+
+    // Handle keyboard navigation in dropdown
+    function navigateDropdown(direction) {
+        const items = autocompleteDropdown.querySelectorAll('.autocomplete-item');
+        if (items.length === 0) return;
+
+        // Remove current selection
+        if (selectedDropdownIndex >= 0 && selectedDropdownIndex < items.length) {
+            items[selectedDropdownIndex].classList.remove('selected');
+        }
+
+        // Update index
+        if (direction === 'down') {
+            selectedDropdownIndex = (selectedDropdownIndex + 1) % items.length;
+        } else if (direction === 'up') {
+            selectedDropdownIndex = selectedDropdownIndex <= 0 ? items.length - 1 : selectedDropdownIndex - 1;
+        }
+
+        // Add new selection
+        items[selectedDropdownIndex].classList.add('selected');
+        items[selectedDropdownIndex].scrollIntoView({ block: 'nearest' });
+    }
+
+    // Select currently highlighted item
+    function selectHighlightedItem() {
+        const items = autocompleteDropdown.querySelectorAll('.autocomplete-item');
+        if (selectedDropdownIndex >= 0 && selectedDropdownIndex < items.length) {
+            const item = items[selectedDropdownIndex];
+            const course = {
+                courseNumber: item.dataset.courseNumber,
+                courseNameEn: item.dataset.courseNameEn,
+                courseNameHe: item.dataset.courseNameHe
+            };
+            selectCourse(course);
+        }
+    }
 
     // Load translations from JSON files
     async function loadTranslations(lang) {
@@ -204,14 +421,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (themeSelect) themeSelect.title = getMessage('title_theme');
         if (langSelect) langSelect.title = getMessage('title_language');
         if (enableDepartmentalDetails) enableDepartmentalDetails.title = getMessage('title_enable_departmental');
-        if (userNameEl) userNameEl.title = getMessage('title_username');
-        if (passwordEl) passwordEl.title = getMessage('title_password');
-        if (idEl) idEl.title = getMessage('title_id');
+        if (userNameEl) {
+            userNameEl.title = getMessage('title_username');
+            userNameEl.placeholder = getMessage('username_placeholder');
+        }
+        if (passwordEl) {
+            passwordEl.title = getMessage('title_password');
+            passwordEl.placeholder = getMessage('password_placeholder');
+        }
+        if (idEl) {
+            idEl.title = getMessage('title_id');
+            idEl.placeholder = getMessage('id_placeholder');
+        }
         if (saveButton) saveButton.title = getMessage('title_save');
         if (forgotPasswordEl) forgotPasswordEl.title = getMessage('title_forgot_password');
         if (disclaimerEl) disclaimerEl.title = getMessage('title_disclaimer');
         if (autoAddMoodleCourses) autoAddMoodleCourses.title = getMessage('title_moodle_sync');
-        if (courseNumberEl) courseNumberEl.title = getMessage('title_course_number');
+        if (courseNumberEl) {
+            courseNumberEl.title = getMessage('title_course_number');
+            courseNumberEl.placeholder = getMessage('add_course_placeholder');
+        }
         if (addCourseButton) addCourseButton.title = getMessage('title_add_course');
 
         // Color palette tooltips
@@ -405,19 +634,19 @@ document.addEventListener('DOMContentLoaded', function () {
         let iconFolder;
         // Only change to blue icon if blue is selected, otherwise use default orange
         if (color === '#2196f3') { // Blue
-            iconFolder = 'images/icon-blue-';
+            iconFolder = 'extension-icons/icon-blue-';
         } else if (color === '#4caf50') { // Green
-            iconFolder = 'images/icon-green-';
+            iconFolder = 'extension-icons/icon-green-';
         } else if (color === '#f44336') { // Red
-            iconFolder = 'images/icon-red-';
+            iconFolder = 'extension-icons/icon-red-';
         } else if (color === '#9c27b0') { // Purple
-            iconFolder = 'images/icon-purple-';
+            iconFolder = 'extension-icons/icon-purple-';
         } else if (color === '#e91e63') { // Pink
-            iconFolder = 'images/icon-pink-';
+            iconFolder = 'extension-icons/icon-pink-';
         } else {
-            iconFolder = 'images/icon-'; // Default orange for all other colors
+            iconFolder = 'extension-icons/icon-'; // Default orange for all other colors
         }
-        let colorName = iconFolder.replace('images/icon-', '').replace('-', '');
+        let colorName = iconFolder.replace('/icon-', '').replace('-', '');
         if (!colorName) colorName = 'orange';
 
         chrome.action.setIcon({
@@ -441,17 +670,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (favicon) {
             let iconFolder;
             if (color === '#2196f3') { // Blue
-                iconFolder = '../images/icon-blue-';
+                iconFolder = '../extension-icons/icon-blue-';
             } else if (color === '#4caf50') { // Green
-                iconFolder = '../images/icon-green-';
+                iconFolder = '../extension-icons/icon-green-';
             } else if (color === '#f44336') { // Red
-                iconFolder = '../images/icon-red-';
+                iconFolder = '../extension-icons/icon-red-';
             } else if (color === '#9c27b0') { // Purple
-                iconFolder = '../images/icon-purple-';
+                iconFolder = '../extension-icons/icon-purple-';
             } else if (color === '#e91e63') { // Pink
-                iconFolder = '../images/icon-pink-';
+                iconFolder = '../extension-icons/icon-pink-';
             } else {
-                iconFolder = '../images/icon-'; // Default orange for all other colors
+                iconFolder = '../extension-icons/icon-'; // Default orange for all other colors
             }
 
             favicon.href = iconFolder + "16.png";
@@ -629,13 +858,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function setSaveLoading(loading) {
         if (loading) {
             saveButton.disabled = true;
-            saveButton.style.opacity = '0.7';
-            saveButton.style.pointerEvents = 'none';
+            saveButton.classList.add('button-loading');
             saveButton.textContent = getMessage('saving');
         } else {
             saveButton.disabled = false;
-            saveButton.style.opacity = '1';
-            saveButton.style.pointerEvents = 'auto';
+            saveButton.classList.remove('button-loading');
             saveButton.textContent = getMessage('save');
         }
     }
@@ -673,39 +900,148 @@ document.addEventListener('DOMContentLoaded', function () {
         saveButton.style.backgroundImage = '';
     });
 
+    // Load BGU courses data on page load
+    loadBGUCoursesData();
+
+    // Autocomplete input handler with debouncing
+    let autocompleteTimeout = null;
     NewCourseNumberInput.addEventListener('input', function () {
-        const hasValue = this.value.trim() !== '';
+        const inputValue = this.value.trim();
+        const hasValue = inputValue !== '';
+
+        // Clear selected course data when user types
+        if (selectedCourseData && selectedCourseData.courseNumber !== inputValue) {
+            selectedCourseData = null;
+        }
 
         if (hasValue) {
-            NewCourseNumberInput.style.width = 'calc(100% - 110px)';
-            NewCourseNumberInput.style.transition = 'width 0.07s ease-in-out';
+            NewCourseNumberInput.classList.add('expanded');
+            NewCourseNumberInput.classList.remove('full-width');
             addCourseButton.textContent = addButtonText;
-            addCourseButton.style.width = '26.55%';
-            setTimeout(() => { addCourseButton.style.display = 'inline-block'; addCourseButton.disabled = false; }, 70);
+            addCourseButton.classList.add('expanded');
+            setTimeout(() => {
+                addCourseButton.classList.add('button-visible');
+                addCourseButton.classList.remove('button-hidden');
+                addCourseButton.disabled = false;
+            }, 70);
+
+            // Debounce autocomplete search
+            clearTimeout(autocompleteTimeout);
+            autocompleteTimeout = setTimeout(() => {
+                if (bguCoursesData.length > 0) {
+                    const results = searchCourses(inputValue);
+                    showAutocomplete(results);
+                }
+            }, 200);
         } else {
-            addCourseButton.style.display = 'none';
+            addCourseButton.classList.add('button-hidden');
+            addCourseButton.classList.remove('button-visible');
             addCourseButton.disabled = true;
             addCourseButton.textContent = '';
             setTimeout(() => {
-                addCourseButton.style.display = 'none';
+                addCourseButton.classList.add('button-hidden');
+                addCourseButton.classList.remove('button-visible');
                 addCourseButton.disabled = true;
                 addCourseButton.textContent = '';
-                NewCourseNumberInput.style.width = '100%';
+                NewCourseNumberInput.classList.add('full-width');
+                NewCourseNumberInput.classList.remove('expanded');
             }, 70);
+            hideAutocomplete();
+        }
+    });
+
+    // Handle keyboard navigation
+    NewCourseNumberInput.addEventListener('keydown', function (e) {
+        const isDropdownVisible = autocompleteDropdown.classList.contains('show');
+
+        if (isDropdownVisible) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                navigateDropdown('down');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                navigateDropdown('up');
+            } else if (e.key === 'Enter') {
+                if (selectedDropdownIndex >= 0) {
+                    e.preventDefault();
+                    selectHighlightedItem();
+                }
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                hideAutocomplete();
+            }
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!NewCourseNumberInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+            hideAutocomplete();
         }
     });
 
     addCourseButton.addEventListener('click', async function (e) {
         e.preventDefault();
         AddingCourseButtonstyle(true);
+        hideAutocomplete();
 
         if (!navigator.onLine) {
             handleMessages(getMessage('no_internet_connection'), 'error', false);
+            AddingCourseButtonstyle(false);
             return;
         }
 
         NewCourseNumberInput.value = NewCourseNumberInput.value.trim();
         courseNumber = NewCourseNumberInput.value;
+
+        // Check if we have a selected course from the JSON file
+        if (selectedCourseData && selectedCourseData.courseNumber === courseNumber) {
+            // Course is from JSON database, we have all the data
+            try {
+                result = await chrome.storage.local.get(['saved_courses', 'course_name_preferred_lang']);
+
+                if (result.saved_courses && result.saved_courses[courseNumber]) {
+                    handleMessages(getMessage('course_already_exists') + ' ' + courseNumber, null, false);
+                    AddingCourseButtonstyle(false);
+                    return;
+                }
+
+                // Add course directly without validation
+                const courseToAdd = {
+                    [courseNumber]: {
+                        names: {
+                            en: selectedCourseData.courseNameEn || '',
+                            he: selectedCourseData.courseNameHe || ''
+                        }
+                    }
+                };
+
+                const updatedCourses = { ...result.saved_courses, ...courseToAdd };
+                await chrome.storage.local.set({ saved_courses: updatedCourses });
+
+                // Determine which name to display based on language preference from storage
+                const preferredLang = result.course_name_preferred_lang || 'en';
+                const preferredName = preferredLang === 'he' && selectedCourseData.courseNameHe ?
+                    selectedCourseData.courseNameHe :
+                    (selectedCourseData.courseNameEn || selectedCourseData.courseNameHe || courseNumber);
+
+                addCourseLine(courseNumber, preferredName);
+                NewCourseNumberInput.value = '';
+                NewCourseNumberInput.dispatchEvent(new Event('input'));
+                updateConversionButtonsVisibility();
+
+                handleMessages(getMessage('course_added') + ': ' + preferredName, null, false);
+                selectedCourseData = null;
+                AddingCourseButtonstyle(false);
+                return;
+            } catch (error) {
+                handleMessages(getMessage('error_adding_course'), error, false);
+                AddingCourseButtonstyle(false);
+                return;
+            }
+        }
+
+        // Not from JSON database - validate as usual
         // check if course number is in different format
         if (courseNumber.match(/^\d{8}$/)) {
             courseNumber = courseNumber.substring(0, 3) +
@@ -717,6 +1053,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // check if course number is only digits and 2 points
         if (!courseNumber.match(/^\d{3}\.\d{1}\.\d{4}$/)) {
             handleMessages(getMessage('invalid_course_number'), 'error', false);
+            AddingCourseButtonstyle(false);
             return;
         }
 
@@ -725,10 +1062,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (result.saved_courses && result.saved_courses[courseNumber]) {
                 handleMessages(getMessage('course_already_exists') + ' ' + courseNumber, null, false);
+                AddingCourseButtonstyle(false);
                 return;
             }
         } catch (error) {
             handleMessages(getMessage('error_getting_courses'), error, false);
+            AddingCourseButtonstyle(false);
             return;
         }
 
@@ -739,6 +1078,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tabId = await openBGU4UTab(courseNumber, preferredLang);
         } catch (error) {
             handleMessages(getMessage('error_opening_tab'), error, false);
+            AddingCourseButtonstyle(false);
             return;
         }
     });
@@ -946,10 +1286,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (coursesList && coursesList.childElementCount > 0) {
             // Show conversion buttons if there are courses
-            conversionButtons.style.display = "flex";
+            conversionButtons.classList.add('button-visible');
+            conversionButtons.classList.remove('button-hidden');
         } else {
             // Hide conversion buttons if there are no courses
-            conversionButtons.style.display = "none";
+            conversionButtons.classList.add('button-hidden');
+            conversionButtons.classList.remove('button-visible');
         }
     }
 
@@ -991,7 +1333,6 @@ document.addEventListener('DOMContentLoaded', function () {
         courseNameElement.type = "text";
         courseNameElement.value = course_name;
         courseNameElement.className = "course_name_input";
-        courseNameElement.style.textAlign = 'center';
         courseNameElement.id = "course_name_input" + course_number;
         courseNameElement.setAttribute("aria-label", "Course name");
         courseNameElement.setAttribute("title", getMessage('title_course_name'));
@@ -1001,9 +1342,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const courseNumber = this.id.replace('course_name_input', '');
             const editCourseNameButton = document.getElementById("edit_course_name_button" + courseNumber);
             if (hasValue) {
-                editCourseNameButton.style.display = 'inline-block';
+                editCourseNameButton.classList.add('visible');
+                editCourseNameButton.classList.remove('hidden');
             } else {
-                editCourseNameButton.style.display = 'none';
+                editCourseNameButton.classList.add('hidden');
+                editCourseNameButton.classList.remove('visible');
             }
         });
 
@@ -1017,9 +1360,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create edit button
         const editCourseNameButton = document.createElement("button");
         editCourseNameButton.innerHTML = editIcon;
-        editCourseNameButton.className = "edit_course_name_button";
+        editCourseNameButton.className = "edit_course_name_button hidden";
         editCourseNameButton.id = "edit_course_name_button" + course_number;
-        editCourseNameButton.style.display = 'none';
         editCourseNameButton.setAttribute("title", getMessage('title_edit_course'));
         editCourseNameButton.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1057,7 +1399,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 chrome.storage.local.set({ saved_courses: savedCourses });
             });
             handleMessages(getMessage('course_name_saved'), null, false);
-            this.style.display = 'none';
+            this.classList.add('hidden');
+            this.classList.remove('visible');
         });
 
         // Create remove button
@@ -1177,10 +1520,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // mark last added course border as green
         const lastCourseLine = document.querySelector('.course_line:last-child');
         const lastCourseNameInput = lastCourseLine.querySelector('.course_name_input');
-        lastCourseNameInput.style.border = '2px solid var(--success-color)';
-        lastCourseNameInput.style.transition = 'border 0.5s ease-in-out';
+        lastCourseNameInput.classList.add('success-border');
         setTimeout(() => {
-            lastCourseNameInput.style.border = '2px solid var(--border-color)';
+            lastCourseNameInput.classList.remove('success-border');
         }, 2000);
 
         handleMessages(getMessage('course_added') + ": " + courseName, null, false);

@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     // Get elements
-    const openLoginBtn = document.getElementById("open_login");
+    const openSitesBtn = document.getElementById("open_sites");
     const displayBtn = document.getElementById("display_graph");
     const exportExcelBtn = document.getElementById("export_excel");
     const openOptionsBtn = document.getElementById("open_options");
@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const aboutModal = document.getElementById("about_modal");
     const closeModalBtn = document.getElementById("close_modal");
     const extensionVersionElement = document.getElementById("extension_version");
+    const sitesModal = document.getElementById("sites_modal");
+    const closeSitesModalBtn = document.getElementById("close_sites_modal");
 
     const getStorageData = (key) =>
         new Promise((resolve) => chrome.storage.local.get(key, resolve));
@@ -81,10 +83,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
                 </svg>`;
 
-    const loginIcon = `
-                <svg xmlns="http://www.w3.org/2000/svg" id="login_icon" viewBox="0 0 16 16">
-                    <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
-                    <path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z"/>
+    const sitesIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" id="sites_icon" viewBox="0 0 512 512" width="16" height="16">
+                    <g transform="translate(1,1)">
+                        <g>
+                            <g>
+                                <path d="m 211.26,389.24 -60.331,60.331 C 125.917,474.583 85.412,474.583 60.421,449.576 35.425,424.58 35.425,384.071 60.416,359.08 L 181.099,238.397 c 24.991,-24.992 65.5,-24.992 90.491,0 8.331,8.331 21.839,8.331 30.17,0 8.331,-8.331 8.331,-21.839 0,-30.17 -41.654,-41.654 -109.177,-41.654 -150.831,0 L 30.247,328.909 c -41.654,41.654 -41.654,109.177 0,150.831 41.649,41.676 109.177,41.676 150.853,0 l 60.331,-60.331 c 8.331,-8.331 8.331,-21.839 0,-30.17 -8.331,-8.331 -21.84,-8.33 -30.171,0.001 z"/>
+                                <path d="m 479.751,30.24 c -41.654,-41.654 -109.199,-41.654 -150.853,0 l -72.384,72.384 c -8.331,8.331 -8.331,21.839 0,30.17 8.331,8.331 21.839,8.331 30.17,0 L 359.068,60.41 c 24.991,-24.992 65.521,-24.992 90.513,0 24.991,24.991 24.991,65.5 0,90.491 L 316.845,283.638 c -24.992,24.992 -65.5,24.992 -90.491,0 -8.331,-8.331 -21.839,-8.331 -30.17,0 -8.331,8.331 -8.331,21.839 0,30.17 41.654,41.654 109.177,41.654 150.831,0 L 479.751,181.072 c 41.654,-41.654 41.654,-109.178 0,-150.832 z"/>
+                            </g>
+                        </g>
+                    </g>
                 </svg>`;
 
     const displayIcon = `
@@ -166,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Handle special cases with icons that need to be preserved
         if (openOptionsBtn) openOptionsBtn.innerHTML = optionsIcon + getMessage('options');
 
-        if (openLoginBtn) openLoginBtn.innerHTML = loginIcon + getMessage('login');
+        if (openSitesBtn) openSitesBtn.innerHTML = sitesIcon + getMessage('bgu_sites');
 
         if (displayBtn) displayBtn.innerHTML = displayIcon + getMessage('display');
 
@@ -402,15 +410,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let message = "";
         const popupForm = document.getElementById("popup_form");
         if (!result.user_name || !result.id || !result.password) {
-            popupForm.style.display = "none";
-            messageElement.style.display = "block";
+            popupForm.classList.add("hidden");
+            messageElement.classList.add("visible-block");
             message = getMessage('no_user_message');
             messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
         }
         if (!result.saved_courses || Object.keys(result.saved_courses).length === 0) {
-            popupForm.style.display = "none";
-            messageElement.style.display = "block";
+            popupForm.classList.add("hidden");
+            messageElement.classList.add("visible-block");
             message = message + "<br>" + getMessage('no_course_message');
             messageElement.innerHTML = message;
             openOptionsBtn.classList.add("clickMe");
@@ -419,20 +427,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function sendMessage(message, type) {
+        messageElement.classList.remove('error', 'other', 'success');
+
         messageElement.innerHTML = message;
-        messageElement.style.display = "flex";
+        messageElement.classList.add("visible-flex");
         messageElement.classList.add(type);
-        setTimeout(() => {
-            messageElement.style.display = "none";
-            messageElement.classList.remove(type);
-        }, 10000);
     }
 
-    // Open BGU login page
-    openLoginBtn.addEventListener("click", function () {
-        chrome.tabs.create({
-            url: "https://bgu4u22.bgu.ac.il/apex/f?p=104:LOGIN_DESKTOP",
-        });
+    // Open BGU sites modal
+    openSitesBtn.addEventListener("click", function () {
+        mainContainer.classList.add("about_modal");
+        sitesModal.classList.add("show");
+        document.body.classList.add("modal-open"); // Prevent background scrolling
     });
 
     async function setLoadingButtonStyle(loading, isExcel = false) {
@@ -495,9 +501,11 @@ document.addEventListener("DOMContentLoaded", function () {
             button.disabled = false;
             clearInterval(button.loadingInterval);
 
-            // Hide the message
-            messageElement.style.display = "none";
-            messageElement.classList.remove('info');
+            // Hide the message if loading
+            if (button.classList.contains("loading")) {
+                messageElement.classList.add("hidden");
+                messageElement.classList.remove('info');
+            }
 
             if (isExcel) {
                 button.innerHTML = excelIcon + getMessage('export');
@@ -1263,8 +1271,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // About modal functionality
     aboutBtn.addEventListener("click", function () {
         mainContainer.classList.add("about_modal");
-        aboutModal.style.display = "block";
-        document.body.style.overflow = "hidden"; // Prevent background scrolling
+        aboutModal.classList.add("show");
+        document.body.classList.add("modal-open"); // Prevent background scrolling
     });
 
     closeModalBtn.addEventListener("click", function () {
@@ -1279,8 +1287,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function closeAboutModal() {
-        aboutModal.style.display = "none";
-        document.body.style.overflow = ""; // Restore scrolling
+        aboutModal.classList.remove("show");
+        document.body.classList.remove("modal-open"); // Restore scrolling
+        mainContainer.classList.remove("about_modal");
+    }
+
+    // Sites modal functionality
+    closeSitesModalBtn.addEventListener("click", function () {
+        closeSitesModal();
+    });
+
+    // Close sites modal when clicking outside of it
+    sitesModal.addEventListener("click", function (event) {
+        if (event.target === sitesModal) {
+            closeSitesModal();
+        }
+    });
+
+    function closeSitesModal() {
+        sitesModal.classList.remove("show");
+        document.body.classList.remove("modal-open"); // Restore scrolling
         mainContainer.classList.remove("about_modal");
     }
 });

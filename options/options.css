@@ -336,6 +336,14 @@ select:hover {
     margin-top: 1rem;
 }
 
+.course_conversion_buttons.button-visible {
+    display: flex;
+}
+
+.course_conversion_buttons.button-hidden {
+    display: none;
+}
+
 #convert_to_hebrew,
 #convert_to_english {
     flex: 1;
@@ -616,4 +624,124 @@ input:checked+.slider:before {
 .color_option span {
     font-size: 14px;
     font-weight: 500;
+}
+
+.success-border {
+    border: 2px solid var(--success-color) !important;
+}
+
+/* Button state classes */
+.button-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.button-visible {
+    display: inline-block;
+}
+
+.button-hidden {
+    display: none;
+}
+
+/* Course input classes */
+.course_name_input {
+    text-align: center;
+}
+
+.course_name_input.expanded {
+    width: calc(100% - 110px);
+    transition: width 0.07s ease-in-out;
+}
+
+.course_name_input.full-width {
+    width: 100%;
+}
+
+/* Add course button classes */
+#add_course_button.expanded {
+    width: 26.55%;
+}
+
+/* Edit button visibility classes */
+[id^="edit_course_name_button"].visible {
+    display: inline-block;
+}
+
+[id^="edit_course_name_button"].hidden {
+    display: none;
+}
+
+/* Autocomplete styles */
+.autocomplete-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: var(--container-bg);
+    border: 1px solid var(--input-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-dropdown.show {
+    display: block;
+}
+
+.autocomplete-item {
+    padding: 0.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--input-border);
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background-color: var(--input-bg);
+}
+
+.autocomplete-item-number {
+    font-weight: bold;
+    color: var(--h1-color);
+    font-size: 0.9rem;
+}
+
+.autocomplete-item-name {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+.autocomplete-item-secondary {
+    font-size: 0.75rem;
+    color: var(--sub-label-color);
+    margin-top: 0.25rem;
+    line-height: 1.2;
+}
+
+.autocomplete-loading {
+    padding: 1rem;
+    text-align: center;
+    color: var(--sub-label-color);
+    font-style: italic;
+}
+
+.autocomplete-no-results {
+    padding: 1rem;
+    text-align: center;
+    color: var(--sub-label-color);
 }

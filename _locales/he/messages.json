@@ -79,13 +79,25 @@
     "message": "שם משתמש:",
     "description": "תווית לשדה שם משתמש"
   },
+  "username_placeholder": {
+    "message": "username123",
+    "description": "טקסט מציין מיקום עבור שדה שם משתמש"
+  },
   "password": {
     "message": "סיסמה:",
     "description": "תווית לשדה סיסמה"
   },
+  "password_placeholder": {
+    "message": "password123",
+    "description": "טקסט מציין מיקום עבור שדה סיסמה"
+  },
   "id": {
     "message": "מספר תעודת זהות:",
     "description": "תווית לשדה תעודת זהות"
+  },
+  "id_placeholder": {
+    "message": "012345678",
+    "description": "טקסט מציין מיקום עבור שדה תעודת זהות"
   },
   "save": {
     "message": "שמור",
@@ -112,12 +124,16 @@
     "description": "תיאור למתג הוספה אוטומטית של קורסי מודל"
   },
   "add_course_number": {
-    "message": "הוסף מספר קורס:",
+    "message": "הוסף קורס (מספר או שם):",
     "description": "תווית לשדה הוספת קורס"
   },
   "add_course_button": {
     "message": "הוסף",
     "description": "טקסט כפתור הוספת קורס"
+  },
+  "add_course_placeholder": {
+    "message": "206.1.1031 או חומרי כדור הארץ",
+    "description": "טקסט מציין מיקום עבור שדה הוספת קורס"
   },
   "adding_course_button": {
     "message": "מוסיף...",
@@ -155,9 +171,9 @@
     "message": "אפשרויות",
     "description": "טקסט כפתור אפשרויות"
   },
-  "login": {
-    "message": "אתר בנ\"ג",
-    "description": "טקסט כפתור כניסה"
+  "bgu_sites": {
+    "message": "אתרי בנ\"ג",
+    "description": "טקסט כפתור אתרי בנ\"ג"
   },
   "display": {
     "message": "הצג",
@@ -412,7 +428,7 @@
     "description": "רמז כלי למתג סנכרון מודל"
   },
   "title_course_number": {
-    "message": "הזן מספר קורס בפורמט XXX.X.XXXX",
+    "message": "הזן מספר קורס בפורמט XXX.X.XXXX או חפש לפי שם קורס באנגלית או בעברית",
     "description": "רמז כלי לשדה מספר קורס"
   },
   "title_add_course": {
@@ -538,5 +554,49 @@
   "course_added": {
     "message": "הקורס נוסף",
     "description": "הודעת הצלחה כאשר הקורס נוסף"
+  },
+  "bgu_sites_title": {
+    "message": "אתרי בנ\"ג",
+    "description": "כותרת למודל אתרי בנ\"ג"
+  },
+  "moodle": {
+    "message": "מודל",
+    "description": "טקסט קישור למודל"
+  },
+  "student_services": {
+    "message": "מנהל תלמידים",
+    "description": "טקסט קישור למנהל תלמידים"
+  },
+  "gezer": {
+    "message": "גזר",
+    "description": "טקסט קישור לגזר"
+  },
+  "student_portal": {
+    "message": "פורטל סטודנטים",
+    "description": "טקסט קישור לפורטל סטודנטים"
+  },
+  "bgu_website": {
+    "message": "אונ' בן גוריון",
+    "description": "טקסט קישור לאתר אוניברסיטת בן גוריון"
+  },
+  "course_registration": {
+    "message": "רישום לקורסים",
+    "description": "טקסט קישור לרישום לקורסים"
+  },
+  "course_files": {
+    "message": "קובץ הקורסים",
+    "description": "טקסט קישור לקובץ הקורסים"
+  },
+  "academic_repositories": {
+    "message": "מאגרים אקדמיים",
+    "description": "טקסט קישור למאגרים אקדמיים"
+  },
+  "student_union": {
+    "message": "אתר האגודה",
+    "description": "טקסט קישור לאגודה הסטודנטיאלית"
+  },
+  "campus_guru": {
+    "message": "Campus Guru",
+    "description": "טקסט קישור ל-Campus Guru"
   }
 }

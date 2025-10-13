@@ -134,7 +134,7 @@ button {
     color: var(--button-text);
     border: none;
     border-radius: 4px;
-    padding: 8px 16px;
+    padding: 8px 14px;
     cursor: pointer;
     font-size: large;
     font-weight: bold;
@@ -213,6 +213,21 @@ select {
     transition: all 0.3s ease;
 }
 
+input[type="number"] {
+    max-width: 50px;
+}
+
+/* hide arrows in number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
 select {
     padding-left: 2px;
     padding-right: 2px;
@@ -241,8 +256,6 @@ select:focus {
     border-color: var(--button-bg);
 }
 
-input:hover,
-select:hover,
 button:hover,
 .link-item:hover {
     opacity: 0.9;
@@ -250,11 +263,17 @@ button:hover,
     transition: all 0.3s ease;
 }
 
+input:hover,
+select:hover {
+    box-shadow: 0 0px 8px rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
 select:hover {
     cursor: pointer;
 }
 
-#login_icon,
+#sites_icon,
 #display_icon,
 #options_icon {
     fill: var(--button-text);
@@ -319,7 +338,6 @@ select:hover {
 }
 
 .course-file-btn {
-    padding: 6px 10px !important;
     flex: 1 !important;
     min-width: auto;
     font-size: 17px;
@@ -357,7 +375,7 @@ select:hover {
 
 #start_year.missing,
 #end_year.missing,
-#course_number.missing {
+.form-fieldset.missing {
     border: 1px solid var(--error-color);
     border-radius: 4px;
 }
@@ -366,10 +384,6 @@ select:hover {
 #exam_checkbox.missing,
 #quiz_checkbox.missing {
     border-radius: 4px;
-}
-
-.form-fieldset.missing {
-    border-color: var(--error-color);
 }
 
 .clickMe {
@@ -525,7 +539,7 @@ select:hover {
 .modal-header {
     background: linear-gradient(135deg, var(--h1-color), var(--button-bg));
     color: var(--button-text);
-    padding: 10px 20px;
+    padding: 8px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -570,7 +584,7 @@ select:hover {
 }
 
 .modal-body {
-    padding: 24px 20px;
+    padding: 12px 16px;
 }
 
 .about-section {
@@ -620,7 +634,7 @@ select:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px 8px;
+    padding: 8px 8px;
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
@@ -666,4 +680,27 @@ select:hover {
 [lang="he"] .about-btn {
     left: auto;
     right: 0;
+}
+
+/* Display state classes */
+.hidden {
+    display: none !important;
+}
+
+.visible-block {
+    display: block !important;
+}
+
+.visible-flex {
+    display: flex !important;
+}
+
+/* Body overflow control */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Modal display classes */
+.modal.show {
+    display: block;
 }
