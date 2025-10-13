@@ -122,8 +122,13 @@
             <div class="form_group">
                 <label for="add_course_number" data-i18n="add_course_number">__MSG_add_course_number__</label>
                 <div class="add_course_container">
-                    <input type="text" id="add_course_number" name="add_course_number" aria-label="Course Number"
-                        title="Enter a course number in format XXX.X.XXXX">
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="add_course_number" name="add_course_number" aria-label="Course Number or Name"
+                            title="Enter a course number (XXX.X.XXXX) or search by course name in English or Hebrew"
+                            autocomplete="off"
+                            placeholder="">
+                        <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
+                    </div>
                     <button type="button" id="add_course_button" data-i18n="add_course_button" aria-label="Add course"
                         title="Add this course to your tracked courses">__MSG_add_course_button__</button>
                 </div>

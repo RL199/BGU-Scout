@@ -79,13 +79,25 @@
     "message": "שם משתמש:",
     "description": "תווית לשדה שם משתמש"
   },
+  "username_placeholder": {
+    "message": "username123",
+    "description": "טקסט מציין מיקום עבור שדה שם משתמש"
+  },
   "password": {
     "message": "סיסמה:",
     "description": "תווית לשדה סיסמה"
   },
+  "password_placeholder": {
+    "message": "password123",
+    "description": "טקסט מציין מיקום עבור שדה סיסמה"
+  },
   "id": {
     "message": "מספר תעודת זהות:",
     "description": "תווית לשדה תעודת זהות"
+  },
+  "id_placeholder": {
+    "message": "012345678",
+    "description": "טקסט מציין מיקום עבור שדה תעודת זהות"
   },
   "save": {
     "message": "שמור",
@@ -112,12 +124,16 @@
     "description": "תיאור למתג הוספה אוטומטית של קורסי מודל"
   },
   "add_course_number": {
-    "message": "הוסף מספר קורס:",
+    "message": "הוסף קורס (מספר או שם):",
     "description": "תווית לשדה הוספת קורס"
   },
   "add_course_button": {
     "message": "הוסף",
     "description": "טקסט כפתור הוספת קורס"
+  },
+  "add_course_placeholder": {
+    "message": "206.1.1031 או חומרי כדור הארץ",
+    "description": "טקסט מציין מיקום עבור שדה הוספת קורס"
   },
   "adding_course_button": {
     "message": "מוסיף...",
@@ -412,7 +428,7 @@
     "description": "רמז כלי למתג סנכרון מודל"
   },
   "title_course_number": {
-    "message": "הזן מספר קורס בפורמט XXX.X.XXXX",
+    "message": "הזן מספר קורס בפורמט XXX.X.XXXX או חפש לפי שם קורס באנגלית או בעברית",
     "description": "רמז כלי לשדה מספר קורס"
   },
   "title_add_course": {

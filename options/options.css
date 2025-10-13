@@ -671,3 +671,77 @@ input:checked+.slider:before {
 [id^="edit_course_name_button"].hidden {
     display: none;
 }
+
+/* Autocomplete styles */
+.autocomplete-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: var(--container-bg);
+    border: 1px solid var(--input-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-dropdown.show {
+    display: block;
+}
+
+.autocomplete-item {
+    padding: 0.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--input-border);
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background-color: var(--input-bg);
+}
+
+.autocomplete-item-number {
+    font-weight: bold;
+    color: var(--h1-color);
+    font-size: 0.9rem;
+}
+
+.autocomplete-item-name {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+.autocomplete-item-secondary {
+    font-size: 0.75rem;
+    color: var(--sub-label-color);
+    margin-top: 0.25rem;
+    line-height: 1.2;
+}
+
+.autocomplete-loading {
+    padding: 1rem;
+    text-align: center;
+    color: var(--sub-label-color);
+    font-style: italic;
+}
+
+.autocomplete-no-results {
+    padding: 1rem;
+    text-align: center;
+    color: var(--sub-label-color);
+}
