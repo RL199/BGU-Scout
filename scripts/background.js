@@ -1,5 +1,18 @@
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async function (message, sender, sendResponse) {
     chrome.tabs.remove(sender.tab.id);
+    await chrome.storage.local.remove(['generatePKey', 'allowUserValidation']);
+});
+
+chrome.tabs.onRemoved.addListener(async function (tabId, removeInfo) {
+
+    const storage = await chrome.storage.local.get(['generatePKeyTab', 'allowUserValidationTab']);
+    if (storage.generatePKeyTab === tabId) {
+        await chrome.storage.local.remove(['generatePKeyTab', 'generatePKey']);
+    }
+    if (storage.allowUserValidationTab === tabId) {
+        chrome.runtime.sendMessage({ type: 'USER_VALIDATION_CLOSED' });
+        await chrome.storage.local.remove(['allowUserValidationTab', 'allowUserValidation']);
+    }
 });
 
 // Restore the user's selected icon color when the extension starts

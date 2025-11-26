@@ -1186,7 +1186,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     chrome.runtime.onMessage.addListener(async function (message, sender) {
-        const tabId = sender.tab.id;
         const storage = await chrome.storage.local.get(['allowCourseValidation', 'converting_courses', 'total_courses_to_convert', 'converted_courses', 'course_name_preferred_lang']);
         let remainingTabs = storage.allowCourseValidation || 0;
         if (message.type === 'COURSE_FOUND') {
@@ -1215,6 +1214,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     await chrome.storage.local.remove(['converting_courses', 'total_courses_to_convert', 'converted_courses']);
                 }
             }
+        } else if (message.type === 'USER_VALIDATION_CLOSED') {
+            setSaveLoading(false);
+
         } else if (message.type === 'COURSE_NOT_FOUND' && storage.converting_courses) {
             remainingTabs -= 1;
             if (remainingTabs <= 0) {
@@ -1591,6 +1593,7 @@ async function openBGU4U22Tab() {
             url: "https://bgu4u22.bgu.ac.il/apex/10g/r/f_login1004/login_desktop?p_lang=",
             active: false,
         });
+        await chrome.storage.local.set({ allowUserValidationTab: tab.id });
         console.log("Tab loaded and ready:", tab.id);
         return tab.id;
     } catch (error) {

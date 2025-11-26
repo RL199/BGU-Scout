@@ -1319,6 +1319,8 @@ async function openBGU22Tab() {
             url: "https://bgu4u22.bgu.ac.il/apex/10g/r/f_login1004/login_desktop?p_lang=",
             active: false,
         });
+        await chrome.storage.local.set({ generatePKeyTab: tab.id });
+        
         console.log("Tab loaded and ready:", tab.id);
         return tab.id;
     } catch (error) {
