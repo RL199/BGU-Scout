@@ -451,7 +451,7 @@ document.addEventListener("DOMContentLoaded", function () {
             sendMessage(getMessage('dont_close_window'), 'other');
 
             const loadingPaths = [
-                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1"/>',
+                '<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>',
                 '<path d="M6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/>',
                 '<path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>'
             ];
@@ -608,7 +608,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const currentTime = new Date().getTime();
                 console.log("Current time:", currentTime);
-                if (currentTime - lastKeyUpdate > 420000) {
+                if (!lastKeyUpdate || (currentTime - lastKeyUpdate > 420000)) {
                     await generatePKey();
                     await waitForKey();
                 }
@@ -674,7 +674,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             const currentTime = new Date().getTime();
-            if (currentTime - lastKeyUpdate > 420000) {
+            if (!lastKeyUpdate || (currentTime - lastKeyUpdate > 420000)) {
                 await generatePKey();
                 await waitForKey();
             }
@@ -1320,7 +1320,7 @@ async function openBGU22Tab() {
             active: false,
         });
         await chrome.storage.local.set({ generatePKeyTab: tab.id });
-        
+
         console.log("Tab loaded and ready:", tab.id);
         return tab.id;
     } catch (error) {

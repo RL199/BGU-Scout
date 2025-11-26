@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Handling temporary storage cleanup when closing the page during loading.
+- Popup page svg icon bug.
+- Popup page handling of missing storage value during loading.
 
 ## [1.5.0]
 
