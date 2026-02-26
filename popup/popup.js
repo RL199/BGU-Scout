@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const endYearInput = document.getElementById("end_year");
     const mainContainer = document.querySelector(".container");
 
+    const currentYear = new Date().getFullYear();
+    startYearInput.max = currentYear;
+    endYearInput.max = currentYear;
+
     // Multiple selection elements (checkboxes)
     const semesterCheckboxContainer = document.getElementById("semester_checkbox");
     const examCheckboxContainer = document.getElementById("exam_checkbox");
