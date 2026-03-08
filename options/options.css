@@ -380,6 +380,10 @@ select:hover {
     animation: pulse 1.5s infinite;
 }
 
+label.switch_label:hover {
+    cursor: pointer;
+}
+
 @keyframes pulse {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 0.8; }
