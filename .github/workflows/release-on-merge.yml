@@ -83,16 +83,16 @@ jobs:
           mkdir -p build
           zip -r build/BGU.Scout.zip . -x "*.git*" "*.github*" "*.idea*" "*.vscode*" "Screenshots/*" "build/*" "*.DS_Store" "*.md" "svg-assets/*"
 
-      # - name: Upload to Chrome Web Store
-      #   if: steps.check_tag.outputs.exists == 'false'
-      #   uses: mnao305/chrome-extension-upload@v5.0.0
-      #   with:
-      #     file-path: build/BGU.Scout.zip
-      #     extension-id: ${{ secrets.CHROME_WEB_STORE_APP_ID }}
-      #     client-id: ${{ secrets.CHROME_WEB_STORE_CLIENT_ID }}
-      #     client-secret: ${{ secrets.CHROME_WEB_STORE_CLIENT_SECRET }}
-      #     refresh-token: ${{ secrets.CHROME_WEB_STORE_REFRESH_TOKEN }}
-      #     publish: true
+      - name: Upload to Chrome Web Store
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: build/BGU.Scout.zip
+          extension-id: ${{ secrets.CHROME_WEB_STORE_APP_ID }}
+          client-id: ${{ secrets.CHROME_WEB_STORE_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_WEB_STORE_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_WEB_STORE_REFRESH_TOKEN }}
+          publish: true
 
       - name: Create Release
         if: steps.check_tag.outputs.exists == 'false'
