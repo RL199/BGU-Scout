@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.4]
+
+### Fixed
+- Moodle course number retrieval, which broke once the course number was no longer part of the page HTML. It is now read from the course data in Moodle's web service responses.
+- Course name cleanup no longer strips a trailing "s" and the number after it, so names like "Data Systems 2" keep their number.
+
 ## [1.5.3]
 
 ### Changed
