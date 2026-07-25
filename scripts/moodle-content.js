@@ -2,92 +2,114 @@
 
 console.log('###Moodle content script loaded###');
 
-// Initialize based on document state
+// Filled in by scripts/moodle-ajax-hook.js, which runs in the page context and
+// taps Moodle's /lib/ajax/service.php responses. The course number is no longer
+// part of the served HTML, so the course objects in those responses are the only
+// place left to read it from.
+const COURSE_DATA_STORE_ID = 'bgu-scout-moodle-course-data';
+const COURSE_DATA_EVENT = 'bgu-scout:moodle-course-data';
+const SAVE_DEBOUNCE_MS = 300;
+
+let saveTimeout = null;
+
 chrome.storage.local.get(['auto_add_moodle_courses'], function (result) {
     if (result.auto_add_moodle_courses) {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeCourseList);
-        } else {
-            initializeCourseList();
-        }
+        // Responses trickle in as the dashboard renders, so re-read on every update.
+        document.addEventListener(COURSE_DATA_EVENT, scheduleSave);
+        scheduleSave();
     }
 });
 
-function initializeCourseList() {
-    const observer = new MutationObserver((mutations, obs) => {
-        const courseList2 = document.querySelector("#page-container-2 > div > div");
-        const courseList3 = document.querySelector("#page-container-3 > div > div")
-        checkForCourseList(courseList2, obs);
-        checkForCourseList(courseList3, obs);
-    });
-
-    // Start observing
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+function scheduleSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(saveDiscoveredCourses, SAVE_DEBOUNCE_MS);
 }
 
-function checkForCourseList(courseList, obs) {
-    if (courseList) {
-        const courseNumberList = document.querySelector("#calendar-course-filter-1");
-
-        obs.disconnect();
-
-        let courseItems = courseList.querySelectorAll('.card');
-        const coursesToSave = {};
-        
-        courseItems.forEach(courseItem => {
-            let courseName = (courseItem.innerText
-                .trim()
-                .match(/(.*)\n/)?.[0]
-                ?.replace(/\n/g, '') || courseItem.innerText.trim())
-
-            // Apply cleanup to course name
-            courseName = trimCourseName(courseName);
-
-            const courseLink = courseItem.querySelector('a').href;
-            const courseCode = courseLink.match(/id=(\d+)/)[1];
-            let courseNumber = courseNumberList.querySelector(`option[value="${courseCode}"]`).innerText.substring(0, 8);
-            courseNumber = courseNumber.substring(0, 3) + '.' + courseNumber[3] + '.' + courseNumber.substring(4, 8);
-            coursesToSave[courseNumber] = courseName;
-        });
-
-        chrome.storage.local.get(['saved_courses', 'course_name_preferred_lang'], function (result) {
-            const savedCourses = result.saved_courses || {};
-            const preferredLang = result.course_name_preferred_lang || (navigator.language.startsWith('he') ? 'he' : 'en');
-            
-            for (const courseNumber in coursesToSave) {
-                if (savedCourses[courseNumber]) {
-                    delete coursesToSave[courseNumber];
-                }
-            }
-            
-            // Convert to new format with language detection
-            const newSavedCourses = { ...savedCourses };
-            for (const courseNumber in coursesToSave) {
-                const courseName = coursesToSave[courseNumber];
-                const detectedLang = detectLanguage(courseName);
-                
-                newSavedCourses[courseNumber] = {
-                    names: {
-                        [detectedLang]: courseName
-                    }
-                };
-            }
-            
-            chrome.storage.local.set({ 'saved_courses': newSavedCourses }, function () {
-                console.log('Courses saved:', newSavedCourses);
-            });
-        });
+function readCourseData() {
+    const store = document.getElementById(COURSE_DATA_STORE_ID);
+    if (!store || !store.textContent) {
+        return [];
     }
+
+    try {
+        return JSON.parse(store.textContent);
+    } catch (error) {
+        console.error('Failed to read Moodle course data:', error);
+        return [];
+    }
+}
+
+// "202150610120262" -> "202.1.5061"
+function parseCourseNumber(idnumber) {
+    const digits = String(idnumber ?? '').replace(/\D/g, '');
+    if (digits.length < 8) {
+        return null;
+    }
+
+    return `${digits.substring(0, 3)}.${digits[3]}.${digits.substring(4, 8)}`;
+}
+
+function saveDiscoveredCourses() {
+    const coursesToSave = {};
+
+    readCourseData().forEach(course => {
+        const courseNumber = parseCourseNumber(course.idnumber);
+        if (!courseNumber) {
+            return;
+        }
+
+        const courseName = trimCourseName((course.fullname || '').trim());
+        if (!courseName) {
+            return;
+        }
+
+        coursesToSave[courseNumber] = courseName;
+    });
+
+    if (Object.keys(coursesToSave).length === 0) {
+        return;
+    }
+
+    chrome.storage.local.get(['saved_courses', 'course_name_preferred_lang'], function (result) {
+        const savedCourses = result.saved_courses || {};
+        const preferredLang = result.course_name_preferred_lang || (navigator.language.startsWith('he') ? 'he' : 'en');
+
+        for (const courseNumber in coursesToSave) {
+            if (savedCourses[courseNumber]) {
+                delete coursesToSave[courseNumber];
+            }
+        }
+
+        if (Object.keys(coursesToSave).length === 0) {
+            return;
+        }
+
+        // Convert to new format with language detection
+        const newSavedCourses = { ...savedCourses };
+        for (const courseNumber in coursesToSave) {
+            const courseName = coursesToSave[courseNumber];
+            const detectedLang = detectLanguage(courseName);
+
+            newSavedCourses[courseNumber] = {
+                names: {
+                    [detectedLang]: courseName
+                }
+            };
+        }
+
+        chrome.storage.local.set({ 'saved_courses': newSavedCourses }, function () {
+            console.log('Courses saved:', newSavedCourses);
+        });
+    });
 }
 
 function trimCourseName(courseName) {
     // First pass: Handle semester indicators with numbers
     courseName = courseName
         // Handle semester indicators: "סמ 1", "סמ2", "S 2", "S2", etc.
-        .replace(/\s*(סמ|S|sem|semester|סמסטר)\s*[0-9]+\s*/gi, ' ')
+        // The indicator has to stand on its own - without the boundary guards the
+        // trailing "s" of a name like "Data Systems 2" reads as a semester marker.
+        .replace(/(?<![\p{L}\p{N}_])(סמסטר|סמ|semester|sem|s)\s*[0-9]+(?![\p{L}\p{N}_])/giu, ' ')
 
         // Handle year ranges like "2023-2024"
         .replace(/\s*\d{4}-\d{4}\s*/g, ' ')
