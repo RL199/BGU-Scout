@@ -3,3 +3,6 @@
 .idea/
 .hintrc
 .github/copilot-instructions.md
+
+# Scratch dir for the store-listing image renderer
+store-assets/.build/
